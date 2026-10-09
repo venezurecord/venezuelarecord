@@ -10,7 +10,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Llena los campos y pulsa **Submit new issue**. En uno o dos minutos aparecerá un comentario con el enlace al *Pull Request* de la noticia.
+        Llena los campos y pulsa el botón verde **Create**. En uno o dos minutos aparecerá un comentario con el enlace al *Pull Request* de la noticia.
         Guía completa: [docs/COMO-PUBLICAR.md](https://github.com/venezurecord/venezuelarecord/blob/main/docs/COMO-PUBLICAR.md)
 
   - type: input
