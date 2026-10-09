@@ -52,7 +52,7 @@ body:
     id: autor
     attributes:
       label: Autor original
-      description: Quién escribió la nota. Si no aparece, déjalo vacío y se pondrá "Redacción, <medio>".
+      description: Quién escribió la nota. Si no aparece, déjalo vacío y se pondrá "Redacción, (nombre del medio)".
 
   - type: input
     id: fecha
@@ -110,7 +110,7 @@ body:
     id: credito
     attributes:
       label: Crédito de la imagen
-      description: 'Si lo dejas vacío se pondrá "Photo: <medio>".'
+      description: 'Si lo dejas vacío se pondrá "Photo: (nombre del medio)".'
 
   - type: input
     id: descripcion_imagen
