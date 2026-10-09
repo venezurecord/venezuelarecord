@@ -33,17 +33,15 @@ const news = defineCollection({
         originalAuthor: z.string().default(''), // empty => "Staff, <sourceName>"
         category: z.enum(CATEGORIES),
         tags: z.array(z.string()).default([]),
-        image: image().optional(), // required when sourceTier = "A"
+        image: image().optional(), // tier A: the original photo; none => source card
         imageCredit: z.string().optional(), // required when there is an image
         imageAlt: z.string().optional(),
-        imageLicense: z.string().optional(), // only for tier B with a free license
+        imageLicense: z.string().optional(), // required for any photo not taken from the source (free license)
         featured: z.boolean().default(false),
         draft: z.boolean().default(false),
         needsTranslation: z.boolean().default(false), // true = still in Spanish; not published
       })
       .superRefine((d, ctx) => {
-        if (d.sourceTier === 'A' && !d.image)
-          ctx.addIssue({ code: 'custom', path: ['image'], message: 'Tier A requires the original image' });
         if (d.image && !d.imageCredit)
           ctx.addIssue({ code: 'custom', path: ['imageCredit'], message: 'imageCredit is required' });
         if (d.image && !d.imageAlt)
