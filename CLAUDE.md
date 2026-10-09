@@ -20,8 +20,10 @@ Repo: `github.com/venezurecord/venezuelarecord`.
   archivo en español.
 - Las subidas a GitHub se hacen **por la web** (Roger prefirió no autorizar Git Credential Manager).
 - **2026-10-08 — Logo oficial** (Roger): `brand/venezuela-record-masthead.png`. `node scripts/brand-assets.mjs`
-  genera desde él el logo transparente claro/oscuro (`src/assets/brand/`), favicon, apple-touch-icon e imagen
-  social. El lema va como texto HTML (no el del PNG) para poder traducirlo.
+  genera desde él el logo transparente claro/oscuro (`src/assets/brand/`) e imagen social. El lema va como texto
+  HTML (no el del PNG) para poder traducirlo.
+- **2026-10-09 — Isotipo** (Roger): `brand/venezuela-record-isotipo.png` se usa **solo** donde lo amerita: favicon
+  (pestaña) y apple-touch-icon. El logo del encabezado se queda como está.
 
 - **2026-10-08 — Fotos y portada** (Roger): si la nota original de una fuente A no trae foto propia (VenAmérica
   suele usar solo su logo), se usa una foto **con licencia libre** acorde a la noticia (Wikimedia Commons: CC0,

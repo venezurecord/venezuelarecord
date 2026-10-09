@@ -37,3 +37,7 @@ pnpm-debug.log*
 
 # logo original as delivered (kept in brand/ with an extension)
 /Venezuela Record Editorial Masthead LOGO
+
+# isotipo as delivered (kept in brand/venezuela-record-isotipo.png)
+/venezuela_record_isotipo_tricolor.png
+/venezuela_record_isotipo_tricolor.jpg
