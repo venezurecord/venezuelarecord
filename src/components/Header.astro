@@ -1,0 +1,126 @@
+---
+import Nav from './Nav.astro';
+import LangSwitch from './LangSwitch.astro';
+import { localePath, t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="container header-inner">
+    <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+      <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path class="bar" d="M3 6h18M3 12h18M3 18h18"></path>
+      </svg>
+      <span class="visually-hidden">{t(lang, 'nav.menu')}</span>
+    </button>
+
+    <div class="brand">
+      <a class="wordmark" href={localePath(lang, '/')}>Venezuela Record</a>
+      <p class="tagline">{t(lang, 'site.tagline')}</p>
+    </div>
+
+    <LangSwitch lang={lang} />
+  </div>
+  <div class="tricolor" aria-hidden="true"><span></span><span></span><span></span></div>
+  <Nav lang={lang} />
+</header>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.menu-toggle');
+  const nav = document.getElementById('site-nav');
+  if (btn && nav) {
+    const set = (open: boolean) => {
+      btn.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('is-open', open);
+    };
+    btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
+        set(false);
+        btn.focus();
+      }
+    });
+    matchMedia('(min-width: 900px)').addEventListener('change', () => set(false));
+  }
+</script>
+
+<style>
+  .site-header {
+    background: var(--bg);
+  }
+  .header-inner {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    gap: 8px;
+    padding-block: 18px 14px;
+  }
+  .brand {
+    text-align: center;
+    min-width: 0;
+  }
+  .wordmark {
+    display: inline-block;
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(1.2rem, 5.6vw, 2.9rem);
+    line-height: 1.05;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .tagline {
+    margin: 6px 0 0;
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: clamp(0.78rem, 2.4vw, 1rem);
+    line-height: 1.35;
+    color: var(--muted);
+  }
+  .menu-toggle {
+    width: 44px;
+    height: 44px;
+    display: inline-grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--text);
+    cursor: pointer;
+  }
+  .tricolor {
+    display: flex;
+    height: 4px;
+  }
+  .tricolor span {
+    flex: 1;
+  }
+  .tricolor span:nth-child(1) {
+    background: var(--vz-yellow);
+  }
+  .tricolor span:nth-child(2) {
+    background: var(--vz-blue);
+  }
+  .tricolor span:nth-child(3) {
+    background: var(--vz-red);
+  }
+  :global(html:not(.js)) .menu-toggle {
+    visibility: hidden;
+  }
+  @media (min-width: 900px) {
+    .header-inner {
+      grid-template-columns: 120px 1fr 120px;
+      padding-block: 28px 20px;
+    }
+    .menu-toggle {
+      visibility: hidden;
+    }
+  }
+</style>

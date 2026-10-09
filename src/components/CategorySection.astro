@@ -1,0 +1,33 @@
+---
+import NewsCard from './NewsCard.astro';
+import { categoryName, categoryUrl, type Story } from '../lib/news';
+import type { Category } from '../lib/constants';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  category: Category;
+  stories: Story[];
+}
+const { lang, category, stories } = Astro.props;
+const id = `cat-${categoryUrl('en', category).split('/').filter(Boolean).pop()}`;
+---
+
+<section class="cat-section" aria-labelledby={id}>
+  <div class="section-head">
+    <h2 id={id}>{categoryName(lang, category)}</h2>
+    <a href={categoryUrl(lang, category)}>
+      {t(lang, 'home.viewAll')} <span aria-hidden="true">»</span>
+      <span class="visually-hidden">: {categoryName(lang, category)}</span>
+    </a>
+  </div>
+  <div class="grid-cards">
+    {stories.map((s) => <NewsCard story={s} />)}
+  </div>
+</section>
+
+<style>
+  .cat-section {
+    margin-top: 56px;
+  }
+</style>

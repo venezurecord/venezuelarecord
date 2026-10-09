@@ -1,0 +1,13 @@
+---
+// Visible only in PR previews and local dev: production never renders pending stories.
+import { isPending, type Story } from '../lib/news';
+import { t } from '../i18n/ui';
+
+interface Props {
+  story: Story;
+}
+const { story } = Astro.props;
+const label = story.needsTranslation || story.fallback ? t(story.lang, 'pending.translation') : t(story.lang, 'pending.draft');
+---
+
+{(isPending(story) || story.fallback) && <span class="badge-pending">{label}</span>}

@@ -1,0 +1,84 @@
+---
+// Home hero: featured story in the center, two medium stories on one side and
+// the "Latest" column on the other. Collapses to one column on phones.
+import NewsCard from './NewsCard.astro';
+import LatestList from './LatestList.astro';
+import type { Story } from '../lib/news';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  featured: Story;
+  side: Story[];
+  latest: Story[];
+}
+const { lang, featured, side, latest } = Astro.props;
+---
+
+<div class:list={['hero-grid', { 'no-side': side.length === 0 }]}>
+  <div class="featured">
+    <NewsCard story={featured} variant="hero" headingLevel="h2" eager />
+  </div>
+  {
+    side.length > 0 && (
+      <div class="side">
+        {side.map((s) => (
+          <NewsCard story={s} variant="side" />
+        ))}
+      </div>
+    )
+  }
+  {
+    latest.length > 0 && (
+      <div class="latest">
+        <LatestList lang={lang} stories={latest} />
+      </div>
+    )
+  }
+</div>
+
+<style>
+  .hero-grid {
+    display: grid;
+    gap: 32px;
+    padding-top: 28px;
+  }
+  .side {
+    display: grid;
+    gap: 28px;
+  }
+  @media (min-width: 640px) and (max-width: 959px) {
+    .side {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (min-width: 960px) {
+    .hero-grid {
+      grid-template-columns: 1fr 2.2fr 1.15fr;
+      grid-template-areas: 'side featured latest';
+      gap: 0;
+    }
+    .hero-grid.no-side {
+      grid-template-columns: 2.2fr 1.15fr;
+      grid-template-areas: 'featured latest';
+    }
+    .featured {
+      grid-area: featured;
+      padding-inline: 28px;
+      border-inline: 1px solid var(--line);
+    }
+    .no-side .featured {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .side {
+      grid-area: side;
+      padding-right: 28px;
+      align-content: start;
+    }
+    .latest {
+      grid-area: latest;
+      padding-left: 28px;
+    }
+  }
+</style>

@@ -1,0 +1,123 @@
+---
+import { CATEGORIES, CATEGORY_INFO, SITE } from '../lib/constants';
+import { categoryUrl } from '../lib/news';
+import { localePath, PAGES, t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const year = new Date().getUTCFullYear();
+---
+
+<footer class="site-footer">
+  <div class="tricolor" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="container footer-grid">
+    <div class="about">
+      <a class="wordmark" href={localePath(lang, '/')}>Venezuela Record</a>
+      <p>{t(lang, 'footer.about')}</p>
+    </div>
+
+    <nav aria-labelledby="footer-sections">
+      <h2 id="footer-sections">{t(lang, 'footer.sections')}</h2>
+      <ul>
+        <li><a href={localePath(lang, '/timeline/')}>{t(lang, 'nav.timeline')}</a></li>
+        {CATEGORIES.map((c) => <li><a href={categoryUrl(lang, c)}>{CATEGORY_INFO[c][lang].name}</a></li>)}
+      </ul>
+    </nav>
+
+    <nav aria-labelledby="footer-pages">
+      <h2 id="footer-pages">{t(lang, 'footer.pages')}</h2>
+      <ul>
+        <li><a href={localePath(lang, PAGES.about.path)}>{PAGES.about[lang]}</a></li>
+        <li><a href={localePath(lang, PAGES.sources.path)}>{t(lang, 'footer.sourcesPermissions')}</a></li>
+        <li><a href={localePath(lang, PAGES.corrections.path)}>{t(lang, 'footer.corrections')}</a></li>
+        <li><a href={localePath(lang, '/rss.xml')}>{t(lang, 'footer.rss')}</a></li>
+      </ul>
+    </nav>
+
+    <div>
+      <h2>{t(lang, 'footer.contact')}</h2>
+      <p><a href={`mailto:${SITE.email}`}>{SITE.email}</a></p>
+    </div>
+  </div>
+  <div class="container copyright">
+    <p>© {year} {SITE.name}</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: 48px;
+    background: var(--surface);
+    font-size: 0.9rem;
+  }
+  .tricolor {
+    display: flex;
+    height: 3px;
+  }
+  .tricolor span {
+    flex: 1;
+  }
+  .tricolor span:nth-child(1) {
+    background: var(--vz-yellow);
+  }
+  .tricolor span:nth-child(2) {
+    background: var(--vz-blue);
+  }
+  .tricolor span:nth-child(3) {
+    background: var(--vz-red);
+  }
+  .footer-grid {
+    display: grid;
+    gap: 32px;
+    padding-block: 40px 24px;
+  }
+  @media (min-width: 768px) {
+    .footer-grid {
+      grid-template-columns: 2fr 1.3fr 1.2fr 1.3fr;
+    }
+  }
+  .wordmark {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .about p {
+    color: var(--muted);
+    max-width: 44ch;
+  }
+  h2 {
+    font-family: var(--sans);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li a {
+    display: inline-block;
+    padding: 5px 0;
+  }
+  a {
+    color: var(--text);
+  }
+  .copyright {
+    border-top: 1px solid var(--line);
+    padding-block: 16px 24px;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .copyright p {
+    margin: 0;
+  }
+</style>

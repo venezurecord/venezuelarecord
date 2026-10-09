@@ -1,0 +1,100 @@
+---
+import { CATEGORY_INFO, NAV_CATEGORIES } from '../lib/constants';
+import { categoryUrl } from '../lib/news';
+import { localePath, PAGES, stripLang, t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const links = [
+  { href: localePath(lang, '/'), label: t(lang, 'nav.home') },
+  { href: localePath(lang, '/timeline/'), label: t(lang, 'nav.timeline') },
+  ...NAV_CATEGORIES.map((c) => ({ href: categoryUrl(lang, c), label: CATEGORY_INFO[c][lang].short })),
+  { href: localePath(lang, PAGES.about.path), label: t(lang, 'nav.about') },
+];
+
+const current = stripLang(Astro.url.pathname);
+const isCurrent = (href: string) => {
+  const target = stripLang(href);
+  return target === '/' ? current === '/' : current.startsWith(target);
+};
+---
+
+<nav id="site-nav" class="site-nav" aria-label={t(lang, 'nav.main')}>
+  <ul class="container">
+    {
+      links.map((l) => (
+        <li>
+          <a href={l.href} aria-current={isCurrent(l.href) ? 'page' : undefined}>
+            {l.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .site-nav {
+    border-bottom: 1px solid var(--line);
+  }
+  ul {
+    list-style: none;
+    margin: 0 auto;
+    padding-block: 4px;
+    display: flex;
+    flex-direction: column;
+  }
+  a {
+    display: block;
+    padding: 12px 4px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border-bottom: 1px solid var(--line);
+  }
+  li:last-child a {
+    border-bottom: 0;
+  }
+  a:hover {
+    color: var(--accent);
+  }
+  a[aria-current='page'] {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Mobile: collapsed behind the menu button (only when JS is available). */
+  :global(html.js) .site-nav {
+    display: none;
+  }
+  :global(html.js) .site-nav.is-open {
+    display: block;
+  }
+
+  @media (min-width: 900px) {
+    :global(html.js) .site-nav {
+      display: block;
+    }
+    ul {
+      flex-direction: row;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 4px 22px;
+      padding-block: 0;
+    }
+    a,
+    li:last-child a {
+      padding: 12px 2px 10px;
+      border-bottom: 2px solid transparent;
+      font-size: 0.88rem;
+    }
+    a[aria-current='page'],
+    li:last-child a[aria-current='page'] {
+      border-bottom-color: var(--accent);
+    }
+  }
+</style>

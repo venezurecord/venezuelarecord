@@ -1,0 +1,64 @@
+---
+// Credits block (brief §2.3) shown at the top of every article:
+//   Originally published by <outlet> · <original date>
+//   Written by <author>            (or "Staff, <outlet>")
+//   Republished by Roger Q. · <republication date>
+//   Read the original: <link>
+import { authorCredit, formatDate, isoDate, sourcePageUrl, type Story } from '../lib/news';
+import { t } from '../i18n/ui';
+
+interface Props {
+  story: Story;
+}
+const { story: s } = Astro.props;
+const lang = s.lang;
+---
+
+<div class="credits">
+  <p>
+    {t(lang, 'credits.originallyPublished')} <a class="strong" href={sourcePageUrl(lang, s.data.sourceName)}>{s.data.sourceName}</a>{' '}
+    · <time datetime={isoDate(s.data.originalDate)}>{formatDate(lang, s.data.originalDate)}</time>
+  </p>
+  <p>{t(lang, 'credits.writtenBy')} <span class="strong">{authorCredit(s)}</span></p>
+  <p class="small">
+    {t(lang, 'credits.republishedBy')} {s.data.republishedBy} ·{' '}
+    <time datetime={isoDate(s.data.republishedDate)}>{formatDate(lang, s.data.republishedDate)}</time>
+  </p>
+  <p class="small">
+    {t(lang, 'credits.readOriginal')}:{' '}
+    <a href={s.data.sourceUrl} rel="noopener" class="url">{s.data.sourceUrl.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>
+  </p>
+</div>
+
+<style>
+  .credits {
+    border-block: 1px solid var(--line);
+    padding: 14px 0;
+    margin: 20px 0 24px;
+    font-size: 0.9rem;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+  p {
+    margin: 0 0 4px;
+  }
+  p:last-child {
+    margin: 0;
+  }
+  .strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  a.strong {
+    text-decoration: none;
+  }
+  a.strong:hover {
+    text-decoration: underline;
+  }
+  .small {
+    font-size: 0.82rem;
+  }
+  .url {
+    overflow-wrap: anywhere;
+  }
+</style>

@@ -1,0 +1,171 @@
+---
+// Listing card. Shows the original photo (tier A, or tier B with a free license)
+// or a "source card" (tier B), plus the compact credits line.
+import { Image } from 'astro:assets';
+import SourceCard from './SourceCard.astro';
+import PendingBadge from './PendingBadge.astro';
+import {
+  categoryName,
+  categoryUrl,
+  displayImage,
+  formatDate,
+  isoDate,
+  storyUrl,
+  type Story,
+} from '../lib/news';
+import { t } from '../i18n/ui';
+
+interface Props {
+  story: Story;
+  variant?: 'grid' | 'hero' | 'side' | 'list';
+  showSummary?: boolean;
+  headingLevel?: 'h2' | 'h3';
+  /** Load the image eagerly (above the fold). */
+  eager?: boolean;
+}
+
+const { story: s, variant = 'grid', showSummary = variant !== 'side', headingLevel = 'h3', eager = false } = Astro.props;
+const Heading = headingLevel;
+const img = displayImage(s);
+const href = storyUrl(s);
+
+const imgSizes = {
+  hero: { widths: [480, 800, 1200], sizes: '(min-width: 960px) 580px, 100vw' },
+  side: { widths: [320, 640], sizes: '(min-width: 960px) 260px, 100vw' },
+  grid: { widths: [360, 720], sizes: '(min-width: 960px) 270px, (min-width: 560px) 50vw, 100vw' },
+  list: { widths: [320, 640], sizes: '(min-width: 768px) 280px, 100vw' },
+}[variant];
+---
+
+<article class:list={['card', variant]}>
+  <a class="media" href={href} tabindex="-1" aria-hidden="true">
+    {
+      img ? (
+        <Image
+          src={img}
+          alt={s.imageAlt}
+          widths={imgSizes.widths}
+          sizes={imgSizes.sizes}
+          format="webp"
+          quality={72}
+          loading={eager ? 'eager' : 'lazy'}
+          fetchpriority={eager ? 'high' : 'auto'}
+        />
+      ) : (
+        <SourceCard lang={s.lang} sourceName={s.data.sourceName} />
+      )
+    }
+  </a>
+  <div class="body">
+    <p class="top">
+      <a class="kicker" href={categoryUrl(s.lang, s.data.category)}>{categoryName(s.lang, s.data.category)}</a>
+      <PendingBadge story={s} />
+    </p>
+    <Heading class="title"><a href={href}>{s.title}</a></Heading>
+    {showSummary && <p class="summary">{s.summary}</p>}
+    <p class="meta">
+      <span class="src">{s.data.sourceName}</span> · <time datetime={isoDate(s.data.originalDate)}>{formatDate(s.lang, s.data.originalDate)}</time>
+      <br />
+      <span class="rep">{t(s.lang, 'credits.republishedBy')} {s.data.republishedBy}</span>
+    </p>
+  </div>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+  }
+  .media {
+    display: block;
+    text-decoration: none;
+  }
+  .media :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--surface);
+  }
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 8px;
+    line-height: 1.2;
+  }
+  .title {
+    font-size: 1.12rem;
+    line-height: 1.25;
+    margin: 0 0 8px;
+  }
+  .title a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .title a:hover {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+  .summary {
+    margin: 0 0 8px;
+    color: var(--muted);
+    font-size: 0.92rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .meta {
+    margin: 0;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .src {
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  /* Hero: big, centered text (featured story) */
+  .hero {
+    gap: 16px;
+  }
+  .hero .body {
+    text-align: center;
+  }
+  .hero .top {
+    justify-content: center;
+  }
+  .hero .title {
+    font-size: clamp(1.6rem, 3.4vw, 2.35rem);
+    line-height: 1.15;
+  }
+  .hero .summary {
+    font-size: 1rem;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    max-width: 60ch;
+    margin-inline: auto;
+  }
+
+  .side .title {
+    font-size: 1.05rem;
+  }
+
+  /* List: image left, text right (category / source pages) */
+  @media (min-width: 768px) {
+    .list {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .list .title {
+      font-size: 1.35rem;
+    }
+  }
+</style>

@@ -1,0 +1,233 @@
+---
+// Archive grouped by month of ORIGINAL publication. Rendered oldest first
+// (default, from January 2025); the toggle reverses the order in place and
+// remembers it in the URL (?order=newest).
+import PendingBadge from './PendingBadge.astro';
+import { categoryName, categoryUrl, groupByMonth, isoDate, storyUrl, type Story } from '../lib/news';
+import { LANG_META, t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  stories: Story[];
+}
+const { lang, stories } = Astro.props;
+const months = groupByMonth(lang, stories);
+const dayFmt = new Intl.DateTimeFormat(LANG_META[lang].intl, { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const years = [...new Set(months.map((m) => m.key.slice(0, 4)))];
+const count = (n: number) => (n === 1 ? t(lang, 'timeline.story') : t(lang, 'timeline.stories', { n }));
+---
+
+<div class="timeline" data-timeline>
+  <div class="controls">
+    <div class="order" role="group" aria-label={t(lang, 'timeline.order')}>
+      <button type="button" data-order="oldest" aria-pressed="true">{t(lang, 'timeline.oldest')}</button>
+      <button type="button" data-order="newest" aria-pressed="false">{t(lang, 'timeline.newest')}</button>
+    </div>
+    {
+      months.length > 1 && (
+        <nav class="jump" aria-label={t(lang, 'timeline.jump')}>
+          {years.map((y) => (
+            <p class="year-row" data-reversible>
+              <strong>{y}</strong>
+              {months
+                .filter((m) => m.key.startsWith(y))
+                .map((m) => (
+                  <a href={`#m-${m.key}`}>{m.label.replace(/\s*(de\s+)?\d{4}$/, '')}</a>
+                ))}
+            </p>
+          ))}
+        </nav>
+      )
+    }
+  </div>
+
+  <div class="months" data-reversible>
+    {
+      months.map((m) => (
+        <section class="month" id={`m-${m.key}`} aria-labelledby={`h-${m.key}`}>
+          <h2 id={`h-${m.key}`}>
+            {m.label} <span class="count">{count(m.items.length)}</span>
+          </h2>
+          <ol data-reversible>
+            {m.items.map((s) => (
+              <li>
+                <time datetime={isoDate(s.data.originalDate)}>{dayFmt.format(s.data.originalDate)}</time>
+                <div>
+                  <p class="top">
+                    <a class="kicker" href={categoryUrl(lang, s.data.category)}>
+                      {categoryName(lang, s.data.category)}
+                    </a>
+                    <PendingBadge story={s} />
+                  </p>
+                  <h3>
+                    <a href={storyUrl(s)}>{s.title}</a>
+                  </h3>
+                  <p class="meta">
+                    <span class="src">{s.data.sourceName}</span> · {t(lang, 'credits.republishedBy')} {s.data.republishedBy}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-timeline]');
+  if (root) {
+    const buttons = root.querySelectorAll<HTMLButtonElement>('[data-order]');
+    let current = 'oldest';
+    const apply = (order: string) => {
+      if (order !== current) {
+        root.querySelectorAll('[data-reversible]').forEach((el) => {
+          const kids = [...el.children];
+          const head = kids.filter((k) => k.tagName === 'STRONG');
+          el.append(...head, ...kids.filter((k) => k.tagName !== 'STRONG').reverse());
+        });
+        // Reverse the year rows too.
+        const jump = root.querySelector('.jump');
+        if (jump) jump.append(...[...jump.children].reverse());
+        current = order;
+      }
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.order === order)));
+    };
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        const order = b.dataset.order!;
+        apply(order);
+        const url = new URL(location.href);
+        if (order === 'newest') url.searchParams.set('order', 'newest');
+        else url.searchParams.delete('order');
+        history.replaceState(null, '', url);
+      }),
+    );
+    if (new URLSearchParams(location.search).get('order') === 'newest') apply('newest');
+  }
+</script>
+
+<style>
+  .controls {
+    display: grid;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .order {
+    display: inline-flex;
+    width: fit-content;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .order button {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 0;
+    background: transparent;
+    color: var(--text);
+    font: inherit;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .order button + button {
+    border-left: 1px solid var(--line);
+  }
+  .order button[aria-pressed='true'] {
+    background: var(--accent);
+    color: var(--bg);
+  }
+  :global(html:not(.js)) .order {
+    display: none;
+  }
+  .jump {
+    display: grid;
+    gap: 6px;
+    font-size: 0.85rem;
+  }
+  .year-row {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 14px;
+    align-items: baseline;
+  }
+  .year-row strong {
+    min-width: 3em;
+  }
+  .jump a {
+    display: inline-block;
+    padding: 4px 0;
+    text-transform: capitalize;
+  }
+  .month {
+    margin-bottom: 40px;
+    scroll-margin-top: 16px;
+  }
+  .month h2 {
+    font-size: 1.5rem;
+    padding-bottom: 8px;
+    border-bottom: 2px solid var(--text);
+    margin-bottom: 0;
+  }
+  .count {
+    font-family: var(--sans);
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--muted);
+    margin-left: 8px;
+  }
+  ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 64px 1fr;
+    gap: 16px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  time {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--muted);
+    padding-top: 2px;
+    text-transform: capitalize;
+  }
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin: 0;
+  }
+  h3 {
+    font-size: 1.15rem;
+    margin: 0 0 4px;
+  }
+  h3 a {
+    color: var(--text);
+    text-decoration: none;
+  }
+  h3 a:hover {
+    text-decoration: underline;
+  }
+  .meta {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .src {
+    font-weight: 600;
+    color: var(--text);
+  }
+  @media (min-width: 768px) {
+    li {
+      grid-template-columns: 90px 1fr;
+    }
+  }
+</style>

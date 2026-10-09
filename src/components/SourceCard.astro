@@ -1,0 +1,76 @@
+---
+// Placeholder shown instead of a photo for tier B stories (we never copy their images).
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  sourceName: string;
+  size?: 'normal' | 'small';
+}
+const { lang, sourceName, size = 'normal' } = Astro.props;
+---
+
+<div class:list={['source-card', size]} role="img" aria-label={`${t(lang, 'card.source')}: ${sourceName}`}>
+  {size === 'normal' && <span class="label" aria-hidden="true">{t(lang, 'card.source')}</span>}
+  <span class="name" aria-hidden="true">{sourceName}</span>
+  <span class="bar" aria-hidden="true"><i></i><i></i><i></i></span>
+</div>
+
+<style>
+  .source-card {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+    background: var(--accent-soft);
+    border: 1px solid var(--line);
+    text-align: center;
+    overflow: hidden;
+  }
+  .label {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .name {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+    line-height: 1.15;
+    color: var(--text);
+  }
+  .small {
+    aspect-ratio: 4 / 3;
+    padding: 6px;
+  }
+  .small .name {
+    font-size: 0.72rem;
+  }
+  .bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    height: 3px;
+  }
+  .bar i {
+    flex: 1;
+  }
+  .bar i:nth-child(1) {
+    background: var(--vz-yellow);
+  }
+  .bar i:nth-child(2) {
+    background: var(--vz-blue);
+  }
+  .bar i:nth-child(3) {
+    background: var(--vz-red);
+  }
+</style>

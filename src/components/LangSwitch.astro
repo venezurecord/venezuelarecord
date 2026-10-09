@@ -1,0 +1,69 @@
+---
+// Link to the same page in the other language. "?setlang=" lets the Cloudflare
+// middleware remember the choice in a cookie (works without JavaScript); the
+// script also sets the cookie right away.
+import { LANG_META, localePath, otherLang, stripLang, t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const to = otherLang(lang);
+const href = `${localePath(to, stripLang(Astro.url.pathname))}?setlang=${to}`;
+---
+
+<a class="lang-switch" href={href} hreflang={to} lang={LANG_META[to].htmlLang} data-lang={to} title={`${t(lang, 'nav.language')}: ${LANG_META[to].label}`}>
+  <span class="full">{LANG_META[to].label}</span>
+  <span class="short" aria-hidden="true">{to.toUpperCase()}</span>
+</a>
+
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('.lang-switch').forEach((a) =>
+    a.addEventListener('click', () => {
+      document.cookie = `vr_lang=${a.dataset.lang}; Path=/; Max-Age=31536000; SameSite=Lax`;
+    }),
+  );
+</script>
+
+<style>
+  .lang-switch {
+    justify-self: end;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .lang-switch:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  /* Mobile shows "ES"/"EN"; the full name stays available to screen readers. */
+  .full {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  @media (min-width: 900px) {
+    .full {
+      position: static;
+      width: auto;
+      height: auto;
+      overflow: visible;
+      clip: auto;
+    }
+    .short {
+      display: none;
+    }
+  }
+</style>
