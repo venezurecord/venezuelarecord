@@ -1,0 +1,8 @@
+---
+import CategoryPage from '../../../views/CategoryPage.astro';
+import { categoryPaths } from '../../../lib/paths';
+
+export const getStaticPaths = () => categoryPaths('en');
+---
+
+<CategoryPage lang="en" {...Astro.props} />
