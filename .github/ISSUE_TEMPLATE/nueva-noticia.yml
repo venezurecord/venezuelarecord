@@ -1,0 +1,125 @@
+# Formulario "Nueva noticia". Al enviarlo, la Action .github/workflows/nueva-noticia.yml
+# crea un Pull Request con la noticia (versión en español lista, versión en inglés pendiente
+# de traducción). Los títulos de los campos ("label") los lee scripts/issue-to-story.ts:
+# si cambias uno aquí, cámbialo allí también.
+name: Nueva noticia
+description: Republicar una noticia en Venezuela Record
+title: "Noticia: "
+labels: ["nueva-noticia"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Llena los campos y pulsa **Submit new issue**. En uno o dos minutos aparecerá un comentario con el enlace al *Pull Request* de la noticia.
+        Guía completa: [docs/COMO-PUBLICAR.md](https://github.com/venezurecord/venezuelarecord/blob/main/docs/COMO-PUBLICAR.md)
+
+  - type: input
+    id: url
+    attributes:
+      label: Enlace a la nota original
+      description: La dirección (URL) de la noticia en el sitio del medio original.
+      placeholder: https://voluntadpopular.com/...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: fuente
+    attributes:
+      label: Fuente
+      description: Voluntad Popular y VenAmérica se republican completas (tenemos permiso). De otros medios solo va un resumen y el enlace.
+      options:
+        - Voluntad Popular
+        - VenAmérica
+        - Otro medio
+    validations:
+      required: true
+
+  - type: input
+    id: medio
+    attributes:
+      label: Nombre del medio (si elegiste Otro medio)
+      description: Por ejemplo Foro Penal, Efecto Cocuyo, El Pitazo. Déjalo vacío si la fuente es Voluntad Popular o VenAmérica.
+
+  - type: input
+    id: titulo
+    attributes:
+      label: Título original
+      description: El título tal como aparece en la nota original.
+    validations:
+      required: true
+
+  - type: input
+    id: autor
+    attributes:
+      label: Autor original
+      description: Quién escribió la nota. Si no aparece, déjalo vacío y se pondrá "Redacción, <medio>".
+
+  - type: input
+    id: fecha
+    attributes:
+      label: Fecha de publicación original
+      description: Formato AAAA-MM-DD. Ejemplo 2025-03-14 para el 14 de marzo de 2025.
+      placeholder: "2025-03-14"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: publicado_por
+    attributes:
+      label: Publicado por
+      options:
+        - Roger Q.
+        - Eyleen V.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: categoria
+    attributes:
+      label: Categoría
+      options:
+        - Presos políticos
+        - Represión y derechos humanos
+        - Elecciones y poder
+        - Presión internacional
+        - Situación del país
+        - Oposición y resistencia
+        - Opinión
+    validations:
+      required: true
+
+  - type: textarea
+    id: texto
+    attributes:
+      label: Texto
+      description: |
+        **Voluntad Popular o VenAmérica:** pega el texto completo de la nota, sin cambios.
+        **Otro medio:** escribe un resumen propio de **60 palabras como máximo** (nunca copies el texto del medio).
+    validations:
+      required: true
+
+  - type: textarea
+    id: imagen
+    attributes:
+      label: Imagen
+      description: |
+        Arrastra aquí la foto de la nota original (obligatoria para Voluntad Popular y VenAmérica).
+        De otros medios **no** se usa su foto, salvo que tenga licencia libre (indícala abajo).
+
+  - type: input
+    id: credito
+    attributes:
+      label: Crédito de la imagen
+      description: 'Si lo dejas vacío se pondrá "Photo: <medio>".'
+
+  - type: input
+    id: descripcion_imagen
+    attributes:
+      label: Descripción de la imagen
+      description: Opcional. Qué se ve en la foto, en una frase (sirve para personas con lectores de pantalla).
+
+  - type: input
+    id: licencia
+    attributes:
+      label: Licencia de la imagen
+      description: Solo para fotos de otros medios con licencia libre, por ejemplo "CC BY 4.0" o "Dominio público".
