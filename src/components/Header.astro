@@ -1,6 +1,7 @@
 ---
 import Nav from './Nav.astro';
 import LangSwitch from './LangSwitch.astro';
+import Masthead from './Masthead.astro';
 import { localePath, t, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -19,13 +20,14 @@ const { lang } = Astro.props;
     </button>
 
     <div class="brand">
-      <a class="wordmark" href={localePath(lang, '/')}>Venezuela Record</a>
+      <a class="wordmark" href={localePath(lang, '/')}>
+        <Masthead maxWidth={560} sizes="(min-width: 900px) 560px, calc(100vw - 140px)" eager />
+      </a>
       <p class="tagline">{t(lang, 'site.tagline')}</p>
     </div>
 
     <LangSwitch lang={lang} />
   </div>
-  <div class="tricolor" aria-hidden="true"><span></span><span></span><span></span></div>
   <Nav lang={lang} />
 </header>
 
@@ -64,19 +66,12 @@ const { lang } = Astro.props;
     min-width: 0;
   }
   .wordmark {
-    display: inline-block;
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: clamp(1.2rem, 5.6vw, 2.9rem);
-    line-height: 1.05;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-    text-transform: uppercase;
-    color: var(--text);
-    text-decoration: none;
+    display: block;
+    width: min(560px, 100%);
+    margin-inline: auto;
   }
   .tagline {
-    margin: 6px 0 0;
+    margin: 8px 0 0;
     font-family: var(--serif);
     font-style: italic;
     font-size: clamp(0.78rem, 2.4vw, 1rem);
@@ -94,22 +89,6 @@ const { lang } = Astro.props;
     background: transparent;
     color: var(--text);
     cursor: pointer;
-  }
-  .tricolor {
-    display: flex;
-    height: 4px;
-  }
-  .tricolor span {
-    flex: 1;
-  }
-  .tricolor span:nth-child(1) {
-    background: var(--vz-yellow);
-  }
-  .tricolor span:nth-child(2) {
-    background: var(--vz-blue);
-  }
-  .tricolor span:nth-child(3) {
-    background: var(--vz-red);
   }
   :global(html:not(.js)) .menu-toggle {
     visibility: hidden;

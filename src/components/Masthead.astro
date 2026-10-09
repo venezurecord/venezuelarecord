@@ -1,0 +1,46 @@
+---
+// The official logo (column icon + wordmark + tricolor bar), from brand/venezuela-record-masthead.png
+// via scripts/brand-assets.mjs. Dark ink in light mode, light ink in dark mode.
+import { getImage } from 'astro:assets';
+import light from '../assets/brand/masthead-light.png';
+import dark from '../assets/brand/masthead-dark.png';
+
+interface Props {
+  /** Largest CSS width the logo is shown at (used to pick image sizes). */
+  maxWidth: number;
+  sizes: string;
+  eager?: boolean;
+}
+const { maxWidth, sizes, eager = false } = Astro.props;
+const widths = [...new Set([Math.round(maxWidth / 2), maxWidth, maxWidth * 2])].filter((w) => w <= light.width);
+const build = (src: typeof light) =>
+  Promise.all(widths.map((width) => getImage({ src, width, format: 'webp', quality: 90 }))).then((imgs) =>
+    imgs.map((img, i) => `${img.src} ${widths[i]}w`).join(', '),
+  );
+const [lightSet, darkSet] = await Promise.all([build(light), build(dark)]);
+const fallback = await getImage({ src: light, width: maxWidth, format: 'png' });
+const height = Math.round((maxWidth * light.height) / light.width);
+---
+
+<picture class="masthead">
+  <source media="(prefers-color-scheme: dark)" srcset={darkSet} sizes={sizes} type="image/webp" />
+  <source srcset={lightSet} sizes={sizes} type="image/webp" />
+  <img
+    src={fallback.src}
+    width={maxWidth}
+    height={height}
+    alt="Venezuela Record"
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    decoding="async"
+  />
+</picture>
+
+<style>
+  .masthead,
+  .masthead img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+</style>
