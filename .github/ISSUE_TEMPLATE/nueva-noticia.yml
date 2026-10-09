@@ -103,7 +103,8 @@ body:
     attributes:
       label: Imagen
       description: |
-        Arrastra aquí la foto de la nota original (obligatoria para Voluntad Popular y VenAmérica).
+        Arrastra aquí la foto de la nota original de Voluntad Popular o VenAmérica (si la nota no tiene foto,
+        déjalo vacío y saldrá una tarjeta con el nombre del medio).
         De otros medios **no** se usa su foto, salvo que tenga licencia libre (indícala abajo).
 
   - type: input
@@ -122,4 +123,4 @@ body:
     id: licencia
     attributes:
       label: Licencia de la imagen
-      description: Solo para fotos de otros medios con licencia libre, por ejemplo "CC BY 4.0" o "Dominio público".
+      description: Solo para fotos que no son del medio, con licencia libre, por ejemplo "CC BY 4.0" o "Dominio público".
