@@ -2,8 +2,8 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroGrid from '../components/HeroGrid.astro';
 import CategorySection from '../components/CategorySection.astro';
-import { AUTHORIZED_SOURCES, CATEGORIES, SITE } from '../lib/constants';
-import { getStories, sourcePageUrl } from '../lib/news';
+import { CATEGORIES, SITE } from '../lib/constants';
+import { getStories } from '../lib/news';
 import { t, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -46,80 +46,5 @@ const jsonLd = {
     }
 
     {sections.map((s) => <CategorySection lang={lang} category={s.category} stories={s.stories} />)}
-
-    <section class="sources" aria-labelledby="from-sources">
-      <div class="section-head">
-        <h2 id="from-sources">{t(lang, 'home.fromSources')}</h2>
-      </div>
-      <p class="note">{t(lang, 'home.fromSourcesNote')}</p>
-      <ul>
-        {
-          AUTHORIZED_SOURCES.map((src) => (
-            <li>
-              <a class="logo" href={src.url} rel="noopener">
-                {src.name}
-              </a>
-              <p>{src.description[lang]}</p>
-              <a class="more" href={sourcePageUrl(lang, src.name)}>
-                {t(lang, 'source.title', { source: src.name })} <span aria-hidden="true">»</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
   </div>
 </BaseLayout>
-
-<style>
-  .sources {
-    margin-top: 64px;
-  }
-  .note {
-    color: var(--muted);
-    margin: -8px 0 20px;
-    font-size: 0.9rem;
-  }
-  ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: grid;
-    gap: 16px;
-  }
-  @media (min-width: 640px) {
-    ul {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  li {
-    padding: 24px;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    text-align: center;
-  }
-  .logo {
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: 1.7rem;
-    color: var(--text);
-    text-decoration: none;
-    letter-spacing: 0.01em;
-  }
-  .logo:hover {
-    color: var(--accent);
-  }
-  li p {
-    margin: 6px 0 10px;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-  .more {
-    display: inline-block;
-    padding-block: 12px;
-    margin-block: -12px;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-</style>
