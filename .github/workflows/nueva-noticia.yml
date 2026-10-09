@@ -32,13 +32,13 @@ jobs:
       SENDER: ${{ github.event.sender.login }}
       ACTION: ${{ github.event.action }}
       CREATED_AT: ${{ github.event.issue.created_at }}
-      RESULT_FILE: ${{ runner.temp }}/story-result.json
-      PR_BODY_FILE: ${{ runner.temp }}/pr-body.md
     steps:
       - name: Check permission and existing pull request
         id: gate
         run: |
           set -euo pipefail
+          echo "RESULT_FILE=$RUNNER_TEMP/story-result.json" >> "$GITHUB_ENV"
+          echo "PR_BODY_FILE=$RUNNER_TEMP/pr-body.md" >> "$GITHUB_ENV"
           # A new issue fires both "opened" and "labeled"; "opened" does the work.
           if [[ "$ACTION" == labeled ]] && (( $(date +%s) - $(date -d "$CREATED_AT" +%s) < 120 )); then
             echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
