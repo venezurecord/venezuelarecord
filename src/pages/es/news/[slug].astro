@@ -1,0 +1,9 @@
+---
+import ArticlePage from '../../../views/ArticlePage.astro';
+import { storyPaths } from '../../../lib/paths';
+
+export const getStaticPaths = () => storyPaths('es');
+const { story } = Astro.props;
+---
+
+<ArticlePage lang="es" story={story} />
