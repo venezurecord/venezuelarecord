@@ -205,7 +205,6 @@ export async function run(body: string, issueNumber: string, token?: string): Pr
     errors.push(
       `Para otros medios el texto debe ser un resumen propio de ${TIER_B_SUMMARY_MAX_WORDS} palabras como máximo (tiene ${wordCount(texto)}). Nunca se copia el texto completo de otro medio.`,
     );
-  if (tier === 'A' && !imageUrls.length) errors.push(`Las noticias de ${sourceName} necesitan la foto original: arrástrala al campo "Imagen".`);
   const license = get('licencia');
   let useImage = imageUrls.length > 0;
   if (tier === 'B' && useImage && !license) {
@@ -244,7 +243,7 @@ export async function run(body: string, issueNumber: string, token?: string): Pr
       `image: ${yamlStr(`../../../assets/news/${yyyy}/${mm}/${slug}.${ext}`)}\n` +
       `imageCredit: ${yamlStr(credit)}\n` +
       `imageAlt: ${yamlStr(alt)}\n` +
-      (tier === 'B' ? `imageLicense: ${yamlStr(license)}\n` : '');
+      (license ? `imageLicense: ${yamlStr(license)}\n` : '');
   }
 
   const summaryEs = tier === 'A' ? autoSummary(texto) : texto.replace(/\s+/g, ' ').trim();
