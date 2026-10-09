@@ -1,8 +1,7 @@
 ---
-# PENDING TRANSLATION (issue #1): title, summary, imageAlt, body still in Spanish.
-title: "[PRUEBA] Prueba del formulario de Venezuela Record"
+title: "[TEST] Venezuela Record form test"
 originalTitle: "[PRUEBA] Prueba del formulario de Venezuela Record"
-summary: "Este es un texto de PRUEBA para comprobar el formulario de Venezuela Record. No es una noticia real. Segundo párrafo de prueba: el texto completo de las fuentes autorizadas se pega aquí sin cambios."
+summary: "This is a TEST text to check the Venezuela Record form. It is not a real news story. Second test paragraph: the full text of authorized sources is pasted here unchanged."
 originalDate: 2025-01-15
 republishedDate: 2026-10-08
 republishedBy: "Roger Q."
@@ -14,10 +13,9 @@ category: "Political prisoners"
 tags: []
 image: "../../../assets/news/2025/01/prueba-prueba-del-formulario-de-venezuela-record.jpg"
 imageCredit: "Photo: Voluntad Popular"
-imageAlt: "Photo published by Voluntad Popular with the story \"[PRUEBA] Prueba del formulario de Venezuela Record\""
-needsTranslation: true
+imageAlt: "Grey placeholder image with the words Sample image, used to test the form"
 ---
 
-Este es un texto de PRUEBA para comprobar el formulario de Venezuela Record. No es una noticia real.
+This is a TEST text to check the Venezuela Record form. It is not a real news story.
 
-Segundo párrafo de prueba: el texto completo de las fuentes autorizadas se pega aquí sin cambios.
+Second test paragraph: the full text of authorized sources is pasted here unchanged.
