@@ -26,3 +26,11 @@ pnpm-debug.log*
 # local-only files (design references from third-party themes, original brief copy)
 /referencias/
 /BRIEF-venezuelarecord.md
+
+# local-only demo content (scripts/demo-content.mjs)
+/src/content/news/demo/
+/src/content/news-es/demo/
+/src/assets/news/demo/
+
+# local tooling
+/.claude/
