@@ -82,6 +82,16 @@ Repo: `github.com/venezurecord/venezuelarecord`.
   pull requests". Etiqueta `nueva-noticia` creada.
 - Guía para Roger y Eyleen: [docs/COMO-PUBLICAR.md](docs/COMO-PUBLICAR.md).
 
+## Cloudflare Pages (Fase 5)
+- Proyecto **`venezuelarecord`** (cuenta Cloudflare de venezurecord@gmail.com, id `2f188b2e677aed2fe4e996ad7e39f36e`),
+  conectado por Git a `venezurecord/venezuelarecord` (app de GitHub con acceso **solo** a este repo).
+  Preset Astro · `npm run build` · salida `dist` · variable `NODE_VERSION=24` · rama de producción `main`.
+- Producción: <https://venezuelarecord.pages.dev>. Cada push a `main` publica; cada rama/PR genera vista previa
+  (`<rama>.venezuelarecord.pages.dev`) y Cloudflare comenta el enlace en el PR. Las vistas previas llevan
+  `X-Robots-Tag: noindex` (Cloudflare) y muestran borradores; producción no.
+- `functions/_middleware.js` (detección de idioma) se despliega como Pages Function; `public/_routes.json` la
+  limita a HTML.
+
 ## Flujo "procesa las noticias pendientes"
 Cuando Roger lo pida: busca los PR abiertos con la etiqueta `nueva-noticia` (ramas `noticia/*`) y los archivos con
 `needsTranslation: true`; traduce fielmente al inglés título,
@@ -101,7 +111,7 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
 
 ## Fases (docs/BRIEF.md §5)
 1. Repo + base Astro ✅ · 2. Diseño y plantillas ✅ · 3. Publicación desde GitHub (issue → Action → PR) ✅ ·
-4. Contenido inicial (en tandas) · 5. Cloudflare Pages · 6. Control de calidad · 7. Dominio `.com`.
+4. Contenido inicial (en tandas) · 5. Cloudflare Pages ✅ (adelantada) · 6. Control de calidad · 7. Dominio `.com`.
 
 ## Panel admin / PWA
 El sitio **no tiene panel de administración**: se publica desde la web de GitHub (issues + PR). Por eso la
