@@ -24,8 +24,6 @@ const en = {
 
   'home.latest': 'Latest',
   'home.viewAll': 'View all',
-  'home.fromSources': 'From our sources',
-  'home.fromSourcesNote': 'Authorized sources whose news we republish in full, with permission.',
   'home.empty': 'The first stories are being prepared. Please check back soon.',
   'home.title': "Venezuela Record — A chronological record of Venezuela's political news",
 
@@ -107,8 +105,6 @@ const es: Record<UIKey, string> = {
 
   'home.latest': 'Lo último',
   'home.viewAll': 'Ver todo',
-  'home.fromSources': 'De nuestras fuentes',
-  'home.fromSourcesNote': 'Fuentes autorizadas cuyas noticias republicamos completas, con permiso.',
   'home.empty': 'Estamos preparando las primeras noticias. Vuelve pronto.',
   'home.title': 'Venezuela Record — Un registro cronológico de las noticias políticas de Venezuela',
 
