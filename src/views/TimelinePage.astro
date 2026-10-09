@@ -1,0 +1,26 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Timeline from '../components/Timeline.astro';
+import { getStories } from '../lib/news';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const stories = await getStories(lang);
+---
+
+<BaseLayout lang={lang} title={t(lang, 'timeline.title')} description={t(lang, 'timeline.intro')}>
+  <div class="container reading-wide">
+    <h1 class="page-title">{t(lang, 'timeline.title')}</h1>
+    <p class="page-intro">{t(lang, 'timeline.intro')}</p>
+    {stories.length > 0 ? <Timeline lang={lang} stories={stories} /> : <p class="empty-state">{t(lang, 'home.empty')}</p>}
+  </div>
+</BaseLayout>
+
+<style>
+  .reading-wide {
+    max-width: 880px;
+  }
+</style>

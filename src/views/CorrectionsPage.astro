@@ -1,0 +1,95 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { SITE } from '../lib/constants';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const mail = `mailto:${SITE.email}`;
+---
+
+{
+  lang === 'en' ? (
+    <PageLayout
+      lang={lang}
+      title="Corrections & takedowns"
+      description="How to report an error, request a correction or ask us to remove content."
+    >
+      <h2>Our commitment</h2>
+      <p>
+        We republish the work of others, so accuracy is about two things: crediting each story correctly (outlet,
+        author, date and link) and translating it faithfully. If we get either wrong, we fix it.
+      </p>
+
+      <h2>Report an error</h2>
+      <p>
+        Write to <a href={mail}>{SITE.email}</a> with:
+      </p>
+      <ul>
+        <li>the link to the story on Venezuela Record;</li>
+        <li>what is wrong (credit, date, translation, category…);</li>
+        <li>if possible, a source that shows the correct information.</li>
+      </ul>
+      <p>
+        When we correct a story we update it. If the change affects its meaning, we add a note explaining what was
+        corrected and when.
+      </p>
+
+      <h2>Removal requests</h2>
+      <p>
+        If you are the author, the original outlet or the rights holder of a story and you want it changed or removed
+        from Venezuela Record, write to <a href={mail}>{SITE.email}</a> from an address we can associate with you or your
+        organization, including the link to the story. We will review the request promptly and, when it is justified,
+        remove the content.
+      </p>
+
+      <h2>If the original changes</h2>
+      <p>
+        If the original outlet corrects or withdraws a story, tell us and we will update or remove our republication
+        accordingly.
+      </p>
+    </PageLayout>
+  ) : (
+    <PageLayout
+      lang={lang}
+      title="Correcciones y retiros"
+      description="Cómo reportar un error, pedir una corrección o solicitar que retiremos un contenido."
+    >
+      <h2>Nuestro compromiso</h2>
+      <p>
+        Republicamos el trabajo de otros, así que la exactitud depende de dos cosas: acreditar bien cada noticia (medio,
+        autor, fecha y enlace) y traducirla con fidelidad. Si fallamos en cualquiera de las dos, lo corregimos.
+      </p>
+
+      <h2>Reportar un error</h2>
+      <p>
+        Escribe a <a href={mail}>{SITE.email}</a> con:
+      </p>
+      <ul>
+        <li>el enlace a la noticia en Venezuela Record;</li>
+        <li>qué está mal (crédito, fecha, traducción, categoría…);</li>
+        <li>si es posible, una fuente que muestre la información correcta.</li>
+      </ul>
+      <p>
+        Cuando corregimos una noticia, la actualizamos. Si el cambio afecta su sentido, añadimos una nota que explica qué
+        se corrigió y cuándo.
+      </p>
+
+      <h2>Solicitudes de retiro</h2>
+      <p>
+        Si eres el autor, el medio original o el titular de los derechos de una noticia y quieres que se modifique o se
+        retire de Venezuela Record, escribe a <a href={mail}>{SITE.email}</a> desde una dirección que podamos asociar
+        contigo o con tu organización, e incluye el enlace a la noticia. Revisaremos la solicitud a la brevedad y, si
+        corresponde, retiraremos el contenido.
+      </p>
+
+      <h2>Si el original cambia</h2>
+      <p>
+        Si el medio original corrige o retira una noticia, avísanos y actualizaremos o retiraremos nuestra
+        republicación.
+      </p>
+    </PageLayout>
+  )
+}

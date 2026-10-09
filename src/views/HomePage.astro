@@ -1,0 +1,122 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroGrid from '../components/HeroGrid.astro';
+import CategorySection from '../components/CategorySection.astro';
+import { AUTHORIZED_SOURCES, CATEGORIES, SITE } from '../lib/constants';
+import { getStories, sourcePageUrl } from '../lib/news';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const stories = await getStories(lang); // newest first by original date
+
+// Hero: the most recent featured story (or the most recent one), then the next
+// two as medium cards, then five more in "Latest".
+const featured = stories.find((s) => s.data.featured) ?? stories[0];
+const rest = stories.filter((s) => s !== featured);
+const side = rest.slice(0, 2);
+const latest = rest.slice(2, 7);
+
+const sections = CATEGORIES.map((c) => ({
+  category: c,
+  stories: stories.filter((s) => s.data.category === c).slice(0, 4),
+})).filter((s) => s.stories.length > 0);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: SITE.name,
+  url: new URL(lang === 'en' ? '/' : '/es/', Astro.site).href,
+  inLanguage: lang,
+  description: t(lang, 'site.description'),
+};
+---
+
+<BaseLayout lang={lang} jsonLd={jsonLd}>
+  <div class="container">
+    <h1 class="visually-hidden">{SITE.name} — {t(lang, 'site.tagline')}</h1>
+    {
+      featured ? (
+        <HeroGrid lang={lang} featured={featured} side={side} latest={latest} />
+      ) : (
+        <p class="empty-state">{t(lang, 'home.empty')}</p>
+      )
+    }
+
+    {sections.map((s) => <CategorySection lang={lang} category={s.category} stories={s.stories} />)}
+
+    <section class="sources" aria-labelledby="from-sources">
+      <div class="section-head">
+        <h2 id="from-sources">{t(lang, 'home.fromSources')}</h2>
+      </div>
+      <p class="note">{t(lang, 'home.fromSourcesNote')}</p>
+      <ul>
+        {
+          AUTHORIZED_SOURCES.map((src) => (
+            <li>
+              <a class="logo" href={src.url} rel="noopener">
+                {src.name}
+              </a>
+              <p>{src.description[lang]}</p>
+              <a class="more" href={sourcePageUrl(lang, src.name)}>
+                {t(lang, 'source.title', { source: src.name })} <span aria-hidden="true">»</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .sources {
+    margin-top: 64px;
+  }
+  .note {
+    color: var(--muted);
+    margin: -8px 0 20px;
+    font-size: 0.9rem;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 16px;
+  }
+  @media (min-width: 640px) {
+    ul {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  li {
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    text-align: center;
+  }
+  .logo {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 1.7rem;
+    color: var(--text);
+    text-decoration: none;
+    letter-spacing: 0.01em;
+  }
+  .logo:hover {
+    color: var(--accent);
+  }
+  li p {
+    margin: 6px 0 10px;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+  .more {
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+</style>

@@ -1,0 +1,57 @@
+---
+// Paginated list of stories (category and source pages), newest first by original date.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import NewsCard from '../components/NewsCard.astro';
+import Pagination from '../components/Pagination.astro';
+import { t, type Lang } from '../i18n/ui';
+import type { Story } from '../lib/news';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  intro: string;
+  stories: Story[];
+  current: number;
+  total: number;
+  base: string;
+}
+const { lang, title, intro, stories, current, total, base } = Astro.props;
+const pageTitle = current > 1 ? `${title} — ${t(lang, 'pagination.page', { n: current, total })}` : title;
+---
+
+<BaseLayout lang={lang} title={pageTitle} description={intro}>
+  <div class="container list-wrap">
+    <h1 class="page-title">{title}</h1>
+    <p class="page-intro">{intro}</p>
+    <slot />
+    {
+      stories.length > 0 ? (
+        <div class="list">
+          {stories.map((s, i) => (
+            <NewsCard story={s} variant="list" headingLevel="h2" eager={i === 0 && current === 1} />
+          ))}
+        </div>
+      ) : (
+        <p class="empty-state">{t(lang, 'home.empty')}</p>
+      )
+    }
+    <Pagination lang={lang} current={current} total={total} base={base} />
+  </div>
+</BaseLayout>
+
+<style>
+  .list-wrap {
+    max-width: 960px;
+  }
+  .list {
+    display: grid;
+    gap: 0;
+  }
+  .list > :global(*) {
+    padding: 24px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .list > :global(*:first-child) {
+    padding-top: 0;
+  }
+</style>

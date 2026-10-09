@@ -1,0 +1,48 @@
+---
+import ListPage from './ListPage.astro';
+import { AUTHORIZED_SOURCES } from '../lib/constants';
+import { sourcePageUrl } from '../lib/news';
+import type { ListPageProps } from '../lib/paths';
+import { t, type Lang } from '../i18n/ui';
+
+type Props = ListPageProps & { lang: Lang; sourceName: string };
+const { lang, sourceName, stories, current, total } = Astro.props;
+const authorized = AUTHORIZED_SOURCES.find((s) => s.name === sourceName);
+// Outlet home page: the authorized source's site, or the origin of one of its stories.
+const site = authorized?.url ?? (stories[0] ? new URL(stories[0].data.sourceUrl).origin : undefined);
+---
+
+<ListPage
+  lang={lang}
+  title={t(lang, 'source.title', { source: sourceName })}
+  intro={t(lang, 'source.intro', { source: sourceName })}
+  stories={stories}
+  current={current}
+  total={total}
+  base={sourcePageUrl(lang, sourceName)}
+>
+  <div class="source-info">
+    <p>
+      <strong>{t(lang, authorized ? 'source.authorized' : 'source.linked')}</strong>
+      {authorized && <> {authorized.description[lang]}</>}
+    </p>
+    {site && <a href={site} rel="noopener">{t(lang, 'source.visit', { source: sourceName })} <span aria-hidden="true">→</span></a>}
+  </div>
+</ListPage>
+
+<style>
+  .source-info {
+    margin: -12px 0 32px;
+    padding: 14px 18px;
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+    font-size: 0.92rem;
+  }
+  .source-info p {
+    margin: 0 0 6px;
+  }
+  .source-info a {
+    font-weight: 600;
+  }
+</style>

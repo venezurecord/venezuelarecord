@@ -1,0 +1,21 @@
+---
+import ListPage from './ListPage.astro';
+import { CATEGORY_INFO, type Category } from '../lib/constants';
+import { categoryUrl } from '../lib/news';
+import type { ListPageProps } from '../lib/paths';
+import type { Lang } from '../i18n/ui';
+
+type Props = ListPageProps & { lang: Lang; category: Category };
+const { lang, category, stories, current, total } = Astro.props;
+const info = CATEGORY_INFO[category][lang];
+---
+
+<ListPage
+  lang={lang}
+  title={info.name}
+  intro={info.description}
+  stories={stories}
+  current={current}
+  total={total}
+  base={categoryUrl(lang, category)}
+/>

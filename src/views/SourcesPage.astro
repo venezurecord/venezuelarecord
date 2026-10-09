@@ -1,0 +1,180 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { AUTHORIZED_SOURCES, SITE, TIER_B_SUMMARY_MAX_WORDS } from '../lib/constants';
+import { localePath, PAGES, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const corrections = localePath(lang, PAGES.corrections.path);
+const n = TIER_B_SUMMARY_MAX_WORDS;
+---
+
+{
+  lang === 'en' ? (
+    <PageLayout
+      lang={lang}
+      title="Sources & permissions"
+      description="Where our stories come from, what permission we have, how we credit them and how we handle images."
+    >
+      <h2>Authorized sources</h2>
+      <p>
+        The following organizations have given Roger J. Quiroz R. permission to disseminate their news. We republish
+        their stories in full:
+      </p>
+      <ul>
+        {AUTHORIZED_SOURCES.map((s) => (
+          <li>
+            <a href={s.url}>{s.name}</a> — {s.description.en}
+          </li>
+        ))}
+      </ul>
+      <ul>
+        <li>The English edition is a faithful translation of the original Spanish text, without adding or removing content.</li>
+        <li>The Spanish edition shows the original text.</li>
+        <li>
+          We use the same image as the original publication, stored on our site (never hotlinked), with the caption
+          “Photo: &lt;outlet&gt;”.
+        </li>
+        <li>
+          Each of these stories ends with the note: “Republished with permission of &lt;outlet&gt;. Translated from
+          Spanish by Venezuela Record.”
+        </li>
+      </ul>
+
+      <h2>Other outlets</h2>
+      <p>
+        We also point to stories from other serious outlets — news agencies, independent Venezuelan press and human
+        rights organizations such as Foro Penal — when they fall within our scope. For these we publish only:
+      </p>
+      <ul>
+        <li>the headline;</li>
+        <li>a summary written by us, of no more than {n} words;</li>
+        <li>a link: “Read the full story at &lt;outlet&gt;”.</li>
+      </ul>
+      <p>
+        We <strong>never</strong> copy their full text and we do not copy their photos. Instead we show a card with the
+        outlet's name. The only exception is images under a free license (CC BY, CC BY-SA or public domain), shown with
+        their credit and license.
+      </p>
+
+      <h2>How we credit</h2>
+      <p>Every story shows, at the top of the page and on its listing card:</p>
+      <ul>
+        <li>the original outlet and the original publication date;</li>
+        <li>the original author (or “Staff, &lt;outlet&gt;” when no author is named);</li>
+        <li>who republished it on Venezuela Record and when (“Republished by”), which is never a claim of authorship;</li>
+        <li>a link to the original story.</li>
+      </ul>
+
+      <h2>Image policy</h2>
+      <ul>
+        <li>Images from authorized sources are their original images, credited to the outlet.</li>
+        <li>We do not use photos from news agencies (AP, Reuters, AFP, EFE, Getty) or from other outlets without a free license.</li>
+        <li>Every image has a credit and a text description (alt text).</li>
+      </ul>
+
+      <h2>Scope</h2>
+      <p>
+        We cover Venezuelan politics; repression and political prisoners; human rights; elections and power;
+        international decisions that affect Venezuela politically; and the country's situation (economy, services,
+        humanitarian crisis) in its political dimension. We do not cover entertainment, sports, migration news or
+        opinion without a news event.
+      </p>
+
+      <h2>How we collect stories</h2>
+      <p>
+        Stories are selected and entered by hand. We respect each site's <code>robots.txt</code> and do not scrape
+        websites automatically.
+      </p>
+
+      <h2>Rights holders</h2>
+      <p>
+        If you hold the rights to any content on this site and want it changed or removed, write to{' '}
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a> or see our <a href={corrections}>Corrections policy</a>.
+      </p>
+    </PageLayout>
+  ) : (
+    <PageLayout
+      lang={lang}
+      title="Fuentes y permisos"
+      description="De dónde vienen nuestras noticias, qué permisos tenemos, cómo las acreditamos y cómo manejamos las imágenes."
+    >
+      <h2>Fuentes autorizadas</h2>
+      <p>
+        Las siguientes organizaciones dieron permiso a Roger J. Quiroz R. para difundir sus noticias. Republicamos sus
+        notas completas:
+      </p>
+      <ul>
+        {AUTHORIZED_SOURCES.map((s) => (
+          <li>
+            <a href={s.url}>{s.name}</a> — {s.description.es}
+          </li>
+        ))}
+      </ul>
+      <ul>
+        <li>La edición en español muestra el texto original.</li>
+        <li>La edición en inglés es una traducción fiel del original, sin añadir ni quitar contenido.</li>
+        <li>
+          Usamos la misma imagen de la publicación original, guardada en nuestro sitio (nunca enlazada desde el sitio
+          original), con el pie “Foto: &lt;medio&gt;”.
+        </li>
+        <li>Cada una de estas noticias termina con la nota: “Republicado con permiso de &lt;medio&gt;”.</li>
+      </ul>
+
+      <h2>Otros medios</h2>
+      <p>
+        También enlazamos noticias de otros medios serios —agencias, prensa venezolana independiente y organizaciones de
+        derechos humanos como Foro Penal— cuando entran en nuestro alcance. De ellas solo publicamos:
+      </p>
+      <ul>
+        <li>el titular;</li>
+        <li>un resumen escrito por nosotros, de {n} palabras como máximo;</li>
+        <li>un enlace: “Lee la noticia completa en &lt;medio&gt;”.</li>
+      </ul>
+      <p>
+        <strong>Nunca</strong> copiamos su texto completo ni sus fotos. En su lugar mostramos una tarjeta con el nombre
+        del medio. La única excepción son las imágenes con licencia libre (CC BY, CC BY-SA o dominio público), que se
+        muestran con su crédito y su licencia.
+      </p>
+
+      <h2>Cómo acreditamos</h2>
+      <p>Cada noticia muestra, arriba de la página y en su tarjeta de listado:</p>
+      <ul>
+        <li>el medio original y la fecha de publicación original;</li>
+        <li>el autor original (o “Redacción, &lt;medio&gt;” cuando no se indica autor);</li>
+        <li>quién la republicó en Venezuela Record y cuándo (“Republicado por”), lo que nunca indica autoría;</li>
+        <li>el enlace a la nota original.</li>
+      </ul>
+
+      <h2>Política de imágenes</h2>
+      <ul>
+        <li>Las imágenes de las fuentes autorizadas son las originales, con crédito al medio.</li>
+        <li>No usamos fotos de agencias (AP, Reuters, AFP, EFE, Getty) ni de otros medios sin licencia libre.</li>
+        <li>Toda imagen tiene crédito y descripción de texto (texto alternativo).</li>
+      </ul>
+
+      <h2>Alcance</h2>
+      <p>
+        Cubrimos la política venezolana; la represión y los presos políticos; los derechos humanos; las elecciones y el
+        poder; las decisiones internacionales que afectan políticamente a Venezuela; y la situación del país (economía,
+        servicios, crisis humanitaria) en su dimensión política. No cubrimos farándula, deportes, noticias de migración
+        ni opinión sin un hecho noticioso.
+      </p>
+
+      <h2>Cómo reunimos las noticias</h2>
+      <p>
+        Las noticias se seleccionan y se cargan a mano. Respetamos el <code>robots.txt</code> de cada sitio y no
+        extraemos contenido de forma automática.
+      </p>
+
+      <h2>Titulares de derechos</h2>
+      <p>
+        Si tienes los derechos de algún contenido de este sitio y quieres que se modifique o se retire, escribe a{' '}
+        <a href={`mailto:${SITE.email}`}>{SITE.email}</a> o consulta nuestra{' '}
+        <a href={corrections}>política de correcciones</a>.
+      </p>
+    </PageLayout>
+  )
+}

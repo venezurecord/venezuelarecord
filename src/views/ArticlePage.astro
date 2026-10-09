@@ -1,0 +1,233 @@
+---
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import CreditsBlock from '../components/CreditsBlock.astro';
+import NewsCard from '../components/NewsCard.astro';
+import SourceCard from '../components/SourceCard.astro';
+import PendingBadge from '../components/PendingBadge.astro';
+import {
+  categoryName,
+  categoryUrl,
+  displayImage,
+  getStories,
+  imageCaption,
+  storyUrl,
+  type Story,
+} from '../lib/news';
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  story: Story;
+}
+const { lang, story: s } = Astro.props;
+const d = s.data;
+const tierA = d.sourceTier === 'A';
+const img = displayImage(s);
+const caption = imageCaption(s);
+
+// RULE (brief §2.1): tier B never renders the full text.
+const Content = tierA && s.bodyEntry ? (await render(s.bodyEntry)).Content : undefined;
+// Previews only: an English page still pending translation shows the Spanish text, and
+// a Spanish page without its Spanish file falls back to the English one.
+const bodyLang: Lang = s.fallback ? 'en' : lang === 'en' && s.needsTranslation ? 'es' : lang;
+
+const related = (await getStories(lang)).filter((x) => x.data.category === d.category && x.id !== s.id).slice(0, 4);
+
+const canonical = new URL(storyUrl(s), Astro.site).href;
+const ldImage = img ? new URL((await getImage({ src: img, width: 1200, format: 'jpeg', quality: 80 })).src, Astro.site).href : undefined;
+const source = { '@type': 'Organization', name: d.sourceName, url: new URL(d.sourceUrl).origin };
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'NewsArticle',
+  headline: s.title,
+  description: s.summary,
+  inLanguage: lang,
+  url: canonical,
+  mainEntityOfPage: canonical,
+  datePublished: d.originalDate.toISOString(),
+  dateModified: d.republishedDate.toISOString(),
+  articleSection: categoryName(lang, d.category),
+  author: d.originalAuthor.trim() ? { '@type': 'Person', name: d.originalAuthor.trim() } : source,
+  publisher: source,
+  copyrightHolder: source,
+  isBasedOn: d.sourceUrl,
+  ...(ldImage && {
+    image: { '@type': 'ImageObject', url: ldImage, caption: s.imageAlt, creditText: caption },
+  }),
+  ...(d.tags.length && { keywords: d.tags.join(', ') }),
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={s.title}
+  description={s.summary}
+  image={img}
+  imageAlt={img ? `${s.imageAlt} (${caption})` : undefined}
+  ogType="article"
+  published={d.originalDate}
+  modified={d.republishedDate}
+  jsonLd={jsonLd}
+>
+  <article class="container">
+    <div class="reading">
+      <header class="article-head">
+        <p class="top">
+          <a class="kicker" href={categoryUrl(lang, d.category)}>{categoryName(lang, d.category)}</a>
+          <PendingBadge story={s} />
+        </p>
+        <h1>{s.title}</h1>
+        <p class="dek">{s.summary}</p>
+        {s.fallback && <p class="notice">{t(lang, 'article.onlyInOtherLang')}</p>}
+        <CreditsBlock story={s} />
+      </header>
+
+      {
+        img ? (
+          <figure class="lead-image">
+            <Image
+              src={img}
+              alt={s.imageAlt}
+              widths={[480, 680, 1024, 1360]}
+              sizes="(min-width: 728px) 680px, 100vw"
+              format="webp"
+              quality={78}
+              loading="eager"
+              fetchpriority="high"
+            />
+            {caption && <figcaption>{caption}</figcaption>}
+          </figure>
+        ) : (
+          <div class="lead-image">
+            <SourceCard lang={lang} sourceName={d.sourceName} />
+          </div>
+        )
+      }
+
+      {
+        Content ? (
+          <div class="prose body" lang={bodyLang !== lang ? bodyLang : undefined}>
+            <Content />
+          </div>
+        ) : null
+      }
+
+      <aside class="original-box" aria-label={t(lang, 'credits.readOriginal')}>
+        {
+          tierA ? (
+            <>
+              <a class="cta" href={d.sourceUrl} rel="noopener">
+                {t(lang, 'article.readOriginalAt')} {d.sourceName} <span aria-hidden="true">→</span>
+              </a>
+              <p>
+                <em>
+                  {t(lang, lang === 'en' ? 'article.permissionNote' : 'article.permissionNoteOriginal', {
+                    source: d.sourceName,
+                  })}
+                </em>
+              </p>
+            </>
+          ) : (
+            <>
+              <a class="cta" href={d.sourceUrl} rel="noopener">
+                {t(lang, 'article.readFullStoryAt')} {d.sourceName} <span aria-hidden="true">→</span>
+              </a>
+              <p>{t(lang, 'article.tierBNote', { source: d.sourceName })}</p>
+            </>
+          )
+        }
+      </aside>
+    </div>
+
+    {
+      related.length > 0 && (
+        <section class="related" aria-labelledby="related-title">
+          <div class="section-head">
+            <h2 id="related-title">{t(lang, 'article.moreFrom', { category: categoryName(lang, d.category) })}</h2>
+            <a href={categoryUrl(lang, d.category)}>
+              {t(lang, 'home.viewAll')} <span aria-hidden="true">»</span>
+            </a>
+          </div>
+          <div class="grid-cards">
+            {related.map((r) => (
+              <NewsCard story={r} showSummary={false} />
+            ))}
+          </div>
+        </section>
+      )
+    }
+  </article>
+</BaseLayout>
+
+<style>
+  .article-head {
+    padding-top: 36px;
+  }
+  .top {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+    margin: 0 0 8px;
+  }
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    line-height: 1.15;
+    margin: 0 0 14px;
+  }
+  .dek {
+    font-family: var(--serif);
+    font-size: 1.2rem;
+    line-height: 1.5;
+    color: var(--muted);
+    margin: 0;
+  }
+  .notice {
+    margin: 16px 0 0;
+    padding: 10px 14px;
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    border-radius: var(--radius);
+    font-size: 0.9rem;
+  }
+  .lead-image {
+    margin: 0 0 28px;
+  }
+  .lead-image :global(img) {
+    width: 100%;
+  }
+  /* Tier B: a low banner with the outlet name instead of a photo */
+  .lead-image :global(.source-card) {
+    aspect-ratio: 3 / 1;
+  }
+  figcaption {
+    margin-top: 8px;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .original-box {
+    margin-top: 36px;
+    padding: 20px 22px;
+    background: var(--surface);
+    border-left: 4px solid var(--accent);
+    border-radius: var(--radius);
+  }
+  .original-box p {
+    margin: 10px 0 0;
+    font-size: 0.9rem;
+    color: var(--muted);
+  }
+  .cta {
+    font-weight: 700;
+    font-size: 1.05rem;
+    text-decoration: none;
+  }
+  .cta:hover {
+    text-decoration: underline;
+  }
+  .related {
+    margin-top: 64px;
+  }
+</style>

@@ -1,0 +1,129 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { AUTHORIZED_SOURCES, SITE } from '../lib/constants';
+import { localePath, PAGES, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const sources = localePath(lang, PAGES.sources.path);
+const corrections = localePath(lang, PAGES.corrections.path);
+const [vp, va] = AUTHORIZED_SOURCES;
+---
+
+{
+  lang === 'en' ? (
+    <PageLayout
+      lang={lang}
+      title="About Venezuela Record"
+      description="A chronological record of Venezuela's political news, republished from the original sources with full credit."
+    >
+      <p>
+        <strong>Venezuela Record</strong> is a chronological archive of political news about Venezuela, from January
+        2025 to today, in English and Spanish. We do not write the news: we <strong>republish</strong> it from the
+        original sources, always with the original author, outlet, date and a link to the original story.
+      </p>
+
+      <h2>Why it exists</h2>
+      <p>
+        Repression, political prisoners, human rights, elections and the international response move fast and are
+        easily forgotten. Venezuela Record keeps them in one place, in the order they happened, so anyone can follow
+        what took place and go back to the original sources.
+      </p>
+
+      <h2>How it works</h2>
+      <ul>
+        <li>Everything is ordered by the <strong>original publication date</strong>, never by the date we republish it.</li>
+        <li>
+          Stories from our authorized sources, <a href={vp.url}>{vp.name}</a> and <a href={va.url}>{va.name}</a>, are
+          republished in full with their permission and faithfully translated into English. The Spanish edition shows
+          the original text.
+        </li>
+        <li>From other outlets we only publish the headline, a short summary of our own and a link to the full story.</li>
+        <li>
+          Each story says who republished it (“Republished by”). That credit refers only to the republication, never to
+          authorship.
+        </li>
+      </ul>
+      <p>
+        Details in <a href={sources}>Sources &amp; permissions</a>.
+      </p>
+
+      <h2>Who we are</h2>
+      <p>Venezuela Record is maintained by:</p>
+      <ul>
+        <li>
+          <strong>Roger J. Quiroz R.</strong> — systems engineer, activist of Voluntad Popular and collaborator of
+          VenAmérica and Venezolanos en Ventura.
+        </li>
+        <li>
+          <strong>Eyleen V.</strong>
+        </li>
+      </ul>
+      <p>We are based in Los Angeles, California.</p>
+
+      <h2>Contact</h2>
+      <p>
+        Write to us at <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. To report an error or request a removal, see
+        our <a href={corrections}>Corrections policy</a>.
+      </p>
+    </PageLayout>
+  ) : (
+    <PageLayout
+      lang={lang}
+      title="Acerca de Venezuela Record"
+      description="Un registro cronológico de las noticias políticas de Venezuela, republicadas desde las fuentes originales con crédito completo."
+    >
+      <p>
+        <strong>Venezuela Record</strong> es un archivo cronológico de noticias políticas sobre Venezuela, desde enero
+        de 2025 hasta hoy, en español e inglés. No escribimos las noticias: las <strong>republicamos</strong> desde las
+        fuentes originales, siempre con el autor, el medio, la fecha y el enlace a la nota original.
+      </p>
+
+      <h2>Por qué existe</h2>
+      <p>
+        La represión, los presos políticos, los derechos humanos, las elecciones y la respuesta internacional avanzan
+        rápido y se olvidan con facilidad. Venezuela Record los reúne en un solo lugar, en el orden en que ocurrieron,
+        para que cualquiera pueda seguir lo que pasó y volver a las fuentes originales.
+      </p>
+
+      <h2>Cómo funciona</h2>
+      <ul>
+        <li>Todo se ordena por la <strong>fecha de publicación original</strong>, nunca por la fecha en que la republicamos.</li>
+        <li>
+          Las noticias de nuestras fuentes autorizadas, <a href={vp.url}>{vp.name}</a> y <a href={va.url}>{va.name}</a>,
+          se republican completas con su permiso. La edición en español muestra el texto original; la edición en inglés,
+          una traducción fiel.
+        </li>
+        <li>De otros medios solo publicamos el titular, un resumen breve propio y el enlace a la noticia completa.</li>
+        <li>
+          Cada noticia indica quién la republicó (“Republicado por”). Ese crédito es solo de la republicación, nunca de
+          autoría.
+        </li>
+      </ul>
+      <p>
+        Más detalles en <a href={sources}>Fuentes y permisos</a>.
+      </p>
+
+      <h2>Quiénes somos</h2>
+      <p>Venezuela Record lo mantienen:</p>
+      <ul>
+        <li>
+          <strong>Roger J. Quiroz R.</strong> — ingeniero de sistemas, activista de Voluntad Popular y colaborador de
+          VenAmérica y Venezolanos en Ventura.
+        </li>
+        <li>
+          <strong>Eyleen V.</strong>
+        </li>
+      </ul>
+      <p>Tenemos base en Los Ángeles, California.</p>
+
+      <h2>Contacto</h2>
+      <p>
+        Escríbenos a <a href={`mailto:${SITE.email}`}>{SITE.email}</a>. Para reportar un error o pedir el retiro de un
+        contenido, consulta nuestra <a href={corrections}>política de correcciones</a>.
+      </p>
+    </PageLayout>
+  )
+}
