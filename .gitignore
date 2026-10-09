@@ -34,3 +34,6 @@ pnpm-debug.log*
 
 # local tooling
 /.claude/
+
+# logo original as delivered (kept in brand/ with an extension)
+/Venezuela Record Editorial Masthead LOGO

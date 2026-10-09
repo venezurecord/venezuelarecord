@@ -19,6 +19,9 @@ Repo: `github.com/venezurecord/venezuelarecord`.
 - Cada noticia publicada debe existir en **los dos idiomas**: el build de producción falla si falta el
   archivo en español.
 - Las subidas a GitHub se hacen **por la web** (Roger prefirió no autorizar Git Credential Manager).
+- **2026-10-08 — Logo oficial** (Roger): `brand/venezuela-record-masthead.png`. `node scripts/brand-assets.mjs`
+  genera desde él el logo transparente claro/oscuro (`src/assets/brand/`), favicon, apple-touch-icon e imagen
+  social. El lema va como texto HTML (no el del PNG) para poder traducirlo.
 
 ## Cómo trabajar con Roger
 - Roger **no usa la terminal**: ejecuta tú todos los comandos. Háblale en **español**; instrucciones clic por clic.
@@ -63,16 +66,30 @@ Repo: `github.com/venezurecord/venezuelarecord`.
 
 ## Estructura
 - `src/views/*` = cada página (recibe `lang`); `src/pages/**` y `src/pages/es/**` = rutas mínimas que las usan.
-- `src/components/*` = Header, Nav, LangSwitch, HeroGrid, NewsCard, SourceCard, CategorySection, LatestList,
+- `src/components/*` = Masthead (logo), Header, Nav, LangSwitch, HeroGrid, NewsCard, SourceCard, CategorySection, LatestList,
   CreditsBlock, Timeline, Pagination, PendingBadge, Footer.
 - Fuentes (Source Serif 4 + Inter) con la API de fuentes de Astro: se descargan de Google Fonts al compilar y
   se sirven desde el propio dominio, con fallbacks ajustados (CLS 0).
 
+## Publicación sin terminal (Fase 3)
+- Formulario [.github/ISSUE_TEMPLATE/nueva-noticia.yml](.github/ISSUE_TEMPLATE/nueva-noticia.yml) → Action
+  [.github/workflows/nueva-noticia.yml](.github/workflows/nueva-noticia.yml) → [scripts/issue-to-story.ts](scripts/issue-to-story.ts)
+  crea los dos archivos + la foto, valida con `npm run build` y abre el PR `News: <título>` en la rama
+  `noticia/<issue>-<slug>` (que cierra el issue al hacer Merge). Errores → comentario en español en el issue;
+  al editar el issue se reintenta. Solo actúa si quien lo envía tiene permiso de escritura en el repo.
+- Los títulos (`label`) del formulario y las constantes `F` del script deben coincidir.
+- Ajuste necesario del repo (ya activado): Settings → Actions → "Allow GitHub Actions to create and approve
+  pull requests". Etiqueta `nueva-noticia` creada.
+- Guía para Roger y Eyleen: [docs/COMO-PUBLICAR.md](docs/COMO-PUBLICAR.md).
+
 ## Flujo "procesa las noticias pendientes"
-Cuando Roger lo pida: busca PRs/archivos con `needsTranslation: true`; traduce fielmente al inglés título,
+Cuando Roger lo pida: busca los PR abiertos con la etiqueta `nueva-noticia` (ramas `noticia/*`) y los archivos con
+`needsTranslation: true`; traduce fielmente al inglés título,
 resumen y cuerpo del archivo de `src/content/news/` (el original en español queda en `src/content/news-es/` y
-su título en `originalTitle`); en nivel B escribe también el resumen en español si falta; quita la marca;
-corre `npm run build` (valida el esquema) y haz commit en la misma rama del PR.
+su título en `originalTitle`); traduce también `imageAlt` (el script deja uno provisional) y quita el comentario
+`# PENDING TRANSLATION`; revisa que la categoría encaje con el alcance (§2.2); quita la marca; corre
+`npm run build` (valida el esquema) y sube el archivo a la **misma rama del PR** (por la web:
+`github.com/venezurecord/venezuelarecord/upload/<rama>/<carpeta>`).
 
 ## Comandos
 - `npm run dev` · `npm run build` (valida esquema + mueve `es/404.html`) · `npm run check` (tipos) ·
@@ -83,7 +100,7 @@ corre `npm run build` (valida el esquema) y haz commit en la misma rama del PR.
 - Node ≥ 22.12. Git del repo configurado localmente como `venezurecord`.
 
 ## Fases (docs/BRIEF.md §5)
-1. Repo + base Astro ✅ · 2. Diseño y plantillas ✅ · 3. Publicación desde GitHub (issue → Action → PR) ·
+1. Repo + base Astro ✅ · 2. Diseño y plantillas ✅ · 3. Publicación desde GitHub (issue → Action → PR) ✅ ·
 4. Contenido inicial (en tandas) · 5. Cloudflare Pages · 6. Control de calidad · 7. Dominio `.com`.
 
 ## Panel admin / PWA
