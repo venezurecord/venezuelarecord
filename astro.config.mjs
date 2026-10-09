@@ -6,7 +6,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   // Test domain. Switch to https://venezuelarecord.com in Phase 7.
-  site: 'https://venezuelarecord.pages.dev',
+  site: 'https://venezuelarecord.com',
   // Cloudflare Pages serves /about/index.html at /about/ — keep URLs and canonicals identical.
   trailingSlash: 'always',
   build: { format: 'directory' },

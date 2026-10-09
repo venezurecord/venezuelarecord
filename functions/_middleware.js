@@ -1,4 +1,5 @@
-// Cloudflare Pages Function: send each visitor to their browser's language.
+// Cloudflare Pages Function: one public address (venezuelarecord.com) and each visitor
+// sent to their browser's language.
 //
 // English lives at "/", Spanish at "/es/". On an HTML page request:
 //   1. "?setlang=en|es" (the header language link) saves the choice in a cookie
@@ -9,6 +10,8 @@
 //      so search engines index both editions (linked with hreflang).
 // Only routes listed in public/_routes.json reach this function.
 
+const CANONICAL_HOST = 'venezuelarecord.com';
+const ALIAS_HOSTS = ['www.venezuelarecord.com', 'venezuelarecord.pages.dev'];
 const COOKIE = 'vr_lang';
 const LANGS = ['en', 'es'];
 const ONE_YEAR = 60 * 60 * 24 * 365;
@@ -54,6 +57,12 @@ export async function onRequest(context) {
   if (request.method !== 'GET' && request.method !== 'HEAD') return next();
 
   const url = new URL(request.url);
+
+  // 0. One public address: www and the production pages.dev host go to the .com
+  //    (preview hosts, <branch>.venezuelarecord.pages.dev, are left alone).
+  if (ALIAS_HOSTS.includes(url.hostname)) {
+    return Response.redirect(`https://${CANONICAL_HOST}${url.pathname}${url.search}`, 301);
+  }
 
   // 1. Explicit choice from the language link.
   const chosen = url.searchParams.get('setlang');

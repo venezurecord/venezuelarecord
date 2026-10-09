@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroGrid from '../components/HeroGrid.astro';
 import CategorySection from '../components/CategorySection.astro';
 import { CATEGORIES, SITE } from '../lib/constants';
-import { getStories } from '../lib/news';
+import { displayImage, getStories } from '../lib/news';
 import { t, type Lang } from '../i18n/ui';
 
 interface Props {
@@ -13,8 +13,10 @@ const { lang } = Astro.props;
 const stories = await getStories(lang); // newest first by original date
 
 // Hero: the most recent featured story (or the most recent one), then the next
-// two as medium cards, then five more in "Latest".
-const featured = stories.find((s) => s.data.featured) ?? stories[0];
+// two as medium cards, then five more in "Latest". The hero ALWAYS has a photo
+// (Roger, 2026-10-09): stories without one (source card) are skipped for it.
+const withPhoto = stories.filter((s) => displayImage(s));
+const featured = withPhoto.find((s) => s.data.featured) ?? withPhoto[0] ?? stories[0];
 const rest = stories.filter((s) => s !== featured);
 const side = rest.slice(0, 2);
 const latest = rest.slice(2, 7);

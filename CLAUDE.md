@@ -6,7 +6,7 @@ Resumen del brief completo en [docs/BRIEF.md](docs/BRIEF.md). Si hay dudas, mand
 ## Qué es
 Archivo cronológico **bilingüe (inglés / español)** de noticias políticas sobre Venezuela, **republicadas**
 desde las fuentes originales con crédito completo (autor, medio, fecha, enlace). Sitio: Astro estático en
-Cloudflare Pages (`venezuelarecord.pages.dev`, luego `venezuelarecord.com`).
+Cloudflare Pages: <https://venezuelarecord.com> (`www` y `venezuelarecord.pages.dev` redirigen ahí).
 Repo: `github.com/venezurecord/venezuelarecord`.
 
 ## Decisiones posteriores al brief
@@ -29,6 +29,8 @@ Repo: `github.com/venezurecord/venezuelarecord`.
   suele usar solo su logo), se usa una foto **con licencia libre** acorde a la noticia (Wikimedia Commons: CC0,
   dominio público, CC BY, CC BY-SA; nunca agencias) con `imageCredit` + `imageLicense`; si no hay ninguna adecuada,
   sale la **tarjeta de fuente**. El inicio **no** lleva el bloque de botones "De nuestras fuentes".
+- **2026-10-09 — Portada** (Roger): la noticia principal del inicio **siempre lleva foto** (nunca tarjeta de fuente):
+  es la más reciente con imagen ([src/views/HomePage.astro](src/views/HomePage.astro)).
 - **Fase 4 — ritmo de lectura:** `voluntadpopular.com/robots.txt` pide `Crawl-delay: 60` y prohíbe URL con `?`:
   una página por minuto como máximo, solo URL limpias. Su lista de noticias está en `/noticias/page/N/`.
   Ojo: algunas notas tienen mal la fecha en la web (p. ej. las del 25M figuran como 21/04/2024): usar la fecha
@@ -97,7 +99,9 @@ Repo: `github.com/venezurecord/venezuelarecord`.
 - Proyecto **`venezuelarecord`** (cuenta Cloudflare de venezurecord@gmail.com, id `2f188b2e677aed2fe4e996ad7e39f36e`),
   conectado por Git a `venezurecord/venezuelarecord` (app de GitHub con acceso **solo** a este repo).
   Preset Astro · `npm run build` · salida `dist` · variable `NODE_VERSION=24` · rama de producción `main`.
-- Producción: <https://venezuelarecord.pages.dev>. Cada push a `main` publica; cada rama/PR genera vista previa
+- Producción: <https://venezuelarecord.com> (dominio comprado por Roger en Cloudflare Registrar el 2026-10-09; dominios
+  personalizados `venezuelarecord.com` y `www` en Pages → Custom domains; `functions/_middleware.js` manda `www` y
+  `venezuelarecord.pages.dev` a la `.com` con 301). Cada push a `main` publica; cada rama/PR genera vista previa
   (`<rama>.venezuelarecord.pages.dev`) y Cloudflare comenta el enlace en el PR. Las vistas previas llevan
   `X-Robots-Tag: noindex` (Cloudflare) y muestran borradores; producción no.
 - `functions/_middleware.js` (detección de idioma) se despliega como Pages Function; `public/_routes.json` la
@@ -123,7 +127,7 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
 ## Fases (docs/BRIEF.md §5)
 1. Repo + base Astro ✅ · 2. Diseño y plantillas ✅ · 3. Publicación desde GitHub (issue → Action → PR) ✅ ·
 4. Contenido inicial ✅ (30 noticias VP + VenAmérica, 2026-10-09) · 5. Cloudflare Pages ✅ (adelantada) ·
-6. Control de calidad ✅ · 7. Dominio `.com` (solo con aprobación de Roger).
+6. Control de calidad ✅ · 7. Dominio `.com` ✅ (2026-10-09).
 
 ## Panel admin / PWA
 El sitio **no tiene panel de administración**: se publica desde la web de GitHub (issues + PR). Por eso la
