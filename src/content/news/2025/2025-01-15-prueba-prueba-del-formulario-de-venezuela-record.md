@@ -10,7 +10,7 @@ sourceUrl: "https://voluntadpopular.com/prueba-formulario-venezuela-record/"
 sourceTier: "A"
 originalAuthor: ""
 category: "Political prisoners"
-tags: []
+tags: ["test"]
 image: "../../../assets/news/2025/01/prueba-prueba-del-formulario-de-venezuela-record.jpg"
 imageCredit: "Photo: Voluntad Popular"
 imageAlt: "Grey placeholder image with the words Sample image, used to test the form"
