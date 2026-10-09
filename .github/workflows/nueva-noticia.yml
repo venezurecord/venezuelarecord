@@ -1,0 +1,120 @@
+# "Nueva noticia" issue → Pull Request with the story files (docs/COMO-PUBLICAR.md).
+# - Runs when an issue with the "nueva-noticia" label is opened, labeled later or edited (to retry
+#   after fixing an error). Only people with write access to the repo can trigger it.
+# - No translation here (no API keys): the PR is created with needsTranslation: true and Claude Code
+#   translates it later ("procesa las noticias pendientes").
+name: Nueva noticia
+
+on:
+  issues:
+    types: [opened, labeled, edited]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: nueva-noticia-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  crear-pr:
+    if: >-
+      github.event.issue.state == 'open' &&
+      contains(github.event.issue.labels.*.name, 'nueva-noticia') &&
+      (github.event.action != 'labeled' || github.event.label.name == 'nueva-noticia')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      ISSUE: ${{ github.event.issue.number }}
+      SENDER: ${{ github.event.sender.login }}
+      ACTION: ${{ github.event.action }}
+      CREATED_AT: ${{ github.event.issue.created_at }}
+      RESULT_FILE: ${{ runner.temp }}/story-result.json
+      PR_BODY_FILE: ${{ runner.temp }}/pr-body.md
+    steps:
+      - name: Check permission and existing pull request
+        id: gate
+        run: |
+          set -euo pipefail
+          # A new issue fires both "opened" and "labeled"; "opened" does the work.
+          if [[ "$ACTION" == labeled ]] && (( $(date +%s) - $(date -d "$CREATED_AT" +%s) < 120 )); then
+            echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          perm=$(gh api "repos/$GITHUB_REPOSITORY/collaborators/$SENDER/permission" --jq .permission 2>/dev/null || echo none)
+          if [[ "$perm" != admin && "$perm" != maintain && "$perm" != write ]]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            if [[ "$ACTION" == opened ]]; then
+              gh issue comment "$ISSUE" -R "$GITHUB_REPOSITORY" --body "Gracias por la sugerencia. Un editor de Venezuela Record la revisará."
+            fi
+            exit 0
+          fi
+          existing=$(gh api "repos/$GITHUB_REPOSITORY/git/matching-refs/heads/noticia/$ISSUE-" --jq 'length')
+          if [[ "$existing" != 0 ]]; then
+            echo "::notice::The story branch for issue #$ISSUE already exists; nothing to do."
+            echo "run=false" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          echo "run=true" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v5
+        if: steps.gate.outputs.run == 'true'
+
+      - uses: actions/setup-node@v5
+        if: steps.gate.outputs.run == 'true'
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Create story files from the form
+        if: steps.gate.outputs.run == 'true'
+        env:
+          ISSUE_BODY: ${{ github.event.issue.body }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node scripts/issue-to-story.ts
+
+      - name: Validate the site build (content schema)
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          npm ci
+          SHOW_DRAFTS=1 npm run build
+
+      - name: Open the pull request
+        if: steps.gate.outputs.run == 'true'
+        run: |
+          set -euo pipefail
+          branch=$(jq -r .branch "$RESULT_FILE")
+          title=$(jq -r .title "$RESULT_FILE")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git switch -c "$branch"
+          jq -r '.files[]' "$RESULT_FILE" | while IFS= read -r f; do git add -- "$f"; done
+          git commit -m "News: $title (#$ISSUE)"
+          git push origin "$branch"
+          url=$(gh pr create --base main --head "$branch" --title "News: $title" --body-file "$PR_BODY_FILE" --label nueva-noticia)
+          notes=$(jq -r '.notes[] | "- " + .' "$RESULT_FILE")
+          {
+            echo "✅ **Noticia lista para revisar:** $url"
+            echo
+            echo "Siguientes pasos: espera la vista previa de Cloudflare en el Pull Request, pide a Claude Code \"procesa las noticias pendientes\" (traducción al inglés) y luego pulsa **Merge pull request**."
+            if [[ -n "$notes" ]]; then echo; echo "Notas:"; echo "$notes"; fi
+          } > "$RUNNER_TEMP/comment.md"
+          gh issue comment "$ISSUE" --body-file "$RUNNER_TEMP/comment.md"
+
+      - name: Report problems on the issue
+        if: failure() && steps.gate.outputs.run == 'true'
+        run: |
+          {
+            echo "❌ **No se pudo crear la noticia.**"
+            echo
+            if [[ -f "$RESULT_FILE" ]] && jq -e '.ok == false' "$RESULT_FILE" > /dev/null; then
+              jq -r '.errors[] | "- " + .' "$RESULT_FILE"
+            else
+              echo "- Falló la comprobación del sitio. Detalles: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
+            fi
+            echo
+            echo "Para corregirlo: arriba a la derecha de este formulario pulsa **···** → **Edit**, cambia lo necesario y pulsa **Update comment**. Se volverá a intentar solo."
+          } > "$RUNNER_TEMP/error.md"
+          gh issue comment "$ISSUE" --body-file "$RUNNER_TEMP/error.md"
