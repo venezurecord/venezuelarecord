@@ -1,0 +1,8 @@
+---
+import SourcePage from '../../../views/SourcePage.astro';
+import { sourcePaths } from '../../../lib/paths';
+
+export const getStaticPaths = () => sourcePaths('en');
+---
+
+<SourcePage lang="en" {...Astro.props} />
