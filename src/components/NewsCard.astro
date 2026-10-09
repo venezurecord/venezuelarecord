@@ -22,9 +22,18 @@ interface Props {
   headingLevel?: 'h2' | 'h3';
   /** Load the image eagerly (above the fold). */
   eager?: boolean;
+  /** On phones (< 560px): a compact row with a small thumbnail on the right and no summary. */
+  compact?: boolean;
 }
 
-const { story: s, variant = 'grid', showSummary = variant !== 'side', headingLevel = 'h3', eager = false } = Astro.props;
+const {
+  story: s,
+  variant = 'grid',
+  showSummary = variant !== 'side',
+  headingLevel = 'h3',
+  eager = false,
+  compact = false,
+} = Astro.props;
 const Heading = headingLevel;
 const img = displayImage(s);
 const href = storyUrl(s);
@@ -37,7 +46,7 @@ const imgSizes = {
 }[variant];
 ---
 
-<article class:list={['card', variant]}>
+<article class:list={['card', variant, { 'm-compact': compact }]}>
   <a class="media" href={href} tabindex="-1" aria-hidden="true">
     {
       img ? (
@@ -154,6 +163,46 @@ const imgSizes = {
 
   .side .title {
     font-size: 1.05rem;
+  }
+
+  /* Phones: compact row — text left, small thumbnail right (less scrolling) */
+  @media (max-width: 559px) {
+    .m-compact {
+      display: grid;
+      grid-template-columns: 1fr 108px;
+      grid-template-areas: 'body media';
+      gap: 14px;
+      align-items: start;
+    }
+    .m-compact .media {
+      grid-area: media;
+    }
+    .m-compact .body {
+      grid-area: body;
+      text-align: left;
+    }
+    .m-compact .top {
+      justify-content: flex-start;
+    }
+    .m-compact .media :global(img),
+    .m-compact .media :global(.source-card) {
+      aspect-ratio: 4 / 3;
+    }
+    .m-compact .media :global(.source-card) {
+      padding: 6px;
+    }
+    .m-compact .media :global(.source-card .label) {
+      display: none;
+    }
+    .m-compact .media :global(.source-card .name) {
+      font-size: 0.78rem;
+    }
+    .m-compact .title {
+      font-size: 1.02rem;
+    }
+    .m-compact .summary {
+      display: none;
+    }
   }
 
   /* List: image left, text right (category / source pages) */

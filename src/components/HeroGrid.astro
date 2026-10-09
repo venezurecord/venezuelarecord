@@ -23,7 +23,7 @@ const { lang, featured, side, latest } = Astro.props;
     side.length > 0 && (
       <div class="side">
         {side.map((s) => (
-          <NewsCard story={s} variant="side" />
+          <NewsCard story={s} variant="side" compact />
         ))}
       </div>
     )

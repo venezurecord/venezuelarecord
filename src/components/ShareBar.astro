@@ -1,0 +1,116 @@
+---
+// Share a story. Plain links (no third-party scripts) + the phone's native share sheet
+// and "copy link" when the browser supports them.
+import { t, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  url: string; // absolute canonical URL
+  title: string;
+}
+const { lang, url, title } = Astro.props;
+const u = encodeURIComponent(url);
+const text = encodeURIComponent(title);
+const links = [
+  { name: 'WhatsApp', href: `https://wa.me/?text=${text}%20${u}` },
+  { name: 'Telegram', href: `https://t.me/share/url?url=${u}&text=${text}` },
+  { name: 'X', href: `https://x.com/intent/post?text=${text}&url=${u}` },
+  { name: 'Facebook', href: `https://www.facebook.com/sharer/sharer.php?u=${u}` },
+];
+---
+
+<div class="share" data-share data-url={url} data-title={title} data-copied={t(lang, 'share.copied')}>
+  <span class="label">{t(lang, 'share.title')}</span>
+  <button type="button" class="btn native" data-native hidden>
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7"></path><path d="M16 6l-4-4-4 4"></path><path d="M12 2v13"></path></svg>
+    {t(lang, 'share.native')}
+  </button>
+  {
+    links.map((l) => (
+      <a class="btn" href={l.href} target="_blank" rel="noopener noreferrer">
+        {l.name}
+        <span class="visually-hidden"> ({t(lang, 'share.newWindow')})</span>
+      </a>
+    ))
+  }
+  <button type="button" class="btn" data-copy hidden>{t(lang, 'share.copy')}</button>
+  <span class="status" role="status" aria-live="polite"></span>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-share]').forEach((bar) => {
+    const url = bar.dataset.url!;
+    const title = bar.dataset.title!;
+    const native = bar.querySelector<HTMLButtonElement>('[data-native]')!;
+    const copy = bar.querySelector<HTMLButtonElement>('[data-copy]')!;
+    const status = bar.querySelector<HTMLElement>('.status')!;
+    if (navigator.share) {
+      native.hidden = false;
+      native.addEventListener('click', () => navigator.share({ title, url }).catch(() => {}));
+    }
+    if (navigator.clipboard) {
+      copy.hidden = false;
+      copy.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(url);
+          status.textContent = bar.dataset.copied!;
+          setTimeout(() => (status.textContent = ''), 2500);
+        } catch {}
+      });
+    }
+  });
+</script>
+
+<style>
+  .share {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 24px;
+  }
+  .label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  .btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .native {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--bg);
+  }
+  .native:hover {
+    color: var(--bg);
+    opacity: 0.9;
+  }
+  .btn[hidden] {
+    display: none;
+  }
+  .status {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+</style>

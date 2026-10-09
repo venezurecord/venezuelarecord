@@ -22,7 +22,7 @@ const id = `cat-${categoryUrl('en', category).split('/').filter(Boolean).pop()}`
     </a>
   </div>
   <div class="grid-cards">
-    {stories.map((s) => <NewsCard story={s} />)}
+    {stories.map((s, i) => <NewsCard story={s} compact={i > 0} />)}
   </div>
 </section>
 

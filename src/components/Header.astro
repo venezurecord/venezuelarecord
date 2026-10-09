@@ -2,15 +2,17 @@
 import Nav from './Nav.astro';
 import LangSwitch from './LangSwitch.astro';
 import Masthead from './Masthead.astro';
-import { localePath, t, type Lang } from '../i18n/ui';
+import { localePath, stripLang, t, type Lang } from '../i18n/ui';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
+// Phones: slim sticky bar (menu · logo · language); the tagline only on the home page.
+const isHome = stripLang(Astro.url.pathname) === '/';
 ---
 
-<header class="site-header">
+<header class:list={['site-header', { 'is-home': isHome }]}>
   <div class="container header-inner">
     <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
       <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -40,6 +42,9 @@ const { lang } = Astro.props;
       nav.classList.toggle('is-open', open);
     };
     btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
+    nav.addEventListener('click', (e) => {
+      if ((e.target as HTMLElement).closest('a')) set(false);
+    });
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && btn.getAttribute('aria-expanded') === 'true') {
         set(false);
@@ -59,7 +64,28 @@ const { lang } = Astro.props;
     grid-template-columns: 44px 1fr 44px;
     align-items: center;
     gap: 8px;
-    padding-block: 18px 14px;
+    padding-block: 10px;
+  }
+  /* Phones and tablets: sticky bar, like a news app */
+  @media (max-width: 899px) {
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 0 var(--line);
+    }
+    .site-header :global(#site-nav.is-open) {
+      max-height: calc(100dvh - 64px);
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+    .site-header:not(.is-home) .tagline {
+      display: none;
+    }
+    /* Without JS the menu is always expanded: don't pin it */
+    :global(html:not(.js)) .site-header {
+      position: static;
+    }
   }
   .brand {
     text-align: center;
@@ -69,9 +95,11 @@ const { lang } = Astro.props;
     display: block;
     width: min(560px, 100%);
     margin-inline: auto;
+    padding-block: 8px; /* tap target on very small phones */
+    margin-block: -8px;
   }
   .tagline {
-    margin: 8px 0 0;
+    margin: 6px 0 2px;
     font-family: var(--serif);
     font-style: italic;
     font-size: clamp(0.78rem, 2.4vw, 1rem);
