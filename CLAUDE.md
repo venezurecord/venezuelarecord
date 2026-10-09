@@ -23,6 +23,15 @@ Repo: `github.com/venezurecord/venezuelarecord`.
   genera desde él el logo transparente claro/oscuro (`src/assets/brand/`), favicon, apple-touch-icon e imagen
   social. El lema va como texto HTML (no el del PNG) para poder traducirlo.
 
+- **2026-10-08 — Fotos y portada** (Roger): si la nota original de una fuente A no trae foto propia (VenAmérica
+  suele usar solo su logo), se usa una foto **con licencia libre** acorde a la noticia (Wikimedia Commons: CC0,
+  dominio público, CC BY, CC BY-SA; nunca agencias) con `imageCredit` + `imageLicense`; si no hay ninguna adecuada,
+  sale la **tarjeta de fuente**. El inicio **no** lleva el bloque de botones "De nuestras fuentes".
+- **Fase 4 — ritmo de lectura:** `voluntadpopular.com/robots.txt` pide `Crawl-delay: 60` y prohíbe URL con `?`:
+  una página por minuto como máximo, solo URL limpias. Su lista de noticias está en `/noticias/page/N/`.
+  Ojo: algunas notas tienen mal la fecha en la web (p. ej. las del 25M figuran como 21/04/2024): usar la fecha
+  real del texto.
+
 ## Cómo trabajar con Roger
 - Roger **no usa la terminal**: ejecuta tú todos los comandos. Háblale en **español**; instrucciones clic por clic.
 - La interfaz y el contenido del sitio van en **inglés y español** (ver arriba).
@@ -32,7 +41,7 @@ Repo: `github.com/venezurecord/venezuelarecord`.
 
 ## Reglas editoriales (implementadas en código, no las rompas)
 - **Nivel A** (Voluntad Popular, VenAmérica — hay permiso): texto completo (original en `/es/`, traducción
-  fiel en `/`) + imagen original guardada en el repo (`Photo: <medio>`). Pie en inglés: *"Republished with
+  fiel en `/`) + imagen original guardada en el repo (`Photo: <medio>`), o foto libre / tarjeta de fuente (ver arriba). Pie en inglés: *"Republished with
   permission of <Medio>. Translated from Spanish by Venezuela Record."*; en español: *"Republicado con
   permiso de <Medio>."*
 - **Nivel B** (otros medios serios): solo titular + resumen propio ≤ 60 palabras (en cada idioma) + "Read the
