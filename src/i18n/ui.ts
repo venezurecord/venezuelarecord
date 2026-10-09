@@ -80,6 +80,12 @@ const en = {
   'footer.sourcesPermissions': 'Sources & permissions',
   'footer.rss': 'RSS feed',
 
+  'share.title': 'Share',
+  'share.native': 'Share',
+  'share.copy': 'Copy link',
+  'share.copied': 'Link copied',
+  'share.newWindow': 'opens in a new window',
+
   'notFound.title': 'Page not found',
   'notFound.text': 'The page you are looking for does not exist or has moved.',
   'notFound.home': 'Go to the home page',
@@ -156,6 +162,12 @@ const es: Record<UIKey, string> = {
   'footer.corrections': 'Correcciones y retiros',
   'footer.sourcesPermissions': 'Fuentes y permisos',
   'footer.rss': 'Feed RSS',
+
+  'share.title': 'Compartir',
+  'share.native': 'Compartir',
+  'share.copy': 'Copiar enlace',
+  'share.copied': 'Enlace copiado',
+  'share.newWindow': 'se abre en una ventana nueva',
 
   'notFound.title': 'Página no encontrada',
   'notFound.text': 'La página que buscas no existe o cambió de dirección.',
