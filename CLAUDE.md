@@ -120,7 +120,8 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
 
 ## Fases (docs/BRIEF.md §5)
 1. Repo + base Astro ✅ · 2. Diseño y plantillas ✅ · 3. Publicación desde GitHub (issue → Action → PR) ✅ ·
-4. Contenido inicial (en tandas) · 5. Cloudflare Pages ✅ (adelantada) · 6. Control de calidad · 7. Dominio `.com`.
+4. Contenido inicial ✅ (30 noticias VP + VenAmérica, 2026-10-09) · 5. Cloudflare Pages ✅ (adelantada) ·
+6. Control de calidad ✅ · 7. Dominio `.com` (solo con aprobación de Roger).
 
 ## Panel admin / PWA
 El sitio **no tiene panel de administración**: se publica desde la web de GitHub (issues + PR). Por eso la
