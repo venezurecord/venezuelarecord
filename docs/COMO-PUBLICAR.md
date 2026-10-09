@@ -16,7 +16,8 @@ revisas la vista previa → pulsas **Merge**. La noticia aparece en el sitio en 
   crisis humanitaria) en su dimensión política.
 - ❌ **No:** farándula, deportes, noticias de migración, vida de venezolanos en EE. UU., opinión sin un hecho
   noticioso.
-- **Voluntad Popular y VenAmérica** → se pega el **texto completo** y se pone **su foto**.
+- **Voluntad Popular y VenAmérica** → se pega el **texto completo** y se pone **su foto** (si la nota no
+  tiene foto, se deja vacío y sale una tarjeta con el nombre del medio).
 - **Cualquier otro medio** → solo un **resumen tuyo de 60 palabras como máximo**. **Nunca** su texto completo ni
   su foto (salvo fotos con licencia libre, por ejemplo CC BY).
 
