@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/emergencia-economic
 sourceTier: "B"
 originalAuthor: "María Inés Lombardi"
 category: "Country situation"
+image: "../../../assets/news/2025/04/emergencia-economica-la-excusa-de-maduro-para-socavar-la-legalidad-en-venezuela.jpg"
+imageCredit: "Photo: Guillermo Ramos Flamerich / Wikimedia Commons"
+imageAlt: "The Miraflores presidential palace in Caracas, flying the Venezuelan flag, with the Ávila mountain behind."
+imageLicense: "CC BY-SA 4.0"
 ---

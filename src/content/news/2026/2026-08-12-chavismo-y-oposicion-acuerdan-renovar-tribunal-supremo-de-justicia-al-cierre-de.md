@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/chavismo-y-oposicio
 sourceTier: "B"
 originalAuthor: "Sofía Nederr"
 category: "Elections & power"
+image: "../../../assets/news/2026/08/chavismo-y-oposicion-acuerdan-renovar-tribunal-supremo-de-justicia-al-cierre-de.jpg"
+imageCredit: "Photo: Guillermo Ramos Flamerich / Wikimedia Commons"
+imageAlt: "The concrete headquarters of Venezuela's Supreme Tribunal of Justice in Caracas, with palm trees and lampposts in front."
+imageLicense: "CC BY-SA 3.0"
 ---

@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/cifra-fallecidos-ve
 sourceTier: "B"
 originalAuthor: "Sofía Nederr"
 category: "Country situation"
+image: "../../../assets/news/2026/08/cifra-de-fallecidos-en-venezuela-supera-los-6-500-a-dos-meses-de-devastadores.jpg"
+imageCredit: "Photo: Gunnery Sgt. Kevin Rivas, U.S. Marine Corps / Wikimedia Commons"
+imageAlt: "Men in masks and gloves search through the rubble of a collapsed building in La Guaira, Venezuela."
+imageLicense: "Public domain"
 ---

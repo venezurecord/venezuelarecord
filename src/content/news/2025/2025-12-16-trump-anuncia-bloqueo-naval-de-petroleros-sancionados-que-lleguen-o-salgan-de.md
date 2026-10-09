@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/eeuu/trump-anuncia-bloqueo-naval-p
 sourceTier: "B"
 originalAuthor: ""
 category: "International pressure"
+image: "../../../assets/news/2025/12/trump-anuncia-bloqueo-naval-de-petroleros-sancionados-que-lleguen-o-salgan-de.jpg"
+imageCredit: "Photo: U.S. Coast Guard / Wikimedia Commons"
+imageAlt: "A U.S. Coast Guard crew member watches an oil tanker through binoculars from a cutter at sea."
+imageLicense: "Public domain"
 ---

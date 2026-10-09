@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/maria-corina-machad
 sourceTier: "B"
 originalAuthor: "Valeria Montero"
 category: "Opposition & resistance"
+image: "../../../assets/news/2026/09/maria-corina-machado-respalda-propuesta-de-elecciones-en-venezuela-para-el-24.jpg"
+imageCredit: "Photo: Freddie Everett, U.S. Department of State / Wikimedia Commons"
+imageAlt: "María Corina Machado, in a white jacket, stands beside U.S. Secretary of State Marco Rubio in a formal reception room."
+imageLicense: "Public domain"
 ---

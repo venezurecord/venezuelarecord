@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/la-onu-extiende-dos
 sourceTier: "B"
 originalAuthor: "Elena Moreno"
 category: "Repression & human rights"
+image: "../../../assets/news/2026/10/la-onu-extiende-por-dos-anos-mas-su-mision-independiente-de-derechos-humanos.jpg"
+imageCredit: "Photo: Tom Page / Wikimedia Commons"
+imageAlt: "Empty curved rows of delegate desks fill the Human Rights Council chamber at the Palace of Nations in Geneva."
+imageLicense: "CC BY-SA 2.0"
 ---

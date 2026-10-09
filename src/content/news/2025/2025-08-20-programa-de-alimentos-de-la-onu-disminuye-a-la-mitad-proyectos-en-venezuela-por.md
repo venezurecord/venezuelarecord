@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/programa-alimentos-
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2025/08/programa-de-alimentos-de-la-onu-disminuye-a-la-mitad-proyectos-en-venezuela-por.jpg"
+imageCredit: "Photo: Kaga tau / Wikimedia Commons"
+imageAlt: "The modern headquarters building of the UN World Food Programme in Rome, with its blue WFP sign."
+imageLicense: "CC BY-SA 4.0"
 ---

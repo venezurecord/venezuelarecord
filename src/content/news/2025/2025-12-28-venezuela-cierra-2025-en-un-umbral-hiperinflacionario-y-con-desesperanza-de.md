@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/venezuela-cierra-20
 sourceTier: "B"
 originalAuthor: "Estefani Brito"
 category: "Country situation"
+image: "../../../assets/news/2025/12/venezuela-cierra-2025-en-un-umbral-hiperinflacionario-y-con-desesperanza-de.jpg"
+imageCredit: "Photo: Provea / Wikimedia Commons"
+imageAlt: "Protesters in Caracas hold a large Venezuelan flag made of worthless bolívar banknotes."
+imageLicense: "Public domain"
 ---

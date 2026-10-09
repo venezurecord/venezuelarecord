@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/sindicatos-y-jubila
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2026/03/sindicatos-y-jubilados-salen-a-las-calles-para-pedir-aumento-salarial-luego-de.jpg"
+imageCredit: "Photo: Provea / Wikimedia Commons"
+imageAlt: "Workers march down a Caracas avenue behind a banner demanding wages, life and dignity."
+imageLicense: "Public domain"
 ---

@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/embajada-eeuu-y-ven
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2026/05/embajada-de-eeuu-y-venezuela-acuerdan-plan-para-reconstruir-la-red-electrica.jpg"
+imageCredit: "Photo: Wilfredor / Wikimedia Commons"
+imageAlt: "Steel electricity transmission pylons and power lines cross dry scrubland under a cloudy sky in Venezuela."
+imageLicense: "CC0"
 ---

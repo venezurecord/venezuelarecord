@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/eeuu/trump-anuncia-que-fuerzas-eeu
 sourceTier: "B"
 originalAuthor: ""
 category: "International pressure"
+image: "../../../assets/news/2025/09/casa-blanca-publica-video-del-ataque-de-buque-de-eeuu-a-navio-narcotraficante.jpg"
+imageCredit: "Photo: MCSN Andrew Eggert, U.S. Navy / Wikimedia Commons"
+imageAlt: "A U.S. Navy destroyer sails between two Harrier jets parked on the deck of an amphibious assault ship."
+imageLicense: "Public domain"
 ---

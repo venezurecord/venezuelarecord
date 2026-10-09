@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/inflacion-venezuela
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2026/03/inflacion-en-venezuela-se-disparo-a-475-en-2025.jpg"
+imageCredit: "Photo: Wilfredor / Wikimedia Commons"
+imageAlt: "The grey modernist tower of the Central Bank of Venezuela in Maracaibo rises above trees, with a Venezuelan flag at right."
+imageLicense: "CC0"
 ---

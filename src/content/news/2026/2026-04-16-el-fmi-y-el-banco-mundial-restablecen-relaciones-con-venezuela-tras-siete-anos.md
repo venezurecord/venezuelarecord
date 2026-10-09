@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/el-fmi-reanuda-sus-
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2026/04/el-fmi-y-el-banco-mundial-restablecen-relaciones-con-venezuela-tras-siete-anos.jpg"
+imageCredit: "Photo: Tony Webster / Wikimedia Commons"
+imageAlt: "The tall beige International Monetary Fund headquarters building in Washington, D.C., against a clear blue sky."
+imageLicense: "CC BY 2.0"
 ---

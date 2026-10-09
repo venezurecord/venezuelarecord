@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/regimen-maduro-conf
 sourceTier: "B"
 originalAuthor: ""
 category: "Political prisoners"
+image: "../../../assets/news/2025/07/regimen-de-maduro-confirma-excarcelacion-de-80-presos-politicos-ong-exige.jpg"
+imageCredit: "Photo: NoonIcarus / Wikimedia Commons"
+imageAlt: "Women hold photos of Venezuelan political prisoners outside the Apostolic Nunciature in Madrid."
+imageLicense: "CC BY-SA 4.0"
 ---

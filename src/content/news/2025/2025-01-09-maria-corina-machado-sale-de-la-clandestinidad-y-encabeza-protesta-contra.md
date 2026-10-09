@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/maria-corina-machad
 sourceTier: "B"
 originalAuthor: ""
 category: "Opposition & resistance"
+image: "../../../assets/news/2025/01/maria-corina-machado-sale-de-la-clandestinidad-y-encabeza-protesta-contra.jpg"
+imageCredit: "Photo: Alexcocopro / Wikimedia Commons"
+imageAlt: "María Corina Machado waves from among supporters during an opposition march in Caracas."
+imageLicense: "CC BY-SA 4.0"
 ---

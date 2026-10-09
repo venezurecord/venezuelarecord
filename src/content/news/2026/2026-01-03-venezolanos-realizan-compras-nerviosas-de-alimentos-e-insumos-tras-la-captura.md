@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/venezolanos-realiza
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2026/01/venezolanos-realizan-compras-nerviosas-de-alimentos-e-insumos-tras-la-captura.jpg"
+imageCredit: "Photo: Wilfredor / Wikimedia Commons"
+imageAlt: "People queue outside a supermarket entrance in Venezuela, some holding cardboard, as the line stretches along the building."
+imageLicense: "CC0"
 ---

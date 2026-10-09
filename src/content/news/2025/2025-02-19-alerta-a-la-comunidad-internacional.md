@@ -10,6 +10,10 @@ sourceUrl: "https://venamerica.org/home/alerta-a-la-comunidad-internacional/"
 sourceTier: "A"
 originalAuthor: ""
 category: "Repression & human rights"
+image: "../../../assets/news/2025/02/alerta-a-la-comunidad-internacional.jpg"
+imageCredit: "Photo: Luara Baggi, Brazil Ministry of Science, Technology and Innovation / Wikimedia Commons"
+imageAlt: "Brazil's foreign minister Mauro Vieira stands beside a colleague in an office at the Itamaraty Palace."
+imageLicense: "CC BY 2.0"
 ---
 
 VenAmérica expresses its deep concern over the grave situation of danger and threat faced by six Venezuelans in the Embassy of Argentina in Caracas: Magalli Meda, Claudia Macedo, Humberto Villalobos, Omar González and Pedro Urruchurtu.

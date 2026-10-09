@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/regimen-maduro-deti
 sourceTier: "B"
 originalAuthor: ""
 category: "Political prisoners"
+image: "../../../assets/news/2025/05/regimen-de-maduro-detiene-a-juan-pablo-guanipa-cercano-colaborador-de-maria.jpg"
+imageCredit: "Photo: Edgar Frías / Free Juan Pablo Guanipa / Wikimedia Commons"
+imageAlt: "Juan Pablo Guanipa speaks into a microphone at a Primero Justicia party event."
+imageLicense: "CC BY-SA 4.0"
 ---

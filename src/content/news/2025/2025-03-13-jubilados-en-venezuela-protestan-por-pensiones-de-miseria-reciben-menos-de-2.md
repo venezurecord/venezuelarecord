@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/jubilados-venezuela
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2025/03/jubilados-en-venezuela-protestan-por-pensiones-de-miseria-reciben-menos-de-2.jpg"
+imageCredit: "Photo: Provea / Wikimedia Commons"
+imageAlt: "Workers and older Venezuelans march down a Caracas street with handmade signs demanding decent wages."
+imageLicense: "Public domain"
 ---

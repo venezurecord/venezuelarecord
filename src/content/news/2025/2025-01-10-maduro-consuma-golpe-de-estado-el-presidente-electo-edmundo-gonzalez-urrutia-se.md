@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/maduro-consuma-golp
 sourceTier: "B"
 originalAuthor: ""
 category: "Elections & power"
+image: "../../../assets/news/2025/01/maduro-consuma-golpe-de-estado-el-presidente-electo-edmundo-gonzalez-urrutia-se.jpg"
+imageCredit: "Photo: Adam Schultz, The White House / Wikimedia Commons"
+imageAlt: "Edmundo González Urrutia and U.S. President Joe Biden pose in the Oval Office."
+imageLicense: "Public domain"
 ---

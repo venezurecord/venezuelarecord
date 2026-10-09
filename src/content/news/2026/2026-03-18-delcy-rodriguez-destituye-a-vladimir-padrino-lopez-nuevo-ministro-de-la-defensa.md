@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/delcy-rodriguez-des
 sourceTier: "B"
 originalAuthor: ""
 category: "Elections & power"
+image: "../../../assets/news/2026/03/delcy-rodriguez-destituye-a-vladimir-padrino-lopez-nuevo-ministro-de-la-defensa.jpg"
+imageCredit: "Photo: Michael Wimbish, U.S. Army / Wikimedia Commons"
+imageAlt: "General Gustavo González López, in green uniform beside a Venezuelan flag, meets seated U.S. military officers."
+imageLicense: "Public domain"
 ---

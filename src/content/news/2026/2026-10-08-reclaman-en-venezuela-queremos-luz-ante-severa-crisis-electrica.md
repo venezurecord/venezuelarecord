@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/reclaman-venezuela-
 sourceTier: "B"
 originalAuthor: "Olgalinda Pimentel"
 category: "Country situation"
+image: "../../../assets/news/2026/10/reclaman-en-venezuela-queremos-luz-ante-severa-crisis-electrica.jpg"
+imageCredit: "Photo: Bobjgalindo / Wikimedia Commons"
+imageAlt: "Residents gather on Las Delicias Avenue in Maracay to protest repeated power and water cuts (2009)."
+imageLicense: "CC BY-SA 4.0"
 ---

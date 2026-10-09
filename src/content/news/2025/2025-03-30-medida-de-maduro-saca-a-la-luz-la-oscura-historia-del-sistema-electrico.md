@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/medida-maduro-saca-
 sourceTier: "B"
 originalAuthor: "María Inés Lombardi"
 category: "Country situation"
+image: "../../../assets/news/2025/03/medida-de-maduro-saca-a-la-luz-la-oscura-historia-del-sistema-electrico.jpg"
+imageCredit: "Photo: Warairarepano&Guaicaipuro / Wikimedia Commons"
+imageAlt: "The concrete wall and spillway of the Guri hydroelectric dam on the Caroní River in Venezuela."
+imageLicense: "CC0"
 ---

@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/terremotos-gran-esc
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2026/06/terremotos-de-gran-escala-sacuden-el-centro-de-venezuela-reportan-heridos-y.jpg"
+imageCredit: "Photo: Gunnery Sgt. Kevin Rivas, U.S. Marine Corps / Wikimedia Commons"
+imageAlt: "Rescue workers in helmets stand in a street before a collapsed multi-storey building in La Guaira, Venezuela."
+imageLicense: "Public domain"
 ---

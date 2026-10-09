@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/venezuela-enfrenta-
 sourceTier: "B"
 originalAuthor: ""
 category: "Country situation"
+image: "../../../assets/news/2026/08/estudiantes-en-venezuela-enfrentan-altos-niveles-de-desnutricion-y-falta-de.jpg"
+imageCredit: "Photo: Provea / Wikimedia Commons"
+imageAlt: "A teacher with a megaphone protests in Caracas beside a sign asking how teachers and children can work while hungry."
+imageLicense: "Public domain"
 ---

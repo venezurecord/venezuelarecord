@@ -10,4 +10,8 @@ sourceUrl: "https://www.diariolasamericas.com/america-latina/donald-trump-afirma
 sourceTier: "B"
 originalAuthor: ""
 category: "Elections & power"
+image: "../../../assets/news/2026/01/donald-trump-afirma-que-maduro-fue-capturado.jpg"
+imageCredit: "Photo: Molly Riley, The White House / Wikimedia Commons"
+imageAlt: "Donald Trump sits between John Ratcliffe and Marco Rubio at a table with monitors at Mar-a-Lago."
+imageLicense: "Public domain"
 ---

@@ -1,6 +1,7 @@
 ---
 title: "Alerta a la Comunidad Internacional"
 summary: "VenAmérica exhortó a la comunidad internacional y al canciller de Brasil, país custodio de la Embajada de Argentina en Caracas, a hacer cumplir el salvoconducto de los venezolanos asilados allí, según la Convención de Caracas de 1954 sobre Asilo Diplomático."
+imageAlt: "El canciller de Brasil, Mauro Vieira, junto a una colega en un despacho del Palacio Itamaraty."
 ---
 
 VenAmérica expresa su profunda preocupación por la grave situación de peligro y amenaza en la que se encuentran seis venezolanos en la Embajada de Argentina en Caracas: Magalli Meda, Claudia Macedo, Humberto Villalobos, Omar González y Pedro Urruchurtu.
