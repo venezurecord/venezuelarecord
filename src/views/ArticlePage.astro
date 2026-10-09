@@ -6,6 +6,7 @@ import CreditsBlock from '../components/CreditsBlock.astro';
 import NewsCard from '../components/NewsCard.astro';
 import SourceCard from '../components/SourceCard.astro';
 import PendingBadge from '../components/PendingBadge.astro';
+import ShareBar from '../components/ShareBar.astro';
 import {
   categoryName,
   categoryUrl,
@@ -82,6 +83,7 @@ const jsonLd = {
         <p class="dek">{s.summary}</p>
         {s.fallback && <p class="notice">{t(lang, 'article.onlyInOtherLang')}</p>}
         <CreditsBlock story={s} />
+        <ShareBar lang={lang} url={canonical} title={s.title} />
       </header>
 
       {
@@ -152,7 +154,7 @@ const jsonLd = {
           </div>
           <div class="grid-cards">
             {related.map((r) => (
-              <NewsCard story={r} showSummary={false} />
+              <NewsCard story={r} showSummary={false} compact />
             ))}
           </div>
         </section>
@@ -220,8 +222,12 @@ const jsonLd = {
     color: var(--muted);
   }
   .cta {
+    display: inline-block;
+    padding-block: 10px;
+    margin-block: -10px;
     font-weight: 700;
     font-size: 1.05rem;
+    line-height: 1.3;
     text-decoration: none;
   }
   .cta:hover {

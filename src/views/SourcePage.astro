@@ -43,6 +43,9 @@ const site = authorized?.url ?? (stories[0] ? new URL(stories[0].data.sourceUrl)
     margin: 0 0 6px;
   }
   .source-info a {
+    display: inline-block;
+    padding-block: 12px;
+    margin-block: -6px -12px;
     font-weight: 600;
   }
 </style>
