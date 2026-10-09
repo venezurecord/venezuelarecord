@@ -115,6 +115,6 @@ jobs:
               echo "- Falló la comprobación del sitio. Detalles: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID"
             fi
             echo
-            echo "Para corregirlo: arriba a la derecha de este formulario pulsa **···** → **Edit**, cambia lo necesario y pulsa **Update comment**. Se volverá a intentar solo."
+            echo "Para corregirlo: arriba a la derecha de este formulario pulsa **···** → **Edit**, cambia lo necesario y guarda los cambios (botón **Save**). Se volverá a intentar solo."
           } > "$RUNNER_TEMP/error.md"
           gh issue comment "$ISSUE" --body-file "$RUNNER_TEMP/error.md"
