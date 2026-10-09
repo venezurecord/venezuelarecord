@@ -4,7 +4,7 @@ originalTitle: "VenAmérica da la bienvenida a nuevo Secretario General OEA"
 summary: "VenAmérica welcomed Albert Ramdin as the new Secretary General of the OAS on March 14, 2025, and said it hopes to advance its technical cooperation agreement with his office on international criminal justice."
 originalDate: 2025-03-14
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "VenAmérica"
 sourceUrl: "https://venamerica.org/home/venamerica-da-la-bienvenida-a-nuevo-secretario-general-oea/"
 sourceTier: "A"

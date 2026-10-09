@@ -4,7 +4,7 @@ originalTitle: "Carlos Azuaje no está hecho para ese lugar"
 summary: "Voluntad Popular tells the story of Carlos Azuaje, an engineer and party activist detained on December 18, 2024, at a National Guard checkpoint in Anzoátegui and held in El Helicoide on terrorism charges, through the account of his partner, Angely La Cruz."
 originalDate: 2025-06-18
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/carlos-azuaje-no-esta-hecho-para-ese-lugar/"
 sourceTier: "A"

@@ -4,7 +4,7 @@ originalTitle: "CICIVEN rechaza la pretensión del retiro de Venezuela de la CPI
 summary: "CICIVEN, VenAmérica's International Committee against Impunity in Venezuela, rejected the regime's bid to withdraw Venezuela from the International Criminal Court (ICC)."
 originalDate: 2025-12-30
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "VenAmérica"
 sourceUrl: "https://venamerica.org/home/ciciven-rechaza-la-pretension-del-retiro-de-venezuela-de-la-cpi/"
 sourceTier: "A"

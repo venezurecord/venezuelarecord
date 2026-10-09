@@ -4,7 +4,7 @@ originalTitle: "CICIVEN ante el intento del gobierno ilegítimo de Venezuela de 
 summary: "CICIVEN said on July 31, 2026, that the announced denunciation of the Rome Statute by Venezuela's current authorities is null and void because they hold usurped offices, and asked UN Secretary-General Antonio Guterres to deny it any legal effect."
 originalDate: 2026-08-02
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "VenAmérica"
 sourceUrl: "https://venamerica.org/home/ciciven-ante-el-intento-del-gobierno-ilegitimo-de-venezuela-de-escaparse-de-la-corte-penal-internacional/"
 sourceTier: "A"

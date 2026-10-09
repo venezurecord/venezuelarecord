@@ -4,7 +4,7 @@ originalTitle: "VP y familiares del dirigente Macario González denuncian su des
 summary: "Macarena González, daughter of Voluntad Popular leader and former Barquisimeto mayor Macario González, 73, denounced on Saturday his enforced disappearance after he was last seen on September 12, and demanded proof of life."
 originalDate: 2025-09-13
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/vp-y-familiares-del-dirigente-macario-gonzalez-denuncian-su-desaparicion-forzada-y-exigen-fe-de-vida/"
 sourceTier: "A"

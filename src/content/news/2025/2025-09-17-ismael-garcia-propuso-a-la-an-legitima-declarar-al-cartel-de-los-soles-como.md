@@ -4,7 +4,7 @@ originalTitle: "Ismael García propuso a la AN legítima declarar al Cartel de l
 summary: "Ismael García, a Voluntad Popular deputy in the legitimate National Assembly, asked the Parliament on Tuesday to formally declare the Cartel de los Soles a terrorist organization, citing his complaints against it since 2005."
 originalDate: 2025-09-17
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/ismael-garcia-propuso-a-la-an-legitima-declarar-al-cartel-de-los-soles-como-organizacion-terrorista/"
 sourceTier: "A"

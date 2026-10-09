@@ -4,7 +4,7 @@ originalTitle: "Acompañamos a los venezolanos en su decisión de no participar 
 summary: "In a statement, Voluntad Popular said it stands with Venezuelans in their decision not to take part in Nicolás Maduro’s next “electoral farce,” recalling the July 28 presidential vote and the empty voting centers of May 25."
 originalDate: 2025-06-11
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/acompanamos-a-los-venezolanos-en-su-decision-de-no-participar-en-nueva-farsa-de-maduro/"
 sourceTier: "A"

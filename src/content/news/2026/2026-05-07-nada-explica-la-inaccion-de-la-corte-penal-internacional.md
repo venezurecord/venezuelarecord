@@ -4,7 +4,7 @@ originalTitle: "Nada explica la inacción de la Corte Penal Internacional"
 summary: "CICIVEN voiced indignation on May 7, 2026, that the ICC Prosecutor's Office has issued no summonses or arrest warrants in the Venezuela I investigation, opened in 2021, and urged the Court and its organs to act immediately."
 originalDate: 2026-05-07
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "VenAmérica"
 sourceUrl: "https://venamerica.org/home/nada-explica-la-inaccion-de-la-corte-penal-internacional/"
 sourceTier: "A"

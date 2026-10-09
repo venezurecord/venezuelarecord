@@ -4,7 +4,7 @@ originalTitle: "Leopoldo López pidió al Consejo de DD.HH. de la ONU apoyar la 
 summary: "Voluntad Popular national head Leopoldo López urged the UN Human Rights Council on Monday to back a democratic transition in Venezuela and the fight against the Cartel de los Soles, after a new report by the Independent International Fact-Finding Mission."
 originalDate: 2025-09-22
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/leopoldo-lopez-pidio-al-consejo-de-dd-hh-de-la-onu-apoyar-la-transicion-democratica-en-venezuela-tras-informe-de-la-mision/"
 sourceTier: "A"

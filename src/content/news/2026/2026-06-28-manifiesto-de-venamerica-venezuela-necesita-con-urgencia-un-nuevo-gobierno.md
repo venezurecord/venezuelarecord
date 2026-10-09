@@ -4,7 +4,7 @@ originalTitle: "Manifiesto de VENAMÉRICA: VENEZUELA NECESITA CON URGENCIA UN NU
 summary: "VenAmérica said on June 28, 2026, that the State failed to respond to a national tragedy and demanded that those now in government step down to make way for a National Emergency Transitional Government, and called for peaceful civic protest."
 originalDate: 2026-06-28
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "VenAmérica"
 sourceUrl: "https://venamerica.org/home/manifiesto-de-venamerica-venezuela-necesita-con-urgencia-un-nuevo-gobierno/"
 sourceTier: "A"

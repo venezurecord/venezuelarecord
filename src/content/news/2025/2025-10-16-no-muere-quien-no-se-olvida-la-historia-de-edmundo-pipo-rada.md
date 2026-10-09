@@ -4,7 +4,7 @@ originalTitle: "No muere quien no se olvida: La historia de Edmundo ‘Pipo’ R
 summary: "Voluntad Popular recounts the life of Edmundo “Pipo” Rada, its community leader in Petare, who disappeared on October 16, 2019, and was found burned and shot, a killing the party and his family attribute to his political activism."
 originalDate: 2025-10-16
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/no-muere-quien-no-se-olvida-la-historia-de-edmundo-pipo-rada/"
 sourceTier: "A"

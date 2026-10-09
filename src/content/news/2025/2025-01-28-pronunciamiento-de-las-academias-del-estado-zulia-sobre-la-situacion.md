@@ -4,7 +4,7 @@ originalTitle: "PRONUNCIAMIENTO DE LA ACADEMIA DE HISTORIA DEL ESTADO ZULIA, LA 
 summary: "The academies of history, economic sciences, and legal and political sciences of Zulia State said on January 28, 2025, that the January 10 swearing-in of Nicolás Maduro breached the Constitution and electoral laws, and called on Venezuelans to uphold the Constitution."
 originalDate: 2025-01-28
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "VenAmérica"
 sourceUrl: "https://venamerica.org/home/pronunciamiento-de-la-academia-de-historia-del-estado-zulia-la-academia-de-ciencias-economicas-del-estado-zulia-y-la-academia-de-ciencias-juridicas-y-politicas-del-estado-zulia-sobr/"
 sourceTier: "A"

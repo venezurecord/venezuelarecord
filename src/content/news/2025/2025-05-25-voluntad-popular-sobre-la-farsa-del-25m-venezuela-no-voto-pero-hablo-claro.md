@@ -4,7 +4,7 @@ originalTitle: "Voluntad Popular sobre la farsa del 25M: Venezuela no votó, per
 summary: "Voluntad Popular said on May 25, 2025, that the low turnout in the regional and legislative elections called by Nicolás Maduro’s regime, which it calls an “electoral farce,” was an act of collective disobedience by Venezuelans."
 originalDate: 2025-05-25
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/venezuela-no-voto-pero-hablo-claro/"
 sourceTier: "A"

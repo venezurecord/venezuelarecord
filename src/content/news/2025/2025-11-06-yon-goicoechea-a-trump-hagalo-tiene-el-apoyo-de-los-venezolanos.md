@@ -4,7 +4,7 @@ originalTitle: "Yon Goicoechea a Trump: «Hágalo, tiene el apoyo de los venezol
 summary: "Venezuelan leader Yon Goicoechea told U.S. President Donald Trump and Secretary of State Marco Rubio on Wednesday that most Venezuelans would support any political, diplomatic and military initiative to remove Nicolás Maduro from power."
 originalDate: 2025-11-06
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/yon-goicoechea-a-trump-hagalo-tiene-el-apoyo-de-los-venezolanos/"
 sourceTier: "A"

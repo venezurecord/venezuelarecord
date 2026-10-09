@@ -4,7 +4,7 @@ originalTitle: "Voluntad Popular exigió fe de vida y liberación inmediata de R
 summary: "Voluntad Popular demanded on June 9, 2025, proof of life and the immediate release of Rafael Tudares, son-in-law of President-elect Edmundo González Urrutia, held since January 7 without contact with his family or lawyers, a case it called an enforced disappearance."
 originalDate: 2025-06-09
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/voluntad-popular-exigio-fe-de-vida-y-liberacion-inmediata-de-rafael-tudares/"
 sourceTier: "A"

@@ -4,7 +4,7 @@ originalTitle: "Leopoldo López advierte de “nerviosismo y purgas” dentro de
 summary: "Voluntad Popular national head Leopoldo López told Spain’s ABC that Nicolás Maduro’s regime is going through internal purges and nervousness, and reiterated that Maduro leads the Cártel de los Soles."
 originalDate: 2025-08-23
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/leopoldo-lopez-advierte-de-nerviosismo-y-purgas-dentro-del-regimen-de-maduro/"
 sourceTier: "A"

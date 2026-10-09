@@ -4,7 +4,7 @@ originalTitle: "Un año de la detención de un futuro: La historia de Jeancarlos
 summary: "Voluntad Popular profiles Jeancarlos Rivas, a young party activist from Vargas detained on June 14, 2024, at age 19 and held in El Helicoide, and demands his release one year after his arrest."
 originalDate: 2025-06-12
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/un-ano-de-la-detencion-de-un-futuro-la-historia-de-jeancarlos-rivas/"
 sourceTier: "A"

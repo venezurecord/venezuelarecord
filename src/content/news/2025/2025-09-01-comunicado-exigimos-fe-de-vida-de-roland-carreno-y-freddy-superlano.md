@@ -4,7 +4,7 @@ originalTitle: "Comunicado: Exigimos fe de vida de Roland Carreño y Freddy Supe
 summary: "Voluntad Popular denounced that political prisoners Roland Carreño and Freddy Superlano were taken out of El Helicoide in SEBIN vehicles to an unknown location, and demanded proof of life and their immediate release."
 originalDate: 2025-09-01
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/comunicado-exigimos-fe-de-vida-de-roland-carreno-y-freddy-superlano/"
 sourceTier: "A"

@@ -4,7 +4,7 @@ originalTitle: "“Yo te necesito fuerte”: Lo que sostiene a Aldo Rosso tras u
 summary: "Voluntad Popular tells the story of Aldo Rosso, a 70-year-old party activist from El Valle, Caracas, detained on July 4, 2024, and accused without evidence of sabotaging the national power grid, through the account of his daughter, Jyuli."
 originalDate: 2025-07-04
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/yo-te-necesito-fuerte-lo-que-sostiene-a-aldo-rosso-tras-un-ano-preso/"
 sourceTier: "A"

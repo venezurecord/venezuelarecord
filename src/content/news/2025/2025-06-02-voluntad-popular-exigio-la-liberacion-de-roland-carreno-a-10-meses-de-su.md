@@ -4,7 +4,7 @@ originalTitle: "Voluntad Popular exigió la liberación de Roland Carreño a 10 
 summary: "Voluntad Popular demanded on June 2, 2025, the immediate release of its leader, journalist Roland Carreño, held at El Helicoide since August 2, 2024, and said he has been the victim of cruel treatment and human rights violations."
 originalDate: 2025-06-02
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/voluntad-popular-exigio-la-liberacion-de-roland-carreno-a-10-meses-de-su-detencion/"
 sourceTier: "A"

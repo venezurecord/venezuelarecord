@@ -4,7 +4,7 @@ originalTitle: "Alerta a la Comunidad Internacional"
 summary: "VenAmérica urged the international community and Brazil's foreign minister, as custodian of Argentina's embassy in Caracas, to enforce safe-conduct for the Venezuelans granted asylum there, citing the 1954 Caracas Convention on Diplomatic Asylum."
 originalDate: 2025-02-19
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "VenAmérica"
 sourceUrl: "https://venamerica.org/home/alerta-a-la-comunidad-internacional/"
 sourceTier: "A"

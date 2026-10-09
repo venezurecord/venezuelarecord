@@ -4,7 +4,7 @@ originalTitle: "COMUNICADO: Voluntad Popular sobre el proceso de amnistía"
 summary: "Voluntad Popular called the Amnesty Law an important step in the right direction, but said it leaves out important civilian and military cases, demanded that no one be excluded and urged the rebuilding of Venezuela’s judiciary."
 originalDate: 2026-02-23
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/comunicado-voluntad-popular-sobre-el-proceso-de-amnistia/"
 sourceTier: "A"

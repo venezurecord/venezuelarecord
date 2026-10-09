@@ -4,7 +4,7 @@ originalTitle: "Sobre el acuerdo petrolero entre Venezuela y Estados Unidos"
 summary: "Voluntad Popular backed the oil agreement between Venezuela and the United States, covering 17 oil fields, as a giant opportunity for the country, but warned that such an alliance only lasts if it rests on a legitimate government born of free elections."
 originalDate: 2026-09-03
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/sobre-el-acuerdo-petrolero-entre-venezuela-y-estados-unidos/"
 sourceTier: "A"

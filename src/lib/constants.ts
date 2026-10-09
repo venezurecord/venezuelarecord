@@ -128,7 +128,7 @@ export const NAV_CATEGORIES: Category[] = [
   'Country situation',
 ];
 
-export const REPUBLISHERS = ['Roger Q.', 'Eyleen V.'] as const;
+export const REPUBLISHERS = ['Roger Quiroz', 'Eyleen Valiente'] as const;
 
 /** Tier A sources: authorized, full text republished with permission. */
 export const AUTHORIZED_SOURCES = [

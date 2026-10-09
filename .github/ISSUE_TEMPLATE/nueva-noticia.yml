@@ -68,8 +68,8 @@ body:
     attributes:
       label: Publicado por
       options:
-        - Roger Q.
-        - Eyleen V.
+        - Roger Quiroz
+        - Eyleen Valiente
     validations:
       required: true
 

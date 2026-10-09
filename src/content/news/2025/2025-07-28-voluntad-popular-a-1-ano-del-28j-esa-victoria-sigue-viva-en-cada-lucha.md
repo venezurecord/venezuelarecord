@@ -4,7 +4,7 @@ originalTitle: "Voluntad Popular a 1 año del 28J: “Esa victoria sigue viva en
 summary: "On the first anniversary of the July 28, 2024, presidential election, Voluntad Popular said Edmundo González’s victory “lives on in every struggle” despite the Maduro regime’s refusal to recognize it, and reaffirmed its commitment to a democratic transition."
 originalDate: 2025-07-28
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/voluntad-popular-a-1-ano-del-28j-esa-victoria-sigue-viva-en-cada-lucha/"
 sourceTier: "A"

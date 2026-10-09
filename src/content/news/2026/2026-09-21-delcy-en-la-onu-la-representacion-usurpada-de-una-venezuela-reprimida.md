@@ -4,7 +4,7 @@ originalTitle: "DELCY EN LA ONU: LA REPRESENTACIÓN USURPADA DE UNA VENEZUELA R
 summary: "In a joint statement, the Movimiento Ciudadano Venezolanos en el Mundo and VenAmérica said Delcy Rodríguez's speech at the UN General Assembly must not be taken as democratic legitimacy and urged the UN to demand verifiable human rights commitments."
 originalDate: 2026-09-21
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "VenAmérica"
 sourceUrl: "https://venamerica.org/home/delcy-en-la-onu-la-representacion-usurpada-de-una-venezuela-reprimida/"
 sourceTier: "A"

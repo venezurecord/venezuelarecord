@@ -49,7 +49,7 @@ Repo: `github.com/venezurecord/venezuelarecord`.
 - **Nivel B** (otros medios serios): solo titular + resumen propio ≤ 60 palabras (en cada idioma) + "Read the
   full story at <medio>". **Nunca** texto completo. **Nunca** su foto, salvo licencia libre (CC BY/BY-SA,
   dominio público) con `imageLicense`. Sin foto → "tarjeta de fuente".
-- Crédito de republicación: `Republished by Roger Q.` / `Eyleen V.` — **nunca** como autoría.
+- Crédito de republicación (Roger, 2026-10-09): `Republished by Roger Quiroz` / `Eyleen Valiente` — **nunca** como autoría. Eyleen figura en al menos la mitad de las republicaciones (alternadas por fecha original).
 - Sin autor → `Staff, <Medio>` / `Redacción, <Medio>`.
 - Todo se ordena por **`originalDate`** (nunca por `republishedDate`).
 - Alcance: política, represión/presos políticos, DDHH, elecciones y poder, presión internacional, situación

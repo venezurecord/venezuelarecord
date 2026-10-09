@@ -4,7 +4,7 @@ originalTitle: "VP Colombia denunció desapariciones forzadas en Venezuela en re
 summary: "Rafael Del Rosario, coordinator of Voluntad Popular Colombia, met on Friday with UN officer Julia Pimentel at the High Commissioner’s office in Colombia and denounced enforced disappearances in Venezuela, including the case of José Riera."
 originalDate: 2025-09-05
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/vp-colombia-denuncio-desapariciones-forzadas-en-venezuela-en-reunion-con-la-onu/"
 sourceTier: "A"

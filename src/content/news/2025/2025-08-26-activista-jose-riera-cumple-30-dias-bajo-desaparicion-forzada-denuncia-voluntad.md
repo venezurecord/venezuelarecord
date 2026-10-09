@@ -4,7 +4,7 @@ originalTitle: "Activista José Riera cumple 30 días bajo desaparición forzada
 summary: "Voluntad Popular said on Tuesday that activist José Riera, detained without a warrant on July 26 near the Millenium shopping center in Caracas, has been a victim of enforced disappearance for 30 days, and held Nicolás Maduro responsible."
 originalDate: 2025-08-26
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Eyleen Valiente"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/activista-jose-riera-cumple-30-dias-bajo-desaparicion-forzada-denuncia-voluntad-popular/"
 sourceTier: "A"

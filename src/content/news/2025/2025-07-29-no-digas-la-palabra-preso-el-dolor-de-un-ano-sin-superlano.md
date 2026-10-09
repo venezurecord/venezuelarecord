@@ -4,7 +4,7 @@ originalTitle: "“No digas la palabra ‘preso’”: El dolor de un año sin S
 summary: "Voluntad Popular tells how the family of its leader Freddy Superlano, detained by the SEBIN on July 30, 2024, and held incommunicado in El Helicoide, has lived through a year without seeing or hearing from him."
 originalDate: 2025-07-29
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/no-digas-la-palabra-preso-el-dolor-de-un-ano-sin-superlano/"
 sourceTier: "A"

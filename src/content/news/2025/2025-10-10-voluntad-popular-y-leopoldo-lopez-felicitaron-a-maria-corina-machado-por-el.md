@@ -4,7 +4,7 @@ originalTitle: "Voluntad Popular y Leopoldo López felicitaron a María Corina M
 summary: "Voluntad Popular and its national head, Leopoldo López, congratulated María Corina Machado on being awarded the 2025 Nobel Peace Prize, which the party called a tribute to the struggle for Venezuela’s freedom."
 originalDate: 2025-10-10
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/voluntad-popular-y-leopoldo-lopez-felicitaron-a-maria-corina-machado-por-el-nobel-de-la-paz-2025/"
 sourceTier: "A"

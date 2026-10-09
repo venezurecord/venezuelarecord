@@ -51,7 +51,7 @@ revisas la vista previa → pulsas **Merge**. La noticia aparece en el sitio en 
 6. **Autor original:** quién la escribió. Si no aparece, déjalo vacío.
 7. **Fecha de publicación original:** en formato **AAAA-MM-DD**. Ejemplo: el 14 de marzo de 2025 se escribe
    `2025-03-14`. ⚠️ Es la fecha **de la nota original**, no la de hoy: con ella se ordena todo el sitio.
-8. **Publicado por:** tu nombre (Roger Q. o Eyleen V.).
+8. **Publicado por:** tu nombre (Roger Quiroz o Eyleen Valiente).
 9. **Categoría:** la que mejor encaje.
 10. **Texto:**
     - Voluntad Popular / VenAmérica: copia **todo** el texto de la nota y pégalo, sin cambiar nada.

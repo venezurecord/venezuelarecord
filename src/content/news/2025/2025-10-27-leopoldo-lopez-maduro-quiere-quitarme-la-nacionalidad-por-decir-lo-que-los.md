@@ -4,7 +4,7 @@ originalTitle: "Leopoldo López: Maduro quiere quitarme la nacionalidad por deci
 summary: "Voluntad Popular national head Leopoldo López said on Monday in Madrid that Nicolás Maduro’s announcement that he would strip him of his Venezuelan nationality seeks to intimidate Venezuelans, and called the measure unconstitutional."
 originalDate: 2025-10-27
 republishedDate: 2026-10-08
-republishedBy: "Roger Q."
+republishedBy: "Roger Quiroz"
 sourceName: "Voluntad Popular"
 sourceUrl: "https://voluntadpopular.com/leopoldo-lopez-maduro-quiere-quitarme-la-nacionalidad-para-intimidar-a-los-venezolanos/"
 sourceTier: "A"
