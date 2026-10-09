@@ -1,33 +1,5 @@
 ---
-// Temporary home page (Phase 1). The real design arrives in Phase 2.
-import { getNews, isPending } from '../lib/news';
-
-const news = await getNews();
-const fmt = new Intl.DateTimeFormat('en-US', { dateStyle: 'long', timeZone: 'UTC' });
+import HomePage from '../views/HomePage.astro';
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>Venezuela Record</title>
-    <meta name="description" content="A chronological record of Venezuela's political news." />
-  </head>
-  <body>
-    <h1>VENEZUELA RECORD</h1>
-    <p>A chronological record of Venezuela's political news. Coming soon.</p>
-    {
-      news.length > 0 && (
-        <ul>
-          {news.map((n) => (
-            <li>
-              {fmt.format(n.data.originalDate)} · {n.data.sourceName} · {n.data.title}
-              {isPending(n) && <strong> (Pending translation / draft)</strong>}
-            </li>
-          ))}
-        </ul>
-      )
-    }
-  </body>
-</html>
+<HomePage lang="en" />
