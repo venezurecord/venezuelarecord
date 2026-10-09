@@ -9,7 +9,9 @@ interface Props {
 }
 const { lang } = Astro.props;
 const to = otherLang(lang);
-const href = `${localePath(to, stripLang(Astro.url.pathname))}?setlang=${to}`;
+// The 404 page has no counterpart URL in the other language: switch to its home.
+const path = stripLang(Astro.url.pathname);
+const href = `${localePath(to, /^\/404(\.html|\/)?$/.test(path) ? '/' : path)}?setlang=${to}`;
 ---
 
 <a class="lang-switch" href={href} hreflang={to} lang={LANG_META[to].htmlLang} data-lang={to} title={`${t(lang, 'nav.language')}: ${LANG_META[to].label}`}>
