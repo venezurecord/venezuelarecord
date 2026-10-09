@@ -1,0 +1,43 @@
+---
+// Static text pages (About, Sources & permissions, Corrections).
+import BaseLayout from './BaseLayout.astro';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+}
+const { lang, title, description } = Astro.props;
+---
+
+<BaseLayout lang={lang} title={title} description={description}>
+  <div class="container">
+    <div class="reading">
+      <h1 class="page-title">{title}</h1>
+      <p class="page-intro">{description}</p>
+      <div class="prose static">
+        <slot />
+      </div>
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .static {
+    font-size: 1.08rem;
+  }
+  .static :global(h2) {
+    font-size: 1.4rem;
+  }
+  .static :global(li) {
+    margin-bottom: 0.4em;
+  }
+  .static :global(dt) {
+    font-weight: 700;
+    margin-top: 1em;
+  }
+  .static :global(dd) {
+    margin: 0.2em 0 0;
+  }
+</style>
