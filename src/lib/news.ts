@@ -170,12 +170,9 @@ export const displayImage = (s: Story) => {
   return s.data.image;
 };
 
-/** Caption shown under an image: credit ("Photo: …" localized), plus license for tier B. */
+/** Caption shown under an image: credit ("Photo: …" localized), plus the license when there is one. */
 export const imageCaption = (s: Story) =>
-  [
-    s.data.imageCredit?.replace(/^(Photo|Foto):\s*/i, `${t(s.lang, 'article.photo')}: `),
-    s.data.sourceTier === 'B' ? s.data.imageLicense : undefined,
-  ]
+  [s.data.imageCredit?.replace(/^(Photo|Foto):\s*/i, `${t(s.lang, 'article.photo')}: `), s.data.imageLicense]
     .filter(Boolean)
     .join(' · ');
 
