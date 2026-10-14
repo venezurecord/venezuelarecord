@@ -179,8 +179,11 @@ const updated = longDate(lang, META.updated);
   // Drive the opening from the step that crosses the middle of the viewport.
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   document.querySelectorAll<HTMLElement>('[data-op]').forEach((op) => {
-    if (reduce.matches || !('IntersectionObserver' in window)) return; // static, final state
-    op.classList.add('is-live');
+    // Static, final state (the CSS step states only apply with motion allowed).
+    if (reduce.matches || !('IntersectionObserver' in window)) {
+      op.dataset.step = '4';
+      return;
+    }
     const io = new IntersectionObserver(
       (entries) => {
         for (const e of entries) if (e.isIntersecting) op.dataset.step = (e.target as HTMLElement).dataset.i!;
@@ -305,57 +308,61 @@ const updated = longDate(lang, META.updated);
     opacity: 0;
   }
 
-  /* Live (JS + motion allowed): states per step */
-  .op.is-live .op-base-full {
+  /* Live states per step: JS available (html.js is set before first paint) and motion allowed.
+     Without JS or with reduced motion the final state shows. */
+  @media (prefers-reduced-motion: no-preference) {
+  :global(html.js) .op .op-base-full {
     transition: opacity 0.6s ease;
   }
-  .op.is-live[data-step='0'] .op-base-full {
+  :global(html.js) .op[data-step='0'] .op-base-full {
     opacity: 1;
   }
-  .op.is-live[data-step='0'] .op-base {
+  :global(html.js) .op[data-step='0'] .op-base {
     opacity: 0;
   }
-  .op.is-live .op-lane {
+  :global(html.js) .op .op-lane {
     transition:
       stroke-dashoffset 1.6s cubic-bezier(0.65, 0, 0.35, 1),
       opacity 0.5s ease;
   }
-  .op.is-live[data-step='0'] .op-lane {
+  :global(html.js) .op[data-step='0'] .op-lane {
     stroke-dashoffset: 1;
   }
-  .op.is-live .op-split,
-  .op.is-live .op-axis,
-  .op.is-live .op-lane-name,
-  .op.is-live .op-pt {
+  :global(html.js) .op .op-split,
+  :global(html.js) .op .op-axis,
+  :global(html.js) .op .op-lane-name,
+  :global(html.js) .op .op-pt {
     transition:
       opacity 0.5s ease,
       transform 0.5s ease;
   }
-  .op.is-live[data-step='0'] :is(.op-split, .op-axis, .op-lane-name) {
+  :global(html.js) .op[data-step='0'] :is(.op-split, .op-axis, .op-lane-name) {
     opacity: 0;
   }
-  .op.is-live:is([data-step='0'], [data-step='1']) .op-pt {
+  :global(html.js) .op:is([data-step='0'], [data-step='1']) .op-pt {
     opacity: 0;
     transform: translateY(6px);
   }
-  .op.is-live[data-step='2'] :is(.op-pt-sec, .op-sec-name) {
+  :global(html.js) .op[data-step='2'] :is(.op-pt-sec, .op-sec-name) {
     opacity: 0;
   }
-  .op.is-live[data-step='2'] .op-sec {
+  :global(html.js) .op[data-step='2'] .op-sec {
     opacity: 0.3;
   }
-  .op.is-live[data-step='3'] :is(.op-econ, .op-pt-econ, .op-econ-name) {
+  :global(html.js) .op[data-step='3'] :is(.op-econ, .op-pt-econ, .op-econ-name) {
     opacity: 0.3;
   }
-  .op.is-live .op-pt {
+  :global(html.js) .op .op-pt {
     transition-delay: calc(var(--i) * 120ms);
   }
   /* Phones: the tall graphic waits below the headline, then rises */
-  .op.is-live .op-tall {
+  :global(html.js) .op .op-tall {
     transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1);
   }
-  .op.is-live[data-step='0'] .op-tall {
+  :global(html.js) .op[data-step='0'] .op-tall {
     transform: translateY(42%);
+  }
+
   }
 
   /* ---------- steps ---------- */
@@ -544,11 +551,13 @@ const updated = longDate(lang, META.updated);
       margin: 26px calc(var(--gutter) * -1) 0;
       border-block: 3px solid var(--op-text);
     }
-    .op.is-live .op-tall .op-base {
-      transition: opacity 0.5s ease;
-    }
-    .op.is-live[data-step='0'] .op-tall .op-base {
-      opacity: 0;
+    @media (prefers-reduced-motion: no-preference) {
+      :global(html.js) .op .op-tall .op-base {
+        transition: opacity 0.5s ease;
+      }
+      :global(html.js) .op[data-step='0'] .op-tall .op-base {
+        opacity: 0;
+      }
     }
     .op-tall {
       inset: 2svh 0 auto;
