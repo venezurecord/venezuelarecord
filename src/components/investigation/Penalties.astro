@@ -201,6 +201,10 @@ const ticks = [0, 10, 20, 30];
     font: 0.88rem/1.45 var(--sans);
   }
 
+  /* Grow with transform (compositor-only), never by animating width. */
+  .bar {
+    transform-origin: 0 50%;
+  }
   @supports (animation-timeline: view()) {
     .bar {
       animation: pen-grow linear both;
@@ -210,18 +214,15 @@ const ticks = [0, 10, 20, 30];
   }
   @keyframes pen-grow {
     from {
-      width: 0;
-    }
-    to {
-      width: var(--w);
+      transform: scaleX(0);
     }
   }
   .pen-wrap.is-armed .bar {
-    width: 0;
-    transition: width 1.2s cubic-bezier(0.6, 0, 0.3, 1) calc(var(--i) * 150ms);
+    transform: scaleX(0);
+    transition: transform 1.2s cubic-bezier(0.6, 0, 0.3, 1) calc(var(--i) * 150ms);
   }
   .pen-wrap.is-armed.is-in .bar {
-    width: var(--w);
+    transform: none;
   }
 
   @media (max-width: 640px) {

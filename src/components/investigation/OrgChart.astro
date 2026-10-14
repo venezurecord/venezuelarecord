@@ -1333,9 +1333,7 @@ const nameLines = (s: string) => {
       z-index: 5;
       margin: 12px calc(var(--gutter) * -1) 0;
       padding: 12px var(--gutter) calc(10px + env(safe-area-inset-bottom));
-      background: color-mix(in srgb, var(--bg) 92%, transparent);
-      -webkit-backdrop-filter: blur(8px);
-      backdrop-filter: blur(8px);
+      background: var(--bg);
       border-top: 1px solid var(--line);
       box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
     }

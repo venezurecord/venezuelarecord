@@ -130,15 +130,19 @@ const toc = [
   document.querySelectorAll<HTMLElement>('[data-toc]').forEach((toc) => {
     const links = [...toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
     const targets = links.map((l) => document.getElementById(l.dataset.tocLink!)).filter(Boolean) as HTMLElement[];
+    const list = toc.querySelector('ul')!;
     let current = '';
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver(
         (entries) => {
+          const prev = current;
           for (const e of entries) if (e.isIntersecting) current = e.target.id;
+          if (current === prev) return;
           links.forEach((l) => {
             const on = l.dataset.tocLink === current;
             l.toggleAttribute('aria-current', on);
-            if (on) l.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+            // Scroll only the chip row, never the page (scrollIntoView would interrupt a finger fling on phones).
+            if (on) list.scrollTo({ left: l.offsetLeft - (list.clientWidth - l.offsetWidth) / 2, behavior: 'smooth' });
           });
         },
         { rootMargin: '-30% 0px -60% 0px' },
@@ -234,9 +238,7 @@ const toc = [
     top: var(--inv-top);
     z-index: 20;
     height: var(--inv-toc-h);
-    background: color-mix(in srgb, var(--bg) 94%, transparent);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
+    background: var(--bg);
     border-bottom: 1px solid var(--line);
   }
   .inv-toc-inner {
@@ -249,6 +251,7 @@ const toc = [
     gap: 12px;
   }
   .inv-toc ul {
+    position: relative;
     flex: 1;
     min-width: 0;
     list-style: none;
