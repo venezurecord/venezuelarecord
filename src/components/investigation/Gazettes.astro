@@ -24,7 +24,8 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
     <p class="inv-intro">{it(lang, 'gzIntro')}</p>
   </header>
 
-  <ul class="gz-grid">
+  <p class="swipe-hint" aria-hidden="true">{it(lang, 'gzSwipe')} <span>→</span></p>
+  <ul class="gz-grid" aria-label={it(lang, 'gzTitle')} tabindex="0">
     {
       GAZETTES.map((g) => (
         <li class="gz-card" data-reveal>
@@ -103,6 +104,31 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
     display: grid;
     gap: 22px;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  }
+  .swipe-hint {
+    display: none;
+  }
+  @media (max-width: 899.98px) {
+    .swipe-hint {
+      display: block;
+      margin: 0 0 10px;
+      padding-inline: var(--gutter);
+      font: 600 0.85rem/1.4 var(--sans);
+      color: var(--muted);
+    }
+    .gz-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      scroll-padding-inline: var(--gutter);
+      padding-bottom: 16px;
+      scrollbar-width: thin;
+    }
+    .gz-grid > li {
+      flex: 0 0 86%;
+      scroll-snap-align: start;
+    }
   }
   .gz-card {
     --paper: #fffdf8;

@@ -41,7 +41,8 @@ const A = ANCHORS[lang];
     </ol>
   </nav>
 
-  <div class="sig-steps">
+  <p class="swipe-hint" aria-hidden="true">{it(lang, 'sigSwipe')} <span>→</span></p>
+  <div class="sig-steps" role="region" aria-label={it(lang, 'sigLedger')} tabindex="0">
     {
       SIGNATURES.map((s, i) => (
         <article class="sig-step" id={s.id} aria-labelledby={`${s.id}-t`}>
@@ -201,6 +202,41 @@ const A = ANCHORS[lang];
     color: #1d1600;
   }
 
+  .swipe-hint {
+    display: none;
+  }
+  /* Phones: one signature per slide, swiped sideways (keeps the page short) */
+  @media (max-width: 899.98px) {
+    .swipe-hint {
+      display: block;
+      margin: 0 0 10px;
+      padding-inline: var(--gutter);
+      font: 600 0.85rem/1.4 var(--sans);
+      color: var(--muted);
+    }
+    .sig-steps {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      scroll-padding-inline: var(--gutter);
+      padding: 4px var(--gutter) 16px !important;
+      scrollbar-width: thin;
+    }
+    .sig-step {
+      flex: 0 0 88%;
+      scroll-snap-align: start;
+      align-content: start;
+      padding: 16px !important;
+      border: 1px solid var(--line) !important;
+      border-radius: 12px;
+      background: var(--bg);
+    }
+    .sig-ledger {
+      margin-bottom: 20px;
+    }
+  }
   /* steps */
   .sig-steps {
     max-width: var(--container);

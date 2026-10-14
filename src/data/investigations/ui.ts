@@ -30,6 +30,8 @@ const en = {
   sigAlone: 'Signed alone, no countersignatures',
   sigPosts: 'Posts in this signature',
   sigLedger: 'Six signatures, 2015–2026',
+  sigSwipe: 'Swipe to see the six signatures',
+  gzSwipe: 'Swipe to see every document',
   orgKicker: 'Org chart',
   orgTitle: 'Who appoints whom',
   orgIntro:
@@ -134,6 +136,8 @@ const es: Dict = {
   sigAlone: 'Firma sola, sin refrendos',
   sigPosts: 'Cargos con los que firma',
   sigLedger: 'Seis firmas, 2015–2026',
+  sigSwipe: 'Desliza para ver las seis firmas',
+  gzSwipe: 'Desliza para ver todos los documentos',
   orgKicker: 'Organigrama',
   orgTitle: 'Quién designa a quién',
   orgIntro:

@@ -29,7 +29,10 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
     <p class="mt-small">{it(lang, 'methodChecked', { date: longDate(lang, META.updated) })}</p>
     <p class="mt-small" set:html={it(lang, 'methodCorrections', { link: corrections })} />
 
-    <h3 id={A.src}>{it(lang, 'sources')}</h3>
+    <details class="mt-details" data-sources={A.src} open>
+      <summary>
+        <h3 id={A.src}>{it(lang, 'sources')} <span class="mt-count">({SOURCES.length})</span></h3>
+      </summary>
     <ol class="mt-src">
       {
         [...SOURCES].sort((a, b) => a.id - b.id).map((s) => (
@@ -47,8 +50,29 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
         ))
       }
     </ol>
+    </details>
   </div>
 </section>
+
+<script>
+  // Phones: the source list starts collapsed; any link to a source (or to the list) opens it first.
+  document.querySelectorAll<HTMLDetailsElement>('details[data-sources]').forEach((d) => {
+    const prefix = `#${d.dataset.sources}`;
+    const wants = (hash: string) => hash === prefix || hash.startsWith(`${prefix}-`);
+    if (window.matchMedia('(max-width: 899.98px)').matches && !wants(location.hash)) d.open = false;
+    document.addEventListener(
+      'click',
+      (ev) => {
+        const a = (ev.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+        if (a && wants(a.hash)) d.open = true;
+      },
+      true,
+    );
+    window.addEventListener('hashchange', () => {
+      if (wants(location.hash)) d.open = true;
+    });
+  });
+</script>
 
 <style>
   .mt {
@@ -95,6 +119,36 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
     font: 0.88rem/1.5 var(--sans);
     color: var(--muted);
     margin: 6px 0;
+  }
+  .mt-details > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .mt-details > summary::-webkit-details-marker {
+    display: none;
+  }
+  .mt-details > summary h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+  }
+  .mt-details > summary h3::after {
+    content: '';
+    width: 9px;
+    height: 9px;
+    margin-left: 4px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-3px);
+    transition: transform 0.2s ease;
+  }
+  .mt-details[open] > summary h3::after {
+    transform: rotate(-135deg) translateY(-1px);
+  }
+  .mt-count {
+    font: 500 0.95rem var(--sans);
+    color: var(--muted);
   }
   .mt-src {
     padding-left: 30px;
