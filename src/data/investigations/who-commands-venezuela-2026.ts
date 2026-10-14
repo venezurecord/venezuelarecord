@@ -43,7 +43,7 @@ export const META: InvestigationMeta = {
     es: 'Desde enero, Venezuela abrió su petróleo, recibió de nuevo al FMI y firmó un acuerdo petrolero con EE. UU. Las mismas personas que firmaron las leyes usadas contra quien disiente siguen nombrando a los jefes de la inteligencia y la contrainteligencia. Las gacetas lo muestran.',
   },
   published: '2026-10-13',
-  updated: '2026-10-13',
+  updated: '2026-10-14',
   ideaBy: 'Minerva Mendoza',
   cover,
   social: { en: ogEn, es: ogEs },
@@ -89,6 +89,7 @@ export const SOURCES: Source[] = [
   { id: 35, outlet: 'Gaceta Oficial', title: { en: 'Official Gazette No. 6,872 Extraordinary (30 Dec 2024): reform of the Organic Law of Communes', es: 'Gaceta Oficial N° 6.872 Extraordinaria (30 dic 2024): reforma de la Ley Orgánica de las Comunas' }, date: '30 Dec 2024', url: 'https://www.traviesoevans.com/travieso/wp-content/uploads/gacetas/2024/12-diciembre/2024-12-30-6872-extraordinario.pdf' },
   { id: 36, outlet: 'World Bank', title: { en: 'World Bank Group announces resumption of dealings with Venezuela (statement)', es: 'El Grupo Banco Mundial anuncia la reanudación de relaciones con Venezuela (comunicado)' }, date: '16 Apr 2026', url: 'https://www.worldbank.org/en/news/statement/2026/04/16/world-bank-group-announces-resumption-of-dealings-with-venezuela' },
   { id: 37, outlet: 'Wikimedia Commons', title: { en: 'Official Gazette No. 7,006 Extraordinary (18 Mar 2026): Decree 5,284, appointment of the DGCIM director', es: 'Gaceta Oficial N° 7.006 Extraordinaria (18 mar 2026): Decreto 5.284, nombramiento del director de la DGCIM' }, date: '18 Mar 2026', url: 'https://commons.wikimedia.org/wiki/File:Gaceta_Oficial_de_Venezuela_(Extraordinaria)_-_7006.pdf' },
+  { id: 40, outlet: 'Chequeado / Factchequeado', title: { en: 'Who is Delcy Rodríguez, Venezuela’s interim president after Nicolás Maduro’s capture', es: 'Quién es Delcy Rodríguez, la presidenta interina de Venezuela tras la captura de Nicolás Maduro' }, date: '5 Jan 2026', url: 'https://chequeado.com/el-explicador/quien-es-delcy-rodriguez-la-presidenta-interina-de-venezuela-tras-la-captura-de-nicolas-maduro/' },
   { id: 39, outlet: 'vLex Venezuela', title: { en: 'Organic Law of the Police Service and the Bolivarian National Police Corps (art. 17: the ministry is the “governing body” of the police service)', es: 'Ley Orgánica del Servicio de Policía y del Cuerpo de Policía Nacional Bolivariana (art. 17: el ministerio es el “Órgano Rector” del servicio de policía)' }, url: 'https://vlexvenezuela.com/vid/739939169' },
   { id: 38, outlet: 'Maldita.es', title: { en: 'VenApp, the app the Venezuelan government uses to report citizens', es: 'VenApp, la aplicación del Gobierno de Venezuela para denunciar a ciudadanos' }, date: '31 Jul 2024', url: 'https://maldita.es/malditatecnologia/20240731/venapp-aplicacion-venezuela-maduro-denunciar-ciudadanos/' },
 ];
@@ -126,17 +127,22 @@ export const OPENING = {
       },
     },
   ],
+  // Dated facts on each lane (from TIMELINE). The curves only show direction: they are not data.
   econLabels: [
-    { m: 0.7, label: { en: 'Hydrocarbons Law', es: 'Ley de Hidrocarburos' } },
-    { m: 3.5, label: { en: 'IMF and World Bank', es: 'FMI y Banco Mundial' } },
-    { m: 7.9, label: { en: 'Oil deal with the U.S.', es: 'Acuerdo petrolero con EE. UU.' } },
+    { date: '2026-01-22', label: { en: '22 Jan · Hydrocarbons Law', es: '22 ene · Ley de Hidrocarburos' } },
+    { date: '2026-04-16', label: { en: '16 Apr · IMF and World Bank', es: '16 abr · FMI y Banco Mundial' } },
+    { date: '2026-08-28', label: { en: '28 Aug · Oil deal with the U.S.', es: '28 ago · Acuerdo petrolero con EE. UU.' } },
   ],
   secLabels: [
-    { m: 0.15, label: { en: 'New DGCIM chief', es: 'Nuevo jefe de la DGCIM' } },
-    { m: 2.55, label: { en: 'Another DGCIM chief', es: 'Otro jefe de la DGCIM' } },
-    { m: 5.2, label: { en: 'Anti-hate law in force', es: 'Ley contra el Odio, vigente' } },
-    { m: 8.5, label: { en: '344 political prisoners', es: '344 presos políticos' } },
+    { date: '2026-01-06', label: { en: '6 Jan · New DGCIM chief', es: '6 ene · Nuevo jefe de la DGCIM' } },
+    { date: '2026-03-18', label: { en: '18 Mar · Another DGCIM chief', es: '18 mar · Otro jefe de la DGCIM' } },
+    { date: '2026-04-23', label: { en: '23 Apr · Amnesty ended', es: '23 abr · Fin de la amnistía' } },
+    { date: '2026-09-14', label: { en: '14 Sep · 344 political prisoners', es: '14 sept · 344 presos políticos' } },
   ],
+  illustrative: {
+    en: 'Illustrative graphic: the curves only show direction; each point is a dated fact.',
+    es: 'Gráfico ilustrativo: las curvas solo indican dirección; cada punto es un hecho con fecha.',
+  } as L,
   quotes: [
     {
       para: '16',
@@ -414,6 +420,7 @@ export const NODES: OrgNode[] = [
     role: { en: 'President of the National Assembly · Delcy Rodríguez’s brother', es: 'Presidente de la Asamblea Nacional · hermano de Delcy Rodríguez' },
     short: { en: 'National Assembly', es: 'Asamblea Nacional' },
     facts: [
+      { text: { en: 'Delcy Rodríguez’s brother; on 5 January 2026 he was reappointed president of the National Assembly (UN, para. 35).', es: 'Hermano de Delcy Rodríguez; el 5 de enero de 2026 fue reelegido presidente de la Asamblea Nacional (ONU, párr. 35).' }, src: [1, 40] },
       { text: { en: 'The UN mission calls him a “prominent spokesperson for State repressive policies” (para. 35).', es: 'La misión de la ONU lo describe como “prominent spokesperson for State repressive policies” (destacado portavoz de las políticas represivas del Estado) (párr. 35).' }, src: [1] },
       { text: { en: 'His Assembly passed the Hydrocarbons Law reform in January and the expansion of the Supreme Court from 20 to 32 justices in May 2026.', es: 'Su Asamblea aprobó la reforma de la Ley de Hidrocarburos en enero y la ampliación del TSJ de 20 a 32 magistrados en mayo de 2026.' }, src: [12, 14] },
     ],
@@ -454,7 +461,7 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'sebin', level: 3, kind: 'person', x: 70, y: 500, initials: 'AR', logo: lgSebin,
+    id: 'sebin', level: 3, kind: 'person', x: 60, y: 500, initials: 'AR', logo: lgSebin,
     photoCredit: noPhoto, logoCredit: emblem('SEBIN', 'SEBIN'),
     name: { en: 'Alexis Rodríguez Cabello', es: 'Alexis Rodríguez Cabello' },
     role: { en: 'Director of SEBIN (intelligence) since Oct 2024 · last confirmed in office in March 2026', es: 'Director del SEBIN (inteligencia) desde oct 2024 · confirmado en el cargo por última vez en marzo de 2026' },
@@ -467,7 +474,7 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'dgcim', level: 3, kind: 'person', x: 225, y: 500, initials: 'GG', logo: lgDgcim,
+    id: 'dgcim', level: 3, kind: 'person', x: 228, y: 500, initials: 'GG', logo: lgDgcim,
     photoCredit: noPhoto, logoCredit: emblem('DGCIM', 'DGCIM'),
     name: { en: 'Germán Gómez Lárez', es: 'Germán Gómez Lárez' },
     role: { en: 'Director of the DGCIM (military counterintelligence) since 18 Mar 2026', es: 'Director de la DGCIM (contrainteligencia militar) desde el 18 mar 2026' },
@@ -479,7 +486,7 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'cicpc', level: 3, kind: 'person', x: 380, y: 500, initials: 'DR', logo: lgCicpc,
+    id: 'cicpc', level: 3, kind: 'person', x: 396, y: 500, initials: 'DR', logo: lgCicpc,
     photoCredit: noPhoto, logoCredit: emblem('CICPC', 'CICPC'),
     name: { en: 'Douglas Rico', es: 'Douglas Rico' },
     role: { en: 'Director of the CICPC (criminal police) since 2016', es: 'Director del CICPC (policía científica) desde 2016' },
@@ -585,7 +592,7 @@ export const EDGES: OrgEdge[] = [
   { from: 'delcy', to: 'dgcim', type: 'appoint', label: { en: 'DGCIM director (Decree 5,284, 18 Mar)', es: 'Director de la DGCIM (Decreto 5.284, 18 mar)' }, src: [37, 6] },
   { from: 'delcy', to: 'cabello', type: 'legal', label: { en: 'Keeps him at Interior', es: 'Lo mantiene en Interior' }, src: [10] },
   { from: 'delcy', to: 'sebin', type: 'legal', label: { en: 'SEBIN belongs to the Vice Presidency she still holds', es: 'Órgano de la Vicepresidencia que ella sigue ocupando' }, src: [25, 30] },
-  { from: 'delcy', to: 'jorge', type: 'family', label: { en: 'Siblings', es: 'Hermanos' }, src: [12] },
+  { from: 'delcy', to: 'jorge', type: 'family', label: { en: 'Siblings', es: 'Hermanos' }, src: [1, 40] },
   { from: 'jorge', to: 'tsj', type: 'legal', label: { en: 'The Assembly elects and expanded the court', es: 'La AN elige y amplió el TSJ' }, src: [14] },
   { from: 'cabello', to: 'cicpc', type: 'legal', label: { en: 'Reports to Interior', es: 'Adscrito a Interior' }, src: [10] },
   { from: 'cabello', to: 'pnb', type: 'legal', label: { en: 'Reports to Interior', es: 'Adscrita a Interior' }, src: [10] },

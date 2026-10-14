@@ -229,3 +229,9 @@ export const TOC_LABELS = {
   en: { sig: 'The signature', org: 'Org chart', tl: '2026', gz: 'Gazettes', pen: 'Laws', va: 'VenApp', bal: 'Balance', src: 'Sources' },
   es: { sig: 'La firma', org: 'Organigrama', tl: '2026', gz: 'Gacetas', pen: 'Leyes', va: 'VenApp', bal: 'Balance', src: 'Fuentes' },
 } as const;
+
+/** Month labels for every axis in the piece (same capitalization everywhere). */
+export const MONTHS = {
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+  es: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct'],
+} as const;

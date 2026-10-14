@@ -99,11 +99,15 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
   .mt-src {
     padding-left: 30px;
     display: grid;
-    gap: 8px;
-    font: 0.86rem/1.45 var(--sans);
+    gap: 10px;
+    font: 0.9rem/1.45 var(--sans);
   }
   .mt-src li {
     scroll-margin-top: calc(var(--inv-top) + 80px);
+  }
+  .mt-src a {
+    padding-block: 12px;
+    margin-block: -12px;
   }
   .mt-src li:target {
     background: var(--badge-bg);

@@ -27,12 +27,14 @@ const OX = 80; // left margin for level labels
 const VBW = 1180;
 const VBH = 920;
 const R = 38;
-const size = (n: OrgNode) =>
-  n.kind === 'person'
-    ? { w: R * 2, h: R * 2 }
-    : n.kind === 'outcome'
-      ? { w: 230 + (n.image ? 40 : 0), h: 58 }
-      : { w: (n.id === 'fanb' ? 186 : n.id === 'consejos' ? 196 : 164) + (n.logo || n.image ? 44 : 0), h: 54 };
+// Box width from the label length (17–19 px text), plus room for an emblem or photo.
+const textW = (s: string, px: number) => Math.ceil(s.length * px * 0.56);
+const size = (n: OrgNode) => {
+  const slot = n.logo || n.image ? 46 : 0;
+  if (n.kind === 'person') return { w: R * 2, h: R * 2 };
+  if (n.kind === 'outcome') return { w: Math.max(230, textW(n.short[lang], 19) + 48) + slot, h: 60 };
+  return { w: Math.max(150, textW(n.short[lang], 17) + 36) + slot, h: 56 };
+};
 
 const byId = new Map(NODES.map((n) => [n.id, n]));
 const X = (n: OrgNode) => n.x + OX;
@@ -79,7 +81,7 @@ const edges = EDGES.map((e, i) => {
     d: `M${f(p1.x)} ${f(p1.y)} C${f(c1.x)} ${f(c1.y)} ${f(c2.x)} ${f(c2.y)} ${f(p2.x)} ${f(p2.y)}`,
     mid,
     label,
-    lw: Math.min(380, label.length * 7.1 + 18),
+    lw: Math.min(420, Math.ceil(label.length * 14 * 0.56) + 22),
   };
 });
 
@@ -132,9 +134,12 @@ const ICONS: Record<string, string> = {
   group: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3 2.7-5 6-5s6 2 6 5m-1.5-4.6C13.4 15.1 14.7 15 16 15c3.3 0 6 2 6 5',
   outcome: 'M12 3l9 16H3zM12 10v4m0 3v.5',
 };
-/** Long names go on two balanced lines under the portrait. */
-const nameLines = (s: string) => {
-  if (s.length <= 16) return [s];
+/** Names under the portraits: first name as an initial when there are three words (the full name is
+ *  in the aria-label and the profile), then two balanced lines when still long. */
+const nameLines = (full: string) => {
+  const parts = full.split(' ');
+  const s = parts.length >= 3 ? [`${parts[0][0]}.`, ...parts.slice(1)].join(' ') : full;
+  if (s.length <= 12) return [s];
   const w = s.split(' ');
   let best = [s];
   let diff = Infinity;
@@ -234,7 +239,7 @@ const nameLines = (s: string) => {
         <g class="lv" aria-hidden="true">
           {
             levels.map((l, i) => (
-              <text x="6" y={levelY[i] + 4}>
+              <text x="6" y={levelY[i] - 48}>
                 {i} · {l.label}
               </text>
             ))
@@ -305,14 +310,14 @@ const nameLines = (s: string) => {
                           {n.initials}
                         </text>
                       )}
-                      <text class="nm" x={cx} y={n.y + R + 24} text-anchor="middle">
+                      <text class="nm" x={cx} y={n.y + R + 26} text-anchor="middle">
                         {nameLines(n.name[lang]).map((l, j) => (
-                          <tspan x={cx} dy={j ? 19 : 0}>
+                          <tspan x={cx} dy={j ? 22 : 0}>
                             {l}
                           </tspan>
                         ))}
                       </text>
-                      <text class="sh" x={cx} y={n.y + R + 42 + (nameLines(n.name[lang]).length - 1) * 19} text-anchor="middle">
+                      <text class="sh" x={cx} y={n.y + R + 47 + (nameLines(n.name[lang]).length - 1) * 22} text-anchor="middle">
                         {n.short[lang]}
                       </text>
                     </g>
@@ -346,7 +351,7 @@ const nameLines = (s: string) => {
                           preserveAspectRatio="xMidYMid slice"
                         />
                       ) : null}
-                      <text class="bx" x={logos[n.id] || scenes[n.id] ? cx + 21 : cx} y={n.y + 6} text-anchor="middle">
+                      <text class="bx" x={logos[n.id] || scenes[n.id] ? cx + 23 : cx} y={n.y + 6} text-anchor="middle">
                         {n.short[lang]}
                       </text>
                     </g>
@@ -360,9 +365,16 @@ const nameLines = (s: string) => {
         <g class="elabels" aria-hidden="true">
           {
             edges.map((e) => (
-              <g class="elabel" data-e={e.i} transform={`translate(${f(e.mid.x)} ${f(e.mid.y)})`}>
-                <rect x={-e.lw / 2} y="-13" width={e.lw} height="24" rx="12" />
-                <text y="4" text-anchor="middle">
+              <g
+                class="elabel"
+                data-e={e.i}
+                data-x={f(Math.min(VBW - e.lw / 2 - 4, Math.max(e.lw / 2 + 4, e.mid.x)))}
+                data-y={f(e.mid.y)}
+                data-w={e.lw}
+                transform={`translate(${f(e.mid.x)} ${f(e.mid.y)})`}
+              >
+                <rect x={-e.lw / 2} y="-14" width={e.lw} height="27" rx="13" />
+                <text y="5" text-anchor="middle">
                   {e.label}
                 </text>
               </g>
@@ -576,6 +588,21 @@ const nameLines = (s: string) => {
 
     org.classList.add('is-live');
 
+    // Visible line labels are stacked so they never overlap (greedy, top to bottom).
+    function layoutLabels() {
+      const shown = labels.filter((l) => l.classList.contains('is-on') || l.classList.contains('is-hover'));
+      shown.sort((a, b) => Number(a.dataset.y) - Number(b.dataset.y));
+      const placed: { x: number; y: number; w: number }[] = [];
+      for (const l of shown) {
+        const x = Number(l.dataset.x);
+        const w = Number(l.dataset.w);
+        let y = Number(l.dataset.y);
+        for (let k = 0; k < 20 && placed.some((q) => Math.abs(q.x - x) < (q.w + w) / 2 + 6 && Math.abs(q.y - y) < 31); k++) y += 31;
+        placed.push({ x, y, w });
+        l.setAttribute('transform', `translate(${x} ${y})`);
+      }
+    }
+
     function paint() {
       const guided = org.dataset.mode === 'guided';
       let on: Set<string> | null = null;
@@ -597,10 +624,8 @@ const nameLines = (s: string) => {
         e.classList.toggle('is-dim', !active);
         e.classList.toggle('is-on', active && !!on);
       });
-      labels.forEach((l, i) => {
-        const [a, b] = data.edges[i];
-        l.classList.toggle('is-on', !!selected && (a === selected || b === selected));
-      });
+      // Line labels only appear on hover: a selected node's relations are listed in its profile.
+      labels.forEach((l) => l.classList.remove('is-hover'));
       org.dataset.step = guided ? String(step) : 'free';
       const text = data.labels.step.replace('{n}', String(step + 1));
       org.querySelectorAll<HTMLElement>('[data-step-label]').forEach((el) => (el.textContent = guided ? text : ''));
@@ -677,6 +702,7 @@ const nameLines = (s: string) => {
           const [a, b] = data.edges[i];
           l.classList.toggle('is-hover', a === n.dataset.id || b === n.dataset.id);
         });
+        layoutLabels();
       });
       n.addEventListener('pointerleave', () => labels.forEach((l) => l.classList.remove('is-hover')));
     });
@@ -761,13 +787,13 @@ const nameLines = (s: string) => {
     background: var(--bg);
   }
   .seg button {
-    min-height: 40px;
+    min-height: 44px;
     padding: 0 18px;
     border: 0;
     border-radius: 999px;
     background: transparent;
     color: var(--text);
-    font: 600 0.92rem var(--sans);
+    font: 600 0.95rem var(--sans);
     cursor: pointer;
   }
   .seg button[aria-pressed='true'] {
@@ -789,7 +815,7 @@ const nameLines = (s: string) => {
     float: left;
     margin-right: 6px;
     padding: 8px 0;
-    font: 700 0.72rem/1.4 var(--sans);
+    font: 700 0.75rem/1.4 var(--sans);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--muted);
@@ -798,12 +824,12 @@ const nameLines = (s: string) => {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    min-height: 36px;
-    padding: 0 12px 0 8px;
+    min-height: 44px;
+    padding: 0 14px 0 10px;
     border: 1px solid var(--line);
     border-radius: 999px;
     background: var(--bg);
-    font: 500 0.82rem var(--sans);
+    font: 500 0.9rem var(--sans);
     cursor: pointer;
     user-select: none;
   }
@@ -924,7 +950,7 @@ const nameLines = (s: string) => {
   }
   .org-step-n {
     margin: 0;
-    font: 700 0.72rem/1.4 var(--sans) !important;
+    font: 700 0.75rem/1.4 var(--sans) !important;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--inv-appoint);
@@ -964,7 +990,7 @@ const nameLines = (s: string) => {
     padding: 0;
     display: grid;
     gap: 8px;
-    font: 0.86rem/1.45 var(--sans);
+    font: 0.9rem/1.45 var(--sans);
   }
   .rel {
     display: flex;
@@ -995,7 +1021,7 @@ const nameLines = (s: string) => {
     overflow: visible;
   }
   .lv text {
-    font: 700 13px var(--sans);
+    font: 700 15px var(--sans);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     fill: var(--muted);
@@ -1084,15 +1110,15 @@ const nameLines = (s: string) => {
     stroke-width: 3;
   }
   .node .ini-chip-t {
-    font: 700 12px var(--sans);
+    font: 700 13px var(--sans);
     fill: var(--bg);
   }
   .node .ini {
-    font: 700 24px var(--sans);
+    font: 700 26px var(--sans);
     fill: var(--muted);
   }
   .node .nm {
-    font: 700 17px var(--sans);
+    font: 700 20px var(--sans);
     fill: var(--text);
     paint-order: stroke;
     stroke: var(--inv-band);
@@ -1100,7 +1126,7 @@ const nameLines = (s: string) => {
     stroke-linejoin: round;
   }
   .node .sh {
-    font: 500 14px var(--sans);
+    font: 500 16px var(--sans);
     fill: var(--muted);
     paint-order: stroke;
     stroke: var(--inv-band);
@@ -1120,12 +1146,12 @@ const nameLines = (s: string) => {
     stroke: none;
   }
   .node .bx {
-    font: 700 15px var(--sans);
+    font: 700 17px var(--sans);
     fill: var(--text);
   }
   .node.k-outcome .bx {
     fill: #fff;
-    font-size: 17px;
+    font-size: 19px;
   }
   .node:hover .ring,
   .node:focus-visible .ring,
@@ -1142,7 +1168,7 @@ const nameLines = (s: string) => {
     text-decoration: underline;
   }
   .node.is-dim {
-    opacity: 0.18;
+    opacity: 0.45;
   }
   .org-svg.is-armed .node {
     opacity: 0;
@@ -1157,7 +1183,7 @@ const nameLines = (s: string) => {
     transform: none;
   }
   .org-svg.is-armed.is-in .node.is-dim {
-    opacity: 0.18;
+    opacity: 0.45;
   }
   .elabel {
     opacity: 0;
@@ -1168,7 +1194,7 @@ const nameLines = (s: string) => {
     fill: var(--text);
   }
   .elabel text {
-    font: 600 13px var(--sans);
+    font: 600 14px var(--sans);
     fill: var(--bg);
   }
   .elabel.is-on,
@@ -1206,7 +1232,7 @@ const nameLines = (s: string) => {
     margin: 0;
     min-width: 7em;
     text-align: center;
-    font: 600 0.85rem var(--sans);
+    font: 600 0.9rem var(--sans);
     color: var(--muted);
   }
   .org[data-mode='free'] .stepper {
@@ -1248,7 +1274,7 @@ const nameLines = (s: string) => {
     border-radius: 50%;
     background: var(--text);
     color: var(--bg);
-    font-size: 0.72rem;
+    font-size: 0.75rem;
     letter-spacing: 0;
   }
   .lvl > ul {
@@ -1350,7 +1376,7 @@ const nameLines = (s: string) => {
     border: 2px solid var(--bg);
     background: var(--text);
     color: var(--bg);
-    font: 700 0.66rem var(--sans);
+    font: 700 0.75rem var(--sans);
   }
   .f-logo {
     position: relative;
@@ -1395,7 +1421,7 @@ const nameLines = (s: string) => {
     font: 700 1rem/1.25 var(--sans);
   }
   .tile-t span {
-    font: 0.84rem/1.3 var(--sans);
+    font: 0.9rem/1.35 var(--sans);
     color: var(--muted);
   }
   .tile-go {
@@ -1449,12 +1475,12 @@ const nameLines = (s: string) => {
   }
   .f-credit {
     margin: 6px 0 0;
-    font: 0.74rem/1.4 var(--sans);
+    font: 0.78rem/1.4 var(--sans);
     color: var(--muted);
   }
   .ficha h5 {
     margin: 18px 0 8px;
-    font: 700 0.72rem/1.4 var(--sans);
+    font: 700 0.75rem/1.4 var(--sans);
     letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--muted);
@@ -1502,7 +1528,7 @@ const nameLines = (s: string) => {
   }
   .mbar-p {
     margin: 0;
-    font: 0.86rem/1.45 var(--sans);
+    font: 0.9rem/1.45 var(--sans);
     color: var(--muted);
     max-height: 6.2em;
     overflow-y: auto;
@@ -1512,7 +1538,7 @@ const nameLines = (s: string) => {
     align-items: center;
     justify-content: space-between;
     margin-top: 8px;
-    font: 600 0.82rem var(--sans);
+    font: 600 0.88rem var(--sans);
     color: var(--muted);
   }
   .org[data-mode='free'] .mbar-nav {

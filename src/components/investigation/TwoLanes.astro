@@ -3,7 +3,7 @@
 // Phones and no-JS: a vertical list by month. Both come from the same data.
 import type { Lang } from '../../i18n/ui';
 import { TIMELINE, type Lane } from '../../data/investigations/who-commands-venezuela-2026';
-import { ANCHORS, it } from '../../data/investigations/ui';
+import { ANCHORS, it, MONTHS } from '../../data/investigations/ui';
 import Cite from './Cite.astro';
 
 interface Props {
@@ -28,11 +28,10 @@ const events = TIMELINE.map((e, i) => {
 });
 
 const monthFmt = new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'es', { month: 'long', timeZone: 'UTC' });
-const monthShort = new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'es', { month: 'short', timeZone: 'UTC' });
 const months = Array.from({ length: 10 }, (_, m) => ({
   m,
   name: monthFmt.format(new Date(Date.UTC(2026, m, 15))),
-  short: monthShort.format(new Date(Date.UTC(2026, m, 15))).replace('.', ''),
+  short: MONTHS[lang][m],
   x: pct(`2026-${String(m + 1).padStart(2, '0')}-01`),
 }));
 const byMonth = months
@@ -190,7 +189,7 @@ const laneName = (l: Lane) => (l === 'econ' ? it(lang, 'laneEcon') : l === 'sec'
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    min-height: 40px;
+    min-height: 44px;
     padding: 0 16px;
     border: 1px solid var(--line);
     border-radius: 999px;
@@ -237,7 +236,7 @@ const laneName = (l: Lane) => (l === 'econ' ? it(lang, 'laneEcon') : l === 'sec'
     grid-template-rows: 120px 120px 28px;
   }
   .tl-lane-label {
-    font: 700 0.74rem/1.3 var(--sans);
+    font: 700 0.76rem/1.3 var(--sans);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     align-self: center;
@@ -395,7 +394,7 @@ const laneName = (l: Lane) => (l === 'econ' ? it(lang, 'laneEcon') : l === 'sec'
     margin-right: 6px;
     padding: 2px 8px;
     border-radius: 999px;
-    font: 700 0.68rem/1.4 var(--sans);
+    font: 700 0.75rem/1.4 var(--sans);
     letter-spacing: 0.06em;
     text-transform: uppercase;
     color: var(--bg);

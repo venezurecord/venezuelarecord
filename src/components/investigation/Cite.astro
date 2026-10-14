@@ -29,24 +29,24 @@ const { lang, ids, anchor } = Astro.props;
 <style>
   .cite {
     font-family: var(--sans);
-    font-size: 0.68em;
+    font-size: 0.75rem;
     font-weight: 600;
     line-height: 0;
     margin-left: 2px;
     white-space: nowrap;
   }
+  /* Small text, but a finger-sized hit area (padding that does not change the line height). */
   .cite a {
     display: inline-block;
-    min-width: 1.4em;
-    padding: 2px 1px;
+    min-width: 1.6em;
+    padding: 22px 4px;
+    margin: -22px 0;
     text-align: center;
     text-decoration: none;
-    color: inherit;
-    opacity: 0.75;
+    color: var(--accent);
   }
   .cite a:hover,
   .cite a:focus-visible {
-    opacity: 1;
     text-decoration: underline;
   }
 </style>

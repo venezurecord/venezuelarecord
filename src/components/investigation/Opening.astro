@@ -1,10 +1,11 @@
 ---
-// Opening: headline over a double line that splits into two lanes (economy / security) as the
-// reader scrolls. The stage is sticky; the text steps scroll over it. Without JS (or with
-// prefers-reduced-motion) the final state is shown: both lanes drawn, every label visible.
+// Opening: the headline sits on a double rule; as the reader scrolls, a sticky graphic shows the
+// rule splitting into two lanes (economy / security). The curves are illustrative (direction
+// only); every point on them is a dated fact from the timeline. Without JS (or with
+// prefers-reduced-motion) the final state is shown: both lanes drawn, every point visible.
 import type { Lang } from '../../i18n/ui';
 import { META, OPENING } from '../../data/investigations/who-commands-venezuela-2026';
-import { it, longDate } from '../../data/investigations/ui';
+import { it, longDate, MONTHS } from '../../data/investigations/ui';
 
 interface Props {
   lang: Lang;
@@ -13,39 +14,47 @@ const { lang } = Astro.props;
 
 const f = (n: number) => Math.round(n * 10) / 10;
 const ease = (m: number, k: number) => 1 - Math.exp(-m / k);
-const months = lang === 'en' ? 'JFMAMJJASO'.split('') : 'EFMAMJJASO'.split('');
+const months = MONTHS[lang];
+const path = (pts: [number, number][]) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${f(x)} ${f(y)}`).join('');
+const range = Array.from({ length: 101 }, (_, i) => i * 0.1);
+// Position of a date on the Jan–Oct axis, in months (0 = 1 Jan, 10 = 1 Nov).
+const t0 = Date.UTC(2026, 0, 1);
+const t1 = Date.UTC(2026, 10, 1);
+const monthPos = (iso: string) => ((Date.parse(`${iso}T00:00:00Z`) - t0) / (t1 - t0)) * 10;
 
 // Wide stage (desktop): time runs left → right.
 const W = { x0: 500, x1: 1160, y: 330 };
 const wx = (m: number) => W.x0 + ((W.x1 - W.x0) * m) / 10;
 const wEcon = (m: number) => W.y - 5 - 205 * ease(m, 1.9) - 20 * Math.sin(m * 1.75) * ease(m, 0.8);
 const wSec = (m: number) => W.y + 5 + 78 * ease(m, 0.22);
-const path = (pts: [number, number][]) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${f(x)} ${f(y)}`).join('');
-const range = Array.from({ length: 101 }, (_, i) => i * 0.1);
 const wEconD = path(range.map((m) => [wx(m), wEcon(m)]));
 const wSecD = path(range.map((m) => [wx(m), wSec(m)]));
 
 // Tall stage (phones): time runs top → bottom; economy bends left, security goes right and stays straight.
-const T = { y0: 150, y1: 730, x: 200 };
+// Compact viewBox so the text stays at least 14 px on a phone.
+const T = { y0: 104, y1: 556, x: 200 };
 const ty = (m: number) => T.y0 + ((T.y1 - T.y0) * m) / 10;
-const tEcon = (m: number) => T.x - 4 - 92 * ease(m, 1.6) - 15 * Math.sin(m * 1.8) * ease(m, 0.8);
-const tSec = (m: number) => T.x + 4 + 86 * ease(m, 0.22);
+const tEcon = (m: number) => T.x - 4 - 100 * ease(m, 1.6) - 14 * Math.sin(m * 1.8) * ease(m, 0.8);
+const tSec = (m: number) => T.x + 4 + 112 * ease(m, 0.22);
 const tEconD = path(range.map((m) => [tEcon(m), ty(m)]));
 const tSecD = path(range.map((m) => [tSec(m), ty(m)]));
 
-const econ = OPENING.econLabels.map((l, i) => ({ ...l, i, label: l.label[lang] }));
-const sec = OPENING.secLabels.map((l, i) => ({ ...l, i, label: l.label[lang] }));
+const shortDate = (s: string) => s.split(' · ')[0];
+const econ = OPENING.econLabels.map((l, i) => ({ i, m: monthPos(l.date), label: l.label[lang] }));
+const sec = OPENING.secLabels.map((l, i) => ({ i, m: monthPos(l.date), label: l.label[lang] }));
+// Wide labels: alternate rows so neighbours never collide.
+const wSecDy = (i: number, m: number) => (m < 1 ? 26 : i % 2 ? 56 : 32);
+// Tall labels (date only): nudge the two pairs that fall at similar heights.
+const tEconDy = [0, -14, -10];
+const tSecDy = [6, 0, 18, -20];
 const [first, econStep, secStep] = OPENING.steps;
 const updated = longDate(lang, META.updated);
 ---
 
 <section class="op" data-op data-step="0" aria-labelledby="inv-title">
   <div class="op-stage" aria-hidden="true">
-    <svg class="op-svg op-wide" viewBox="0 0 1200 560" preserveAspectRatio="xMidYMid meet" focusable="false">
-      <g class="op-base-full">
-        <line x1="0" x2="1200" y1={W.y - 5} y2={W.y - 5}></line>
-        <line x1="0" x2="1200" y1={W.y + 5} y2={W.y + 5}></line>
-      </g>
+    <p class="op-note">{OPENING.illustrative[lang]}</p>
+    <svg class="op-svg op-wide" viewBox="0 0 1200 560" preserveAspectRatio="xMidYMid meet" focusable="false" aria-hidden="true">
       <g class="op-base">
         <line x1="0" x2={W.x0 + 3} y1={W.y - 5} y2={W.y - 5}></line>
         <line x1="0" x2={W.x0 + 3} y1={W.y + 5} y2={W.y + 5}></line>
@@ -56,17 +65,23 @@ const updated = longDate(lang, META.updated);
       </g>
       <path class="op-lane op-econ" d={wEconD} pathLength="1"></path>
       <path class="op-lane op-sec" d={wSecD} pathLength="1"></path>
-      <text class="op-lane-name op-econ-name" x={W.x1} y="62" text-anchor="end">{it(lang, 'laneEcon')}</text>
+      <text class="op-lane-name op-econ-name" x={W.x1} y="42" text-anchor="end">{it(lang, 'laneEcon')}</text>
       <text class="op-lane-name op-sec-name" x={W.x1} y={f(wSec(10) - 16)} text-anchor="end">{it(lang, 'laneSec')}</text>
       <g class="op-axis">
-        {months.map((m, i) => <text x={f(wx(i + 0.5))} y="520" text-anchor="middle">{m}</text>)}
+        {months.map((m, i) => <text x={f(wx(i + 0.5))} y="524" text-anchor="middle">{m}</text>)}
         <line x1={W.x0} x2={W.x1} y1="500" y2="500"></line>
       </g>
       {
         econ.map((e) => (
           <g class="op-pt op-pt-econ" style={`--i:${e.i}`}>
             <circle cx={f(wx(e.m))} cy={f(wEcon(e.m))} r="7"></circle>
-            <text x={f(wx(e.m) + (e.m < 1.5 ? 14 : 0))} y={f(wEcon(e.m) - (e.m < 1.5 ? 10 : 18))} text-anchor={e.m < 1.5 ? 'start' : 'middle'}>{e.label}</text>
+            <text
+              x={f(wx(e.m) + (e.m < 1.5 ? 14 : 0))}
+              y={f(wEcon(e.m) - (e.m < 1.5 ? 10 : 18))}
+              text-anchor={e.m < 1.5 ? 'start' : 'middle'}
+            >
+              {e.label}
+            </text>
           </g>
         ))
       }
@@ -74,41 +89,49 @@ const updated = longDate(lang, META.updated);
         sec.map((e) => (
           <g class="op-pt op-pt-sec" style={`--i:${e.i}`}>
             <circle cx={f(wx(e.m))} cy={f(wSec(e.m))} r="7"></circle>
-            <text x={f(wx(e.m) + (e.m < 1 ? 14 : 0))} y={f(wSec(e.m) + (e.m < 1 ? 24 : e.i % 2 ? 54 : 30))} text-anchor={e.m < 1 ? 'start' : 'middle'}>{e.label}</text>
+            <text x={f(wx(e.m) + (e.m < 1 ? 14 : 0))} y={f(wSec(e.m) + wSecDy(e.i, e.m))} text-anchor={e.m < 1 ? 'start' : 'middle'}>
+              {e.label}
+            </text>
           </g>
         ))
       }
     </svg>
 
-    <svg class="op-svg op-tall" viewBox="0 0 400 760" preserveAspectRatio="xMidYMid meet" focusable="false">
+    <svg class="op-svg op-tall" viewBox="0 0 400 600" preserveAspectRatio="xMidYMin meet" focusable="false" aria-hidden="true">
       <g class="op-base">
         <line y1="-400" y2={T.y0 + 3} x1={T.x - 4} x2={T.x - 4}></line>
         <line y1="-400" y2={T.y0 + 3} x1={T.x + 4} x2={T.x + 4}></line>
       </g>
       <g class="op-split">
-        <line x1="20" x2="330" y1={T.y0} y2={T.y0}></line>
-        <text x="20" y={T.y0 - 8}>{first.kicker[lang]}</text>
+        <line x1="64" x2="384" y1={T.y0} y2={T.y0}></line>
+        <text x={T.x - 16} y={T.y0 - 10} text-anchor="end">{lang === 'en' ? '3 Jan 2026' : '3 ene 2026'}</text>
       </g>
       <path class="op-lane op-econ" d={tEconD} pathLength="1"></path>
       <path class="op-lane op-sec" d={tSecD} pathLength="1"></path>
       <g class="op-axis">
-        {months.map((m, i) => <text x="16" y={f(ty(i + 0.5) + 4)}>{m}</text>)}
+        {months.map((m, i) => <text x="4" y={f(ty(i + 0.5) + 6)}>{m}</text>)}
       </g>
-      <text class="op-lane-name op-econ-name" x={f(tEcon(10))} y="756" text-anchor="middle">{it(lang, 'laneEcon')}</text>
-      <text class="op-lane-name op-sec-name" x={f(tSec(10))} y="756" text-anchor="middle">{lang === 'en' ? 'Security' : 'Seguridad'}</text>
+      <text class="op-lane-name op-econ-name" x={f(tEcon(10))} y="592" text-anchor="middle">{it(lang, 'laneEcon')}</text>
+      <text class="op-lane-name op-sec-name" x={f(tSec(10))} y="592" text-anchor="middle">{lang === 'en' ? 'Security' : 'Seguridad'}</text>
       {
         econ.map((e) => (
           <g class="op-pt op-pt-econ" style={`--i:${e.i}`}>
-            <circle cx={f(tEcon(e.m))} cy={f(ty(e.m))} r="6"></circle>
-            <text x={f(tEcon(e.m) + 12)} y={f(ty(e.m) + 4)}>{e.label}</text>
+            <circle cx={f(tEcon(e.m))} cy={f(ty(e.m))} r="7"></circle>
+            <text x={f(tEcon(e.m) + 14)} y={f(ty(e.m) + 7 + tEconDy[e.i])}>{shortDate(e.label)}</text>
           </g>
         ))
       }
       {
         sec.map((e) => (
           <g class="op-pt op-pt-sec" style={`--i:${e.i}`}>
-            <circle cx={f(tSec(e.m))} cy={f(ty(e.m))} r="6"></circle>
-            <text x={f(tSec(e.m) - 12)} y={f(ty(e.m) + 4)} text-anchor="end">{e.label}</text>
+            <circle cx={f(tSec(e.m))} cy={f(ty(e.m))} r="7"></circle>
+            <text
+              x={f(tSec(e.m) + (e.i === 0 ? 14 : -14))}
+              y={f(ty(e.m) + 7 + tSecDy[e.i])}
+              text-anchor={e.i === 0 ? 'start' : 'end'}
+            >
+              {shortDate(e.label)}
+            </text>
           </g>
         ))
       }
@@ -123,8 +146,9 @@ const updated = longDate(lang, META.updated);
         <p class="op-sub">{META.subtitle[lang]}</p>
         <p class="op-credit" set:html={it(lang, 'ideaCredit', { name: META.ideaBy })} />
         <p class="op-date"><time datetime={META.updated}>{it(lang, 'updated', { date: updated })}</time></p>
+        <div class="op-rule" aria-hidden="true"></div>
+        <p class="op-cue">{first.text[lang]} <span aria-hidden="true">↓</span></p>
       </div>
-      <p class="op-cue">{first.text[lang]} <span aria-hidden="true">↓</span></p>
     </header>
 
     <div class="op-step" data-i="1">
@@ -148,30 +172,28 @@ const updated = longDate(lang, META.updated);
       </div>
     </div>
 
-    <div class="op-step op-step-quotes" data-i="4">
-      <div class="op-card op-quotes">
-        <h2 class="op-card-kicker">{it(lang, 'quotesTitle')}</h2>
-        {
-          OPENING.quotes.map((q) => (
-            <figure>
-              <p class="op-q-about">{q.about[lang]}</p>
-              <blockquote lang={lang}>
-                <p>“{q[lang]}”</p>
-              </blockquote>
-              {lang === 'es' && (
-                <p class="op-q-orig" lang="en">
-                  Original: “{q.en}”
-                </p>
-              )}
-              <figcaption>
-                {it(lang, 'quoteSource', { p: q.para })}
-                {lang === 'es' && <> {it(lang, 'translationNote')}</>}
-              </figcaption>
-            </figure>
-          ))
-        }
-      </div>
-    </div>
+    {
+      OPENING.quotes.map((q, i) => (
+        <div class="op-step" data-i={4 + i}>
+          <figure class="op-card op-quotes">
+            {i === 0 && <h2 class="op-card-kicker">{it(lang, 'quotesTitle')}</h2>}
+            <p class="op-q-about">{q.about[lang]}</p>
+            <blockquote lang={lang}>
+              <p>“{q[lang]}”</p>
+            </blockquote>
+            {lang === 'es' && (
+              <p class="op-q-orig" lang="en">
+                Original: “{q.en}”
+              </p>
+            )}
+            <figcaption>
+              {it(lang, 'quoteSource', { p: q.para })}
+              {lang === 'es' && <> {it(lang, 'translationNote')}</>}
+            </figcaption>
+          </figure>
+        </div>
+      ))
+    }
   </div>
 </section>
 
@@ -198,7 +220,7 @@ const updated = longDate(lang, META.updated);
   .op {
     --op-bg: #0b0f17;
     --op-text: #f3f0e8;
-    --op-muted: #a9b0bd;
+    --op-muted: #b3b9c5;
     --op-econ: #f2a93b;
     --op-sec: #ff6a70;
     position: relative;
@@ -216,6 +238,18 @@ const updated = longDate(lang, META.updated);
     overflow: hidden;
     pointer-events: none;
   }
+  .op-note {
+    position: absolute;
+    top: 12px;
+    right: var(--gutter);
+    left: var(--gutter);
+    margin: 0;
+    text-align: right;
+    max-width: 560px;
+    margin-left: auto;
+    font: 500 0.8rem/1.4 var(--sans);
+    color: var(--op-muted);
+  }
   .op-svg {
     position: absolute;
     inset: 0;
@@ -226,8 +260,8 @@ const updated = longDate(lang, META.updated);
     display: none;
   }
   .op-tall {
-    inset: 2svh 0 0;
-    height: 96%;
+    inset: 72px 0 auto;
+    height: calc(58% - 28px);
   }
   @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
     .op-wide {
@@ -238,8 +272,7 @@ const updated = longDate(lang, META.updated);
     }
   }
 
-  .op-base line,
-  .op-base-full line {
+  .op-base line {
     stroke: var(--op-text);
     stroke-width: 3;
   }
@@ -248,15 +281,22 @@ const updated = longDate(lang, META.updated);
     stroke-width: 1;
     stroke-dasharray: 3 5;
   }
-  .op-split text,
-  .op-axis text {
+  .op-split text {
     fill: var(--op-muted);
-    font: 600 13px var(--sans);
+    font: 600 14px var(--sans);
     letter-spacing: 0.08em;
     text-transform: uppercase;
   }
+  .op-axis text {
+    fill: var(--op-muted);
+    font: 600 15px var(--sans);
+  }
+  .op-tall .op-split text,
+  .op-tall .op-axis text {
+    font-size: 19px;
+  }
   .op-axis line {
-    stroke: rgba(255, 255, 255, 0.15);
+    stroke: rgba(255, 255, 255, 0.18);
   }
   .op-lane {
     fill: none;
@@ -265,6 +305,9 @@ const updated = longDate(lang, META.updated);
     stroke-linejoin: round;
     stroke-dasharray: 1;
     stroke-dashoffset: 0;
+  }
+  .op-tall .op-lane {
+    stroke-width: 5;
   }
   .op-econ {
     stroke: var(--op-econ);
@@ -276,6 +319,9 @@ const updated = longDate(lang, META.updated);
     font: 700 15px var(--sans);
     letter-spacing: 0.1em;
     text-transform: uppercase;
+  }
+  .op-tall .op-lane-name {
+    font-size: 18px;
   }
   .op-econ-name {
     fill: var(--op-econ);
@@ -292,7 +338,8 @@ const updated = longDate(lang, META.updated);
     stroke-linejoin: round;
   }
   .op-tall .op-pt text {
-    font-size: 13px;
+    font-size: 20px;
+    font-weight: 700;
   }
   .op-pt-econ circle {
     fill: var(--op-bg);
@@ -304,65 +351,46 @@ const updated = longDate(lang, META.updated);
     stroke: var(--op-sec);
     stroke-width: 3;
   }
-  .op-base-full {
-    opacity: 0;
-  }
 
   /* Live states per step: JS available (html.js is set before first paint) and motion allowed.
      Without JS or with reduced motion the final state shows. */
   @media (prefers-reduced-motion: no-preference) {
-  :global(html.js) .op .op-base-full {
-    transition: opacity 0.6s ease;
-  }
-  :global(html.js) .op[data-step='0'] .op-base-full {
-    opacity: 1;
-  }
-  :global(html.js) .op[data-step='0'] .op-base {
-    opacity: 0;
-  }
-  :global(html.js) .op .op-lane {
-    transition:
-      stroke-dashoffset 1.6s cubic-bezier(0.65, 0, 0.35, 1),
-      opacity 0.5s ease;
-  }
-  :global(html.js) .op[data-step='0'] .op-lane {
-    stroke-dashoffset: 1;
-  }
-  :global(html.js) .op .op-split,
-  :global(html.js) .op .op-axis,
-  :global(html.js) .op .op-lane-name,
-  :global(html.js) .op .op-pt {
-    transition:
-      opacity 0.5s ease,
-      transform 0.5s ease;
-  }
-  :global(html.js) .op[data-step='0'] :is(.op-split, .op-axis, .op-lane-name) {
-    opacity: 0;
-  }
-  :global(html.js) .op:is([data-step='0'], [data-step='1']) .op-pt {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  :global(html.js) .op[data-step='2'] :is(.op-pt-sec, .op-sec-name) {
-    opacity: 0;
-  }
-  :global(html.js) .op[data-step='2'] .op-sec {
-    opacity: 0.3;
-  }
-  :global(html.js) .op[data-step='3'] :is(.op-econ, .op-pt-econ, .op-econ-name) {
-    opacity: 0.3;
-  }
-  :global(html.js) .op .op-pt {
-    transition-delay: calc(var(--i) * 120ms);
-  }
-  /* Phones: the tall graphic waits below the headline, then rises */
-  :global(html.js) .op .op-tall {
-    transition: transform 1s cubic-bezier(0.65, 0, 0.35, 1);
-  }
-  :global(html.js) .op[data-step='0'] .op-tall {
-    transform: translateY(42%);
-  }
-
+    :global(html.js) .op .op-svg,
+    :global(html.js) .op .op-note {
+      transition: opacity 0.6s ease;
+    }
+    :global(html.js) .op[data-step='0'] :is(.op-svg, .op-note) {
+      opacity: 0;
+    }
+    :global(html.js) .op .op-lane {
+      transition:
+        stroke-dashoffset 1.6s cubic-bezier(0.65, 0, 0.35, 1),
+        opacity 0.5s ease;
+    }
+    :global(html.js) .op[data-step='0'] .op-lane {
+      stroke-dashoffset: 1;
+    }
+    :global(html.js) .op .op-pt {
+      transition:
+        opacity 0.5s ease calc(var(--i) * 120ms),
+        transform 0.5s ease calc(var(--i) * 120ms);
+    }
+    :global(html.js) .op:is([data-step='0'], [data-step='1']) .op-pt {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    :global(html.js) .op .op-lane-name {
+      transition: opacity 0.5s ease;
+    }
+    :global(html.js) .op[data-step='2'] :is(.op-pt-sec, .op-sec-name) {
+      opacity: 0;
+    }
+    :global(html.js) .op[data-step='2'] .op-sec {
+      opacity: 0.3;
+    }
+    :global(html.js) .op[data-step='3'] :is(.op-econ, .op-pt-econ, .op-econ-name) {
+      opacity: 0.3;
+    }
   }
 
   /* ---------- steps ---------- */
@@ -373,29 +401,26 @@ const updated = longDate(lang, META.updated);
     z-index: 1;
   }
   .op-step {
-    min-height: calc(100vh - var(--inv-top));
-    min-height: calc(100svh - var(--inv-top));
+    min-height: calc(85vh - var(--inv-top));
+    min-height: calc(85svh - var(--inv-top));
     display: flex;
     align-items: center;
-    padding: 12svh var(--gutter);
+    padding: 6svh var(--gutter);
   }
   .op-hero {
-    flex-direction: column;
-    align-items: stretch;
-    justify-content: space-between;
-    padding-top: clamp(28px, 7svh, 72px);
-    padding-bottom: 28px;
+    min-height: calc(100vh - var(--inv-top));
+    min-height: calc(100svh - var(--inv-top));
+    align-items: flex-start;
+    padding-top: clamp(28px, 6svh, 64px);
   }
   .op-hero-inner {
     max-width: 980px;
     width: 100%;
     margin-inline: auto;
-    background: linear-gradient(var(--op-bg) 85%, transparent);
-    padding-bottom: 16px;
   }
   .op-kicker {
     margin: 0 0 18px;
-    font: 600 0.78rem/1.4 var(--sans);
+    font: 600 0.8rem/1.4 var(--sans);
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--op-muted);
@@ -424,23 +449,33 @@ const updated = longDate(lang, META.updated);
   .op-credit,
   .op-date {
     margin: 0;
-    font: 0.92rem/1.5 var(--sans);
+    font: 0.95rem/1.5 var(--sans);
     color: var(--op-muted);
   }
   .op-credit :global(strong) {
     color: var(--op-text);
   }
+  /* The double rule the headline sits on: it becomes the two lanes as the reader scrolls. */
+  .op-rule {
+    height: 10px;
+    margin: 28px calc(var(--gutter) * -1) 0;
+    border-block: 3px solid var(--op-text);
+  }
+  @media (min-width: 1040px) {
+    .op-rule {
+      margin-inline: calc((100vw - 980px) / -2);
+    }
+  }
   .op-cue {
-    max-width: 980px;
-    width: 100%;
-    margin: 0 auto;
-    font: 600 0.85rem/1.4 var(--sans);
-    letter-spacing: 0.04em;
-    color: var(--op-muted);
+    margin: 16px 0 0;
+    max-width: 46ch;
+    font: 500 1.05rem/1.5 var(--serif);
+    color: #d9d5cc;
   }
   .op-cue span {
     display: inline-block;
     margin-left: 6px;
+    font-family: var(--sans);
     animation: op-bob 1.8s ease-in-out 1.5s 3;
   }
   @keyframes op-bob {
@@ -451,13 +486,13 @@ const updated = longDate(lang, META.updated);
 
   .op-card {
     width: min(100%, 420px);
-    margin-top: auto;
-    background: rgba(11, 15, 23, 0.94);
-    border: 1px solid rgba(255, 255, 255, 0.14);
+    margin: 0;
+    background: rgba(11, 15, 23, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.16);
     border-radius: 8px;
-    padding: 20px 22px;
+    padding: 18px 20px;
     font-family: var(--serif);
-    font-size: 1.12rem;
+    font-size: 1.1rem;
     line-height: 1.55;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
   }
@@ -465,7 +500,7 @@ const updated = longDate(lang, META.updated);
     margin: 0;
   }
   .op-card-kicker {
-    font: 700 0.75rem/1.4 var(--sans) !important;
+    font: 700 0.78rem/1.4 var(--sans) !important;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--op-muted);
@@ -483,94 +518,56 @@ const updated = longDate(lang, META.updated);
   .op-card-sec .op-card-kicker {
     color: var(--op-sec);
   }
-  .op-dek {
-    font-size: 1.18rem;
-  }
-
   .op-quotes {
-    width: min(100%, 560px);
-  }
-  .op-quotes figure {
-    margin: 0;
-  }
-  .op-quotes figure + figure {
-    margin-top: 22px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    width: min(100%, 520px);
   }
   .op-q-about {
-    font: 600 0.8rem/1.4 var(--sans) !important;
+    font: 600 0.85rem/1.4 var(--sans) !important;
     color: var(--op-muted);
     margin-bottom: 6px !important;
   }
   .op-quotes blockquote {
     margin: 0;
-    font-size: clamp(1.25rem, 3.2vw, 1.6rem);
+    font-size: clamp(1.2rem, 3.2vw, 1.55rem);
     line-height: 1.3;
     font-style: italic;
     color: #fff;
   }
   .op-q-orig {
     margin-top: 8px !important;
-    font: italic 0.9rem/1.45 var(--serif);
+    font: italic 0.95rem/1.45 var(--serif);
     color: var(--op-muted);
   }
   .op-quotes figcaption {
     margin-top: 8px;
-    font: 0.78rem/1.4 var(--sans);
+    font: 0.8rem/1.4 var(--sans);
     color: var(--op-muted);
   }
 
-  @media (min-width: 900px) {
+  /* Desktop: cards in a left column that ends before the split, so they never cover the lanes or the axis */
+  @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
     .op-step:not(.op-hero) {
-      align-items: center;
       padding-left: max(var(--gutter), calc((100vw - 1200px) / 2 + 24px));
     }
-    .op-card {
-      margin-top: 0;
-      width: min(34vw, 420px);
-    }
+    .op-card,
     .op-quotes {
-      width: min(34vw, 460px);
+      width: min(calc(41vw - 48px), 420px);
     }
   }
 
-  /* Phones / portrait: the headline sits on a double rule; on scroll the rule turns into the
-     vertical two-lane graphic. */
+  /* Phones / portrait: graphic in the upper part of the screen, cards anchored at the bottom */
   @media not ((min-width: 900px) and (min-aspect-ratio: 1/1)) {
-    .op-hero {
-      justify-content: center;
-      gap: 8px;
-    }
-    .op-hero-inner::after {
-      content: '';
-      display: block;
-      height: 6px;
-      margin: 26px calc(var(--gutter) * -1) 0;
-      border-block: 3px solid var(--op-text);
-    }
-    @media (prefers-reduced-motion: no-preference) {
-      :global(html.js) .op .op-tall .op-base {
-        transition: opacity 0.5s ease;
-      }
-      :global(html.js) .op[data-step='0'] .op-tall .op-base {
-        opacity: 0;
-      }
-    }
-    .op-tall {
-      inset: 2svh 0 auto;
-      height: 60svh;
-    }
     .op-step:not(.op-hero) {
       align-items: flex-end;
-      padding-bottom: max(16px, 3svh);
+      padding-bottom: max(14px, 2svh);
     }
     .op-card {
+      width: 100%;
       font-size: 1rem;
-      padding: 16px 18px;
+      padding: 14px 16px;
     }
     .op-dek {
-      font-size: 1.04rem;
+      font-size: 1rem;
     }
     .op-quotes blockquote {
       font-size: 1.15rem;
