@@ -147,7 +147,7 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
   `prefers-reduced-motion`.
 - Reglas: autor = organización Venezuela Record (también en JSON-LD); crédito visible a quien propuso la idea; ningún
   nombre del equipo ni casos personales; acusaciones siempre atribuidas ("denunció X en <medio>"); retratos solo con
-  licencia libre (Commons) con crédito en la ficha, si no, iniciales; en los recortes de gacetas se tapan los números de
+  licencia libre (Commons) con crédito en la ficha; si no hay foto libre, el escudo oficial (dominio público en Commons) del organismo que dirige, con sus iniciales y la aclaración en la ficha; en los recortes de gacetas se tapan los números de
   cédula y se aclara que el resaltado es nuestro. Cada línea del organigrama y cada punto de la cronología citan fuente.
 - Recortes de firmas: imágenes compuestas (cabecera + bloque de firma) en
   `src/assets/investigations/<slug>/gazettes/`; las cajas del resaltador (en %) están en

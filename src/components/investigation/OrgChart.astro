@@ -32,7 +32,7 @@ const size = (n: OrgNode) =>
     ? { w: R * 2, h: R * 2 }
     : n.kind === 'outcome'
       ? { w: 230, h: 58 }
-      : { w: n.id === 'fanb' ? 186 : n.id === 'consejos' ? 196 : 164, h: 54 };
+      : { w: (n.id === 'fanb' ? 186 : n.id === 'consejos' ? 196 : 164) + (n.logo ? 44 : 0), h: 54 };
 
 const byId = new Map(NODES.map((n) => [n.id, n]));
 const X = (n: OrgNode) => n.x + OX;
@@ -87,6 +87,15 @@ const portraits = Object.fromEntries(
   await Promise.all(
     NODES.filter((n) => n.photo).map(async (n) => {
       const img = await getImage({ src: n.photo!, width: 168, height: 168, format: 'webp', quality: 72 });
+      return [n.id, img.src] as const;
+    }),
+  ),
+);
+
+const logos = Object.fromEntries(
+  await Promise.all(
+    NODES.filter((n) => n.logo).map(async (n) => {
+      const img = await getImage({ src: n.logo!, width: 120, format: 'webp', quality: 80 });
       return [n.id, img.src] as const;
     }),
   ),
@@ -259,6 +268,22 @@ const nameLines = (s: string) => {
                           clip-path="url(#clip-face)"
                           preserveAspectRatio="xMidYMid slice"
                         />
+                      ) : logos[n.id] ? (
+                        <g>
+                          <circle class="face-logo" cx={cx} cy={n.y} r={R} />
+                          <image
+                            href={logos[n.id]}
+                            x={cx - R * 0.72}
+                            y={n.y - R * 0.72}
+                            width={R * 1.44}
+                            height={R * 1.44}
+                            preserveAspectRatio="xMidYMid meet"
+                          />
+                          <circle class="ini-chip" cx={cx + R * 0.74} cy={n.y + R * 0.7} r="15" />
+                          <text class="ini-chip-t" x={cx + R * 0.74} y={n.y + R * 0.7 + 4.5} text-anchor="middle">
+                            {n.initials}
+                          </text>
+                        </g>
                       ) : (
                         <text class="ini" x={cx} y={n.y + 8} text-anchor="middle">
                           {n.initials}
@@ -285,7 +310,17 @@ const nameLines = (s: string) => {
                         height={h}
                         rx={n.kind === 'outcome' ? h / 2 : 6}
                       />
-                      <text class="bx" x={cx} y={n.y + 6} text-anchor="middle">
+                      {logos[n.id] && (
+                        <image
+                          href={logos[n.id]}
+                          x={cx - w / 2 + 8}
+                          y={n.y - 19}
+                          width="38"
+                          height="38"
+                          preserveAspectRatio="xMidYMid meet"
+                        />
+                      )}
+                      <text class="bx" x={logos[n.id] ? cx + 21 : cx} y={n.y + 6} text-anchor="middle">
                         {n.short[lang]}
                       </text>
                     </g>
@@ -339,6 +374,11 @@ const nameLines = (s: string) => {
                     <span class="av" aria-hidden="true">
                       {n.photo ? (
                         <Image src={n.photo} alt="" width={112} height={112} loading="lazy" decoding="async" />
+                      ) : n.logo ? (
+                        <>
+                          <Image class="av-logo" src={n.logo} alt="" width={96} loading="lazy" decoding="async" />
+                          {n.initials && <span class="av-chip">{n.initials}</span>}
+                        </>
                       ) : n.kind === 'person' ? (
                         <span class="av-ini">{n.initials}</span>
                       ) : (
@@ -359,6 +399,11 @@ const nameLines = (s: string) => {
                     <div class="f-head">
                       {n.photo ? (
                         <Image class="f-photo" src={n.photo} alt={n.name[lang]} width={176} height={176} loading="lazy" decoding="async" />
+                      ) : n.logo ? (
+                        <span class="f-logo" aria-hidden="true">
+                          <Image src={n.logo} alt="" width={176} loading="lazy" decoding="async" />
+                          {n.initials && <span class="av-chip">{n.initials}</span>}
+                        </span>
                       ) : n.kind === 'person' ? (
                         <span class="f-ini" aria-hidden="true">
                           {n.initials}
@@ -370,6 +415,7 @@ const nameLines = (s: string) => {
                       </div>
                     </div>
                     {n.photoCredit && <p class="f-credit">{n.photoCredit[lang]}</p>}
+                    {n.logoCredit && <p class="f-credit">{n.logoCredit[lang]}</p>}
                     {rel.up.length > 0 && (
                       <>
                         <h5>{it(lang, 'appointedBy')}</h5>
@@ -995,6 +1041,20 @@ const nameLines = (s: string) => {
     stroke: var(--line);
     stroke-width: 1.5;
   }
+  .node .face-logo {
+    fill: #fff;
+    stroke: var(--line);
+    stroke-width: 1.5;
+  }
+  .node .ini-chip {
+    fill: var(--text);
+    stroke: var(--inv-band);
+    stroke-width: 3;
+  }
+  .node .ini-chip-t {
+    font: 700 12px var(--sans);
+    fill: var(--bg);
+  }
   .node .ini {
     font: 700 24px var(--sans);
     fill: var(--muted);
@@ -1219,6 +1279,49 @@ const nameLines = (s: string) => {
     width: 100%;
     height: 100%;
     object-fit: cover;
+  }
+  .av {
+    position: relative;
+    overflow: visible;
+  }
+  .av :global(img) {
+    border-radius: inherit;
+  }
+  .av :global(.av-logo) {
+    object-fit: contain;
+    padding: 5px;
+    background: #fff;
+  }
+  .av-chip {
+    position: absolute;
+    right: -6px;
+    bottom: -4px;
+    display: grid;
+    place-items: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 12px;
+    border: 2px solid var(--bg);
+    background: var(--text);
+    color: var(--bg);
+    font: 700 0.66rem var(--sans);
+  }
+  .f-logo {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  .f-logo :global(img) {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
   }
   .av-ico {
     fill: none;

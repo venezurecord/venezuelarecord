@@ -16,6 +16,13 @@ import pDelcy from '../../assets/investigations/who-commands-venezuela-2026/port
 import pJorge from '../../assets/investigations/who-commands-venezuela-2026/portraits/jorge-rodriguez.jpg';
 import pCabello from '../../assets/investigations/who-commands-venezuela-2026/portraits/diosdado-cabello.jpg';
 import pGonzalez from '../../assets/investigations/who-commands-venezuela-2026/portraits/gustavo-gonzalez-lopez.jpg';
+import lgUsa from '../../assets/investigations/who-commands-venezuela-2026/logos/usa.png';
+import lgTsj from '../../assets/investigations/who-commands-venezuela-2026/logos/tsj.png';
+import lgSebin from '../../assets/investigations/who-commands-venezuela-2026/logos/sebin.png';
+import lgDgcim from '../../assets/investigations/who-commands-venezuela-2026/logos/dgcim.png';
+import lgCicpc from '../../assets/investigations/who-commands-venezuela-2026/logos/cicpc.png';
+import lgPnb from '../../assets/investigations/who-commands-venezuela-2026/logos/pnb.png';
+import lgFanb from '../../assets/investigations/who-commands-venezuela-2026/logos/fanb.png';
 import ogEn from '../../assets/investigations/who-commands-venezuela-2026/social-en.png';
 import ogEs from '../../assets/investigations/who-commands-venezuela-2026/social-es.png';
 import cover from '../../assets/investigations/who-commands-venezuela-2026/cover.png';
@@ -310,6 +317,9 @@ export interface OrgNode {
   initials?: string;
   photo?: ImageMetadata;
   photoCredit?: L;
+  /** Official emblem (public domain, Wikimedia Commons): institutions, and people with no free photo */
+  logo?: ImageMetadata;
+  logoCredit?: L;
   facts: { text: L; src: number[] }[];
   /** desktop diagram position (viewBox 0 0 1100 900) */
   x: number;
@@ -342,11 +352,19 @@ export const EDGE_TYPES: { type: EdgeType; label: L; hint: L }[] = [
   { type: 'result', label: { en: 'Documented outcome', es: 'Resultado documentado' }, hint: { en: 'Red arrow', es: 'Flecha roja' } },
 ];
 
-const noPhoto: L = { en: 'No freely licensed photo is available: initials are shown.', es: 'No hay foto con licencia libre: se muestran iniciales.' };
+const noPhoto: L = {
+  en: 'No freely licensed photo of this person exists: the emblem of the agency they head is shown instead.',
+  es: 'No existe una foto con licencia libre de esta persona: se muestra el escudo del organismo que dirige.',
+};
+const emblem = (en: string, es: string): L => ({
+  en: `Emblem: ${en} · public domain, via Wikimedia Commons`,
+  es: `Escudo: ${es} · dominio público, vía Wikimedia Commons`,
+});
 
 export const NODES: OrgNode[] = [
   {
-    id: 'usa', level: 0, kind: 'inst', x: 340, y: 64,
+    id: 'usa', level: 0, kind: 'inst', x: 340, y: 64, logo: lgUsa,
+    logoCredit: { en: 'Great Seal of the United States · public domain, via Wikimedia Commons', es: 'Gran Sello de los Estados Unidos · dominio público, vía Wikimedia Commons' },
     name: { en: 'U.S. government', es: 'Gobierno de EE. UU.' },
     role: { en: 'Plan of “stability, recovery, transition”', es: 'Plan de “estabilidad, recuperación, transición”' },
     short: { en: 'U.S. government', es: 'Gobierno de EE. UU.' },
@@ -356,7 +374,8 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'tsj', level: 0, kind: 'inst', x: 760, y: 64,
+    id: 'tsj', level: 0, kind: 'inst', x: 760, y: 64, logo: lgTsj,
+    logoCredit: { en: 'Logo: Supreme Court of Justice · public domain, via Wikimedia Commons', es: 'Logo: Tribunal Supremo de Justicia · dominio público, vía Wikimedia Commons' },
     name: { en: 'Supreme Court (TSJ)', es: 'Tribunal Supremo de Justicia (TSJ)' },
     role: { en: 'Named the acting president on 3 Jan 2026', es: 'Nombró a la presidenta encargada el 3 ene 2026' },
     short: { en: 'Supreme Court', es: 'TSJ' },
@@ -427,8 +446,8 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'sebin', level: 3, kind: 'person', x: 70, y: 500, initials: 'AR',
-    photoCredit: noPhoto,
+    id: 'sebin', level: 3, kind: 'person', x: 70, y: 500, initials: 'AR', logo: lgSebin,
+    photoCredit: noPhoto, logoCredit: emblem('SEBIN', 'SEBIN'),
     name: { en: 'Alexis Rodríguez Cabello', es: 'Alexis Rodríguez Cabello' },
     role: { en: 'Director of SEBIN (intelligence) since Oct 2024 · last confirmed in office in March 2026', es: 'Director del SEBIN (inteligencia) desde oct 2024 · confirmado en el cargo por última vez en marzo de 2026' },
     short: { en: 'SEBIN', es: 'SEBIN' },
@@ -440,8 +459,8 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'dgcim', level: 3, kind: 'person', x: 225, y: 500, initials: 'GG',
-    photoCredit: noPhoto,
+    id: 'dgcim', level: 3, kind: 'person', x: 225, y: 500, initials: 'GG', logo: lgDgcim,
+    photoCredit: noPhoto, logoCredit: emblem('DGCIM', 'DGCIM'),
     name: { en: 'Germán Gómez Lárez', es: 'Germán Gómez Lárez' },
     role: { en: 'Director of the DGCIM (military counterintelligence) since 18 Mar 2026', es: 'Director de la DGCIM (contrainteligencia militar) desde el 18 mar 2026' },
     short: { en: 'DGCIM', es: 'DGCIM' },
@@ -452,8 +471,8 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'cicpc', level: 3, kind: 'person', x: 380, y: 500, initials: 'DR',
-    photoCredit: noPhoto,
+    id: 'cicpc', level: 3, kind: 'person', x: 380, y: 500, initials: 'DR', logo: lgCicpc,
+    photoCredit: noPhoto, logoCredit: emblem('CICPC', 'CICPC'),
     name: { en: 'Douglas Rico', es: 'Douglas Rico' },
     role: { en: 'Director of the CICPC (criminal police) since 2016', es: 'Director del CICPC (policía científica) desde 2016' },
     short: { en: 'CICPC', es: 'CICPC' },
@@ -463,7 +482,7 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'pnb', level: 3, kind: 'inst', x: 550, y: 500,
+    id: 'pnb', level: 3, kind: 'inst', x: 550, y: 500, logo: lgPnb, logoCredit: emblem('Bolivarian National Police', 'Policía Nacional Bolivariana'),
     name: { en: 'National Police (PNB)', es: 'Policía Nacional (PNB)' },
     role: { en: 'Chain: Presidency → Interior → PNB', es: 'Cadena: Presidencia → Interior → PNB' },
     short: { en: 'National Police', es: 'PNB' },
@@ -481,7 +500,7 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'fanb', level: 3, kind: 'inst', x: 940, y: 600,
+    id: 'fanb', level: 3, kind: 'inst', x: 940, y: 600, logo: lgFanb, logoCredit: emblem('Bolivarian National Armed Forces', 'Fuerza Armada Nacional Bolivariana'),
     name: { en: 'Armed Forces · National Guard · Militia', es: 'FANB · Guardia Nacional · Milicia' },
     role: { en: 'Under the Defense Ministry; commander in chief: the president', es: 'Bajo el Ministerio de Defensa; comandante en jefe: la presidenta' },
     short: { en: 'Armed Forces', es: 'FANB' },

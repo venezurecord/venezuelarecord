@@ -84,7 +84,7 @@ const en = {
   methodKicker: 'Method',
   methodTitle: 'How we did it',
   methodBody:
-    'This piece is built on primary documents: Official Gazettes of the Bolivarian Republic of Venezuela, the texts of the laws, Supreme Court rulings and the 2026 report of the UN Independent International Fact-Finding Mission on Venezuela, plus verified press reports. Every line in the org chart and every point on the timeline cites its source. The signature crops come from the gazettes themselves; the yellow highlighting is ours, and ID numbers were covered. Portraits are only used when they carry a free license (public domain or Creative Commons); otherwise we show initials.',
+    'This piece is built on primary documents: Official Gazettes of the Bolivarian Republic of Venezuela, the texts of the laws, Supreme Court rulings and the 2026 report of the UN Independent International Fact-Finding Mission on Venezuela, plus verified press reports. Every line in the org chart and every point on the timeline cites its source. The signature crops come from the gazettes themselves; the yellow highlighting is ours, and ID numbers were covered. Portraits are only used when they carry a free license (public domain or Creative Commons); when none exists, we show the public-domain emblem of the agency the person heads, with their initials.',
   methodWarning:
     'A command structure does not by itself prove individual responsibility. Allegations against specific people are cited as what they are: allegations attributed to whoever makes them.',
   methodUnverified: 'What we could not verify',
@@ -188,7 +188,7 @@ const es: Dict = {
   methodKicker: 'Método',
   methodTitle: 'Cómo se hizo',
   methodBody:
-    'Esta pieza se basa en documentos primarios: gacetas oficiales de la República Bolivariana de Venezuela, los textos de las leyes, sentencias del TSJ y el informe de 2026 de la Misión Internacional Independiente de Determinación de los Hechos de la ONU, además de prensa verificada. Cada línea del organigrama y cada punto de la línea de tiempo citan su fuente. Los recortes de las firmas salen de las propias gacetas; el resaltado amarillo es nuestro y tapamos los números de cédula. Solo usamos retratos con licencia libre (dominio público o Creative Commons); si no hay, mostramos iniciales.',
+    'Esta pieza se basa en documentos primarios: gacetas oficiales de la República Bolivariana de Venezuela, los textos de las leyes, sentencias del TSJ y el informe de 2026 de la Misión Internacional Independiente de Determinación de los Hechos de la ONU, además de prensa verificada. Cada línea del organigrama y cada punto de la línea de tiempo citan su fuente. Los recortes de las firmas salen de las propias gacetas; el resaltado amarillo es nuestro y tapamos los números de cédula. Solo usamos retratos con licencia libre (dominio público o Creative Commons); si no existe ninguno, mostramos el escudo (de dominio público) del organismo que la persona dirige, con sus iniciales.',
   methodWarning:
     'Una estructura de mando no prueba por sí sola responsabilidad individual. Las acusaciones contra personas concretas se citan como lo que son: denuncias atribuidas a quien las hace.',
   methodUnverified: 'Lo que no pudimos verificar',
