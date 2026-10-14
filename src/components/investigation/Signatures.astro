@@ -225,6 +225,8 @@ const A = ANCHORS[lang];
       scrollbar-width: thin;
     }
     .sig-step {
+      /* containing block for the visually hidden year, so the carousel clips it */
+      position: relative;
       flex: 0 0 88%;
       scroll-snap-align: start;
       align-content: start;

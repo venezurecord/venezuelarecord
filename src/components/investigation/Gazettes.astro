@@ -126,6 +126,7 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
       scrollbar-width: thin;
     }
     .gz-grid > li {
+      position: relative;
       flex: 0 0 86%;
       scroll-snap-align: start;
     }
