@@ -1,0 +1,136 @@
+---
+// VenApp, 2022 → 2026: a step line; the last step is drawn hollow because there is no public evidence.
+import type { Lang } from '../../i18n/ui';
+import { VENAPP } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+---
+
+<section id={A.va} class="va" aria-labelledby="va-title">
+  <header class="inv-head">
+    <p class="inv-kicker">{it(lang, 'vaKicker')}</p>
+    <h2 id="va-title">{it(lang, 'vaTitle')}</h2>
+    <p class="inv-intro">{it(lang, 'vaIntro')}</p>
+  </header>
+  <ol class="va-steps">
+    {
+      VENAPP.map((v) => (
+        <li class:list={{ unc: v.uncertain }}>
+          <span class="va-dot" aria-hidden="true" />
+          <p class="va-when">
+            {v.when[lang]}
+            {v.uncertain && <span class="va-flag">{it(lang, 'vaUncertain')}</span>}
+          </p>
+          <p class="va-text">
+            {v.text[lang]}
+            <Cite lang={lang} ids={v.src} anchor={A.src} />
+          </p>
+        </li>
+      ))
+    }
+  </ol>
+</section>
+
+<style>
+  .va {
+    padding-block: 72px 32px;
+  }
+  .va-steps {
+    list-style: none;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: grid;
+    gap: 0;
+  }
+  .va-steps li {
+    position: relative;
+    padding: 0 0 26px 34px;
+  }
+  .va-steps li::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    bottom: -10px;
+    border-left: 3px solid var(--text);
+  }
+  .va-steps li:last-child::before {
+    display: none;
+  }
+  .va-steps li:nth-last-child(2)::before {
+    border-left-style: dashed;
+    border-left-color: var(--muted);
+  }
+  .va-dot {
+    position: absolute;
+    left: 0;
+    top: 4px;
+    width: 19px;
+    height: 19px;
+    border-radius: 50%;
+    background: var(--text);
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--text);
+  }
+  .unc .va-dot {
+    background: var(--bg);
+    box-shadow: 0 0 0 2px var(--muted);
+    border-style: dashed;
+  }
+  .va-when {
+    margin: 0 0 4px;
+    font: 700 1.05rem/1.3 var(--sans);
+  }
+  .va-flag {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 2px 8px;
+    border: 1px dashed var(--muted);
+    border-radius: 999px;
+    font: 700 0.66rem/1.4 var(--sans);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    vertical-align: 2px;
+  }
+  .va-text {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 1.04rem;
+    line-height: 1.55;
+    max-width: 52ch;
+  }
+  .unc .va-text {
+    color: var(--muted);
+  }
+
+  @media (min-width: 900px) {
+    .va-steps {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .va-steps li {
+      padding: 36px 0 0;
+    }
+    .va-steps li::before {
+      left: 10px;
+      right: -28px;
+      top: 9px;
+      bottom: auto;
+      border-left: 0;
+      border-top: 3px solid var(--text);
+    }
+    .va-steps li:nth-last-child(2)::before {
+      border-left: 0;
+      border-top-style: dashed;
+      border-top-color: var(--muted);
+    }
+  }
+</style>

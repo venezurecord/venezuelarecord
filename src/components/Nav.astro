@@ -11,6 +11,7 @@ const { lang } = Astro.props;
 const links = [
   { href: localePath(lang, '/'), label: t(lang, 'nav.home') },
   { href: localePath(lang, '/timeline/'), label: t(lang, 'nav.timeline') },
+  { href: localePath(lang, '/investigations/'), label: t(lang, 'nav.investigations') },
   ...NAV_CATEGORIES.map((c) => ({ href: categoryUrl(lang, c), label: CATEGORY_INFO[c][lang].short })),
   { href: localePath(lang, PAGES.about.path), label: t(lang, 'nav.about') },
 ];

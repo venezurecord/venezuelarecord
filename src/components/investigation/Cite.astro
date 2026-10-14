@@ -1,0 +1,52 @@
+---
+// Numbered source references: [1, 12] → superscript links to the source list.
+import type { Lang } from '../../i18n/ui';
+import { it } from '../../data/investigations/ui';
+
+interface Props {
+  lang: Lang;
+  ids: number[];
+  anchor: string; // id prefix of the source list items, e.g. "src"
+}
+const { lang, ids, anchor } = Astro.props;
+---
+
+{
+  ids.length > 0 && (
+    <sup class="cite">
+      {ids.map((n, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true">,</span>}
+          <a href={`#${anchor}-${n}`} aria-label={it(lang, 'sourceN', { n })}>
+            {n}
+          </a>
+        </>
+      ))}
+    </sup>
+  )
+}
+
+<style>
+  .cite {
+    font-family: var(--sans);
+    font-size: 0.68em;
+    font-weight: 600;
+    line-height: 0;
+    margin-left: 2px;
+    white-space: nowrap;
+  }
+  .cite a {
+    display: inline-block;
+    min-width: 1.4em;
+    padding: 2px 1px;
+    text-align: center;
+    text-decoration: none;
+    color: inherit;
+    opacity: 0.75;
+  }
+  .cite a:hover,
+  .cite a:focus-visible {
+    opacity: 1;
+    text-decoration: underline;
+  }
+</style>

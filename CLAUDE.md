@@ -31,6 +31,9 @@ Repo: `github.com/venezurecord/venezuelarecord`.
   sale la **tarjeta de fuente**. El inicio **no** lleva el bloque de botones "De nuestras fuentes".
 - **2026-10-09 — Portada** (Roger): la noticia principal del inicio **siempre lleva foto** (nunca tarjeta de fuente):
   es la más reciente con imagen ([src/views/HomePage.astro](src/views/HomePage.astro)).
+- **2026-10-13 — Investigaciones (Roger):** piezas originales en /investigations/, crédito de idea a la persona que la
+  propuso, autor = Venezuela Record, sin nombres del equipo. Primera pieza: "Cambió el petróleo, no el poder" /
+  "The Oil Changed. The Power Didn't." (idea original: Minerva Mendoza). No lleva bloque de republicación ni `sourceTier`.
 - **Fase 4 — ritmo de lectura:** `voluntadpopular.com/robots.txt` pide `Crawl-delay: 60` y prohíbe URL con `?`:
   una página por minuto como máximo, solo URL limpias. Su lista de noticias está en `/noticias/page/N/`.
   Ojo: algunas notas tienen mal la fecha en la web (p. ej. las del 25M figuran como 21/04/2024): usar la fecha
@@ -130,6 +133,27 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
 6. Control de calidad ✅ · 7. Dominio `.com` ✅ (2026-10-09) ·
 8. Foto de portada para todas las noticias ✅ (2026-10-09: 26 fotos libres de Commons / gobierno de EE. UU. / Provea;
    nivel B solo con licencia libre y `imageLicense`).
+
+## Investigaciones (piezas originales)
+- Rutas: `/investigations/` (índice) y `/investigations/<slug>/`, con su par en `/es/`. Menú, pie e inicio (bloque
+  "Investigación" debajo de la portada; la noticia principal sigue siendo la más reciente con foto).
+- Registro: [src/data/investigations/index.ts](src/data/investigations/index.ts). Cada pieza tiene un archivo de datos
+  bilingüe `{ en, es }` en `src/data/investigations/<slug>.ts` (textos, fuentes numeradas, nodos, líneas, cronología) y
+  una vista en `src/views/investigations/`. Textos de interfaz propios en `src/data/investigations/ui.ts`.
+- Componentes interactivos en `src/components/investigation/` (SVG + JS propio, sin librerías): `Opening` (scrollytelling
+  con escenario fijo), `Signatures` (recortes de gacetas + resaltador), `OrgChart` (diagrama en escritorio, lista por
+  niveles + hoja inferior en móvil; modo guiado/libre; filtros por tipo de línea), `TwoLanes`, `Gazettes`, `Penalties`,
+  `VenApp`, `Balance`, `Method`, `Cite` (números de fuente). Todo funciona sin JS (estado final, fichas abiertas) y con
+  `prefers-reduced-motion`.
+- Reglas: autor = organización Venezuela Record (también en JSON-LD); crédito visible a quien propuso la idea; ningún
+  nombre del equipo ni casos personales; acusaciones siempre atribuidas ("denunció X en <medio>"); retratos solo con
+  licencia libre (Commons) con crédito en la ficha, si no, iniciales; en los recortes de gacetas se tapan los números de
+  cédula y se aclara que el resaltado es nuestro. Cada línea del organigrama y cada punto de la cronología citan fuente.
+- Recortes de firmas: imágenes compuestas (cabecera + bloque de firma) en
+  `src/assets/investigations/<slug>/gazettes/`; las cajas del resaltador (en %) están en
+  `src/data/investigations/<slug>.signatures.json`. Se generaron con PyMuPDF desde los PDF de las gacetas (no se guardan
+  los PDF en el repo).
+- Imagen social (1200×630, en/es) y portada sin texto: `node scripts/investigation-social.mjs`.
 
 ## Panel admin / PWA
 El sitio **no tiene panel de administración**: se publica desde la web de GitHub (issues + PR). Por eso la

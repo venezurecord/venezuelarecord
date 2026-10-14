@@ -1,0 +1,337 @@
+---
+// Investigation: "The Oil Changed. The Power Didn't." / "Cambió el petróleo, no el poder".
+// Author: Venezuela Record (organization). Original idea credited on the page and in the card.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ShareBar from '../../components/ShareBar.astro';
+import Opening from '../../components/investigation/Opening.astro';
+import Signatures from '../../components/investigation/Signatures.astro';
+import OrgChart from '../../components/investigation/OrgChart.astro';
+import TwoLanes from '../../components/investigation/TwoLanes.astro';
+import Gazettes from '../../components/investigation/Gazettes.astro';
+import Penalties from '../../components/investigation/Penalties.astro';
+import VenApp from '../../components/investigation/VenApp.astro';
+import Balance from '../../components/investigation/Balance.astro';
+import Method from '../../components/investigation/Method.astro';
+import { getImage } from 'astro:assets';
+import { localePath, type Lang } from '../../i18n/ui';
+import { SITE } from '../../lib/constants';
+import { META, SOURCES } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it, TOC_LABELS } from '../../data/investigations/ui';
+import { investigationUrl } from '../../data/investigations';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+const T = TOC_LABELS[lang];
+const url = new URL(investigationUrl(lang, META.slug), Astro.site).href;
+const title = META.title[lang];
+const social = await getImage({ src: META.social[lang], format: 'png', width: 1200 });
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: title,
+  alternativeHeadline: META.subtitle[lang],
+  description: META.summary[lang],
+  inLanguage: lang,
+  url,
+  mainEntityOfPage: url,
+  image: new URL(social.src, Astro.site).href,
+  datePublished: META.published,
+  dateModified: META.updated,
+  author: { '@type': 'Organization', name: SITE.name, url: new URL('/', Astro.site).href },
+  publisher: {
+    '@type': 'Organization',
+    name: SITE.name,
+    url: new URL('/', Astro.site).href,
+    logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', Astro.site).href },
+  },
+  contributor: { '@type': 'Person', name: META.ideaBy, description: lang === 'en' ? 'Original idea' : 'Idea original' },
+  isAccessibleForFree: true,
+  about: [
+    { '@type': 'Place', name: 'Venezuela' },
+    { '@type': 'Person', name: 'Delcy Rodríguez' },
+  ],
+  citation: SOURCES.filter((s) => s.url).map((s) => ({
+    '@type': 'CreativeWork',
+    name: s.title[lang],
+    url: s.url,
+    publisher: { '@type': 'Organization', name: s.outlet },
+  })),
+};
+
+const toc = [
+  { id: A.sig, label: T.sig },
+  { id: A.org, label: T.org },
+  { id: A.tl, label: T.tl },
+  { id: A.gz, label: T.gz },
+  { id: A.pen, label: T.pen },
+  { id: A.va, label: T.va },
+  { id: A.bal, label: T.bal },
+  { id: A.src, label: T.src },
+];
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={META.summary[lang]}
+  image={META.social[lang]}
+  imageAlt={`${title} — ${META.subtitle[lang]}`}
+  ogType="article"
+  published={new Date(`${META.published}T12:00:00Z`)}
+  modified={new Date(`${META.updated}T12:00:00Z`)}
+  jsonLd={jsonLd}
+>
+  <article class="inv">
+    <Opening lang={lang} />
+
+    <nav class="inv-toc" aria-label={it(lang, 'toc')} data-toc>
+      <div class="inv-toc-inner">
+        <ul>
+          {
+            toc.map((x) => (
+              <li>
+                <a href={`#${x.id}`} data-toc-link={x.id}>
+                  {x.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+        <button type="button" class="inv-copy" data-copy-link hidden data-done={it(lang, 'linkCopied')}>
+          <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1 1M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+          <span>{it(lang, 'copyLink')}</span>
+        </button>
+      </div>
+      <span class="inv-progress" aria-hidden="true"></span>
+    </nav>
+
+    <Signatures lang={lang} />
+    <OrgChart lang={lang} />
+    <TwoLanes lang={lang} />
+    <Gazettes lang={lang} />
+    <Penalties lang={lang} />
+    <VenApp lang={lang} />
+    <Balance lang={lang} />
+    <Method lang={lang} />
+
+    <div class="inv-share">
+      <ShareBar lang={lang} url={url} title={title} />
+      <p><a href={localePath(lang, '/investigations/')}>← {it(lang, 'indexTitle')}</a></p>
+    </div>
+  </article>
+</BaseLayout>
+
+<script>
+  // Section index: highlight the section in view; copy a link to the current section.
+  document.querySelectorAll<HTMLElement>('[data-toc]').forEach((toc) => {
+    const links = [...toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+    const targets = links.map((l) => document.getElementById(l.dataset.tocLink!)).filter(Boolean) as HTMLElement[];
+    let current = '';
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) if (e.isIntersecting) current = e.target.id;
+          links.forEach((l) => {
+            const on = l.dataset.tocLink === current;
+            l.toggleAttribute('aria-current', on);
+            if (on) l.scrollIntoView({ block: 'nearest', inline: 'nearest' });
+          });
+        },
+        { rootMargin: '-30% 0px -60% 0px' },
+      );
+      targets.forEach((t) => io.observe(t));
+    }
+    const copy = toc.querySelector<HTMLButtonElement>('[data-copy-link]')!;
+    if (navigator.clipboard) {
+      copy.hidden = false;
+      const label = copy.querySelector('span')!;
+      const original = label.textContent;
+      copy.addEventListener('click', async () => {
+        const u = new URL(location.href);
+        u.hash = current;
+        try {
+          await navigator.clipboard.writeText(u.href);
+          label.textContent = copy.dataset.done!;
+          setTimeout(() => (label.textContent = original), 2200);
+        } catch {}
+      });
+    }
+  });
+</script>
+
+<style is:global>
+  .inv {
+    --inv-econ: #a85a00;
+    --inv-econ-strong: #8a4b00;
+    --inv-sec: #c8102e;
+    --inv-sec-strong: #a10d25;
+    --inv-sec-fixed: #b3001b;
+    --inv-hl: #ffd60a;
+    --inv-hl-ink: #8f6a00;
+    --inv-appoint: #1f3a93;
+    --inv-un: #6b3fa0;
+    --inv-yes: #1d7a4c;
+    --inv-band: #f6f6f2;
+    --inv-toc-h: 50px;
+    --inv-top: 0px; /* height of the site header when it is sticky (phones) */
+  }
+  @media (max-width: 899px) {
+    .inv {
+      --inv-top: 64px;
+    }
+  }
+  html:not(.js) .inv {
+    --inv-top: 0px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .inv {
+      --inv-econ: #f2a93b;
+      --inv-sec: #ff6b72;
+      --inv-hl-ink: #f5c400;
+      --inv-appoint: #9fb5ff;
+      --inv-un: #c6a8ff;
+      --inv-yes: #4fc28a;
+      --inv-band: #13161c;
+    }
+  }
+  .inv section[id],
+  .inv [id^='sig-'] {
+    scroll-margin-top: calc(var(--inv-top) + var(--inv-toc-h) + 12px);
+  }
+  .inv-head {
+    max-width: 760px;
+    margin: 0 auto 32px;
+    padding-inline: var(--gutter);
+  }
+  .inv-kicker {
+    margin: 0 0 6px;
+    font: 700 0.76rem/1.4 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--inv-hl-ink);
+  }
+  .inv-head h2 {
+    font-size: clamp(2rem, 5vw, 3.1rem);
+    line-height: 1.08;
+    letter-spacing: -0.015em;
+    margin: 0 0 14px;
+    text-wrap: balance;
+  }
+  .inv-intro {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: clamp(1.08rem, 2.2vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--muted);
+    text-wrap: pretty;
+  }
+  .inv-toc {
+    position: sticky;
+    top: var(--inv-top);
+    z-index: 20;
+    height: var(--inv-toc-h);
+    background: color-mix(in srgb, var(--bg) 94%, transparent);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+  }
+  .inv-toc-inner {
+    max-width: var(--container);
+    height: 100%;
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .inv-toc ul {
+    flex: 1;
+    min-width: 0;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .inv-toc ul::-webkit-scrollbar {
+    display: none;
+  }
+  .inv-toc a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    padding: 0 12px;
+    border-radius: 999px;
+    white-space: nowrap;
+    color: var(--text);
+    text-decoration: none;
+    font: 600 0.84rem var(--sans);
+  }
+  .inv-toc a:hover {
+    background: var(--surface);
+  }
+  .inv-toc a[aria-current] {
+    background: var(--text);
+    color: var(--bg);
+  }
+  .inv-copy {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 36px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--text);
+    font: 600 0.8rem var(--sans);
+    cursor: pointer;
+  }
+  @media (max-width: 560px) {
+    .inv-copy span {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    .inv-copy {
+      width: 40px;
+      justify-content: center;
+      padding: 0;
+    }
+  }
+  .inv-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -1px;
+    height: 3px;
+    background: var(--inv-hl);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+  @supports (animation-timeline: scroll()) {
+    .inv-progress {
+      animation: inv-progress linear both;
+      animation-timeline: scroll(root);
+    }
+  }
+  @keyframes inv-progress {
+    to {
+      transform: scaleX(1);
+    }
+  }
+  .inv-share {
+    max-width: var(--reading);
+    margin: 24px auto 0;
+    padding-inline: var(--gutter);
+  }
+</style>
