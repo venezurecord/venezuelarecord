@@ -206,6 +206,11 @@ const toc = [
   .inv [id^='sig-'] {
     scroll-margin-top: calc(var(--inv-top) + var(--inv-toc-h) + 12px);
   }
+  /* Sections below the opening are laid out only when they get near the screen (faster first paint). */
+  .inv > section:not(.op) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 1400px;
+  }
   .inv-head {
     max-width: 760px;
     margin: 0 auto 32px;

@@ -44,7 +44,7 @@ const A = ANCHORS[lang];
   <p class="swipe-hint" aria-hidden="true">{it(lang, 'sigSwipe')} <span>→</span></p>
   <div class="sig-steps" role="region" aria-label={it(lang, 'sigLedger')} tabindex="0">
     {
-      SIGNATURES.map((s, i) => (
+      SIGNATURES.map((s) => (
         <article class="sig-step" id={s.id} aria-labelledby={`${s.id}-t`}>
           <div class="sig-text">
             <p class="sig-year" aria-hidden="true">
@@ -78,7 +78,7 @@ const A = ANCHORS[lang];
                 alt={s.alt[lang]}
                 widths={[480, 760, 1000]}
                 sizes="(min-width: 900px) 560px, calc(100vw - 32px)"
-                loading={i === 0 ? 'eager' : 'lazy'}
+                loading="lazy"
                 decoding="async"
               />
               <div class="marks" aria-hidden="true">
