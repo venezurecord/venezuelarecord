@@ -31,8 +31,8 @@ const size = (n: OrgNode) =>
   n.kind === 'person'
     ? { w: R * 2, h: R * 2 }
     : n.kind === 'outcome'
-      ? { w: 230, h: 58 }
-      : { w: (n.id === 'fanb' ? 186 : n.id === 'consejos' ? 196 : 164) + (n.logo ? 44 : 0), h: 54 };
+      ? { w: 230 + (n.image ? 40 : 0), h: 58 }
+      : { w: (n.id === 'fanb' ? 186 : n.id === 'consejos' ? 196 : 164) + (n.logo || n.image ? 44 : 0), h: 54 };
 
 const byId = new Map(NODES.map((n) => [n.id, n]));
 const X = (n: OrgNode) => n.x + OX;
@@ -101,6 +101,15 @@ const logos = Object.fromEntries(
   ),
 );
 
+const scenes = Object.fromEntries(
+  await Promise.all(
+    NODES.filter((n) => n.image).map(async (n) => {
+      const img = await getImage({ src: n.image!, width: 160, format: 'webp', quality: 72 });
+      return [n.id, img.src] as const;
+    }),
+  ),
+);
+
 const typeLabel = (t: EdgeType) => EDGE_TYPES.find((x) => x.type === t)!.label[lang];
 const nodeName = (id: string) => byId.get(id)!.name[lang];
 const relations = (id: string) => ({
@@ -115,6 +124,10 @@ const levelY = [64, 200, 340, 500, 712, 850];
 const swatch = (t: EdgeType) => t;
 // Simple line icons for non-person nodes (24×24, stroked).
 const ICONS: Record<string, string> = {
+  // per node
+  venapp: 'M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm3 17h2M12 7v4m0 2.5v.5',
+  polest: 'M12 2l7 3v6c0 5-3 8.5-7 11-4-2.5-7-6-7-11V5zM9 12l2 2 4-4',
+  // per kind
   inst: 'M3 21h18M4 10h16M5 10v8m4.67-8v8m4.66-8v8M19 10v8M12 3l8 5H4z',
   group: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3 2.7-5 6-5s6 2 6 5m-1.5-4.6C13.4 15.1 14.7 15 16 15c3.3 0 6 2 6 5',
   outcome: 'M12 3l9 16H3zM12 10v4m0 3v.5',
@@ -213,6 +226,9 @@ const nameLines = (s: string) => {
           <clipPath id="clip-face" clipPathUnits="objectBoundingBox">
             <circle cx="0.5" cy="0.5" r="0.5" />
           </clipPath>
+          <clipPath id="clip-slot" clipPathUnits="objectBoundingBox">
+            <rect width="1" height="1" rx="0.16" ry="0.16" />
+          </clipPath>
         </defs>
 
         <g class="lv" aria-hidden="true">
@@ -310,7 +326,7 @@ const nameLines = (s: string) => {
                         height={h}
                         rx={n.kind === 'outcome' ? h / 2 : 6}
                       />
-                      {logos[n.id] && (
+                      {logos[n.id] ? (
                         <image
                           href={logos[n.id]}
                           x={cx - w / 2 + 8}
@@ -319,8 +335,18 @@ const nameLines = (s: string) => {
                           height="38"
                           preserveAspectRatio="xMidYMid meet"
                         />
-                      )}
-                      <text class="bx" x={logos[n.id] ? cx + 21 : cx} y={n.y + 6} text-anchor="middle">
+                      ) : scenes[n.id] ? (
+                        <image
+                          href={scenes[n.id]}
+                          x={cx - w / 2 + (n.kind === 'outcome' ? 9 : 8)}
+                          y={n.y - (n.kind === 'outcome' ? 20 : 19)}
+                          width={n.kind === 'outcome' ? 40 : 38}
+                          height={n.kind === 'outcome' ? 40 : 38}
+                          clip-path={n.kind === 'outcome' ? 'url(#clip-face)' : 'url(#clip-slot)'}
+                          preserveAspectRatio="xMidYMid slice"
+                        />
+                      ) : null}
+                      <text class="bx" x={logos[n.id] || scenes[n.id] ? cx + 21 : cx} y={n.y + 6} text-anchor="middle">
                         {n.short[lang]}
                       </text>
                     </g>
@@ -374,6 +400,8 @@ const nameLines = (s: string) => {
                     <span class="av" aria-hidden="true">
                       {n.photo ? (
                         <Image src={n.photo} alt="" width={112} height={112} loading="lazy" decoding="async" />
+                      ) : n.image ? (
+                        <Image class="av-photo" src={n.image} alt="" width={160} loading="lazy" decoding="async" />
                       ) : n.logo ? (
                         <>
                           <Image class="av-logo" src={n.logo} alt="" width={96} loading="lazy" decoding="async" />
@@ -383,7 +411,7 @@ const nameLines = (s: string) => {
                         <span class="av-ini">{n.initials}</span>
                       ) : (
                         <svg class="av-ico" viewBox="0 0 24 24" width="24" height="24">
-                          <path d={ICONS[n.kind]} />
+                          <path d={ICONS[n.id] ?? ICONS[n.kind]} />
                         </svg>
                       )}
                     </span>
@@ -396,6 +424,9 @@ const nameLines = (s: string) => {
                     </span>
                   </a>
                   <div class="ficha" id={`ficha-${n.id}`} data-ficha={n.id}>
+                    {n.image && n.imageAlt && (
+                      <Image class="f-banner" src={n.image} alt={n.imageAlt[lang]} width={640} loading="lazy" decoding="async" />
+                    )}
                     <div class="f-head">
                       {n.photo ? (
                         <Image class="f-photo" src={n.photo} alt={n.name[lang]} width={176} height={176} loading="lazy" decoding="async" />
@@ -416,6 +447,7 @@ const nameLines = (s: string) => {
                     </div>
                     {n.photoCredit && <p class="f-credit">{n.photoCredit[lang]}</p>}
                     {n.logoCredit && <p class="f-credit">{n.logoCredit[lang]}</p>}
+                    {n.imageCredit && <p class="f-credit">{n.imageCredit[lang]}</p>}
                     {rel.up.length > 0 && (
                       <>
                         <h5>{it(lang, 'appointedBy')}</h5>
@@ -1286,6 +1318,19 @@ const nameLines = (s: string) => {
   }
   .av :global(img) {
     border-radius: inherit;
+  }
+  .av :global(.av-photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ficha :global(.f-banner) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 14px;
   }
   .av :global(.av-logo) {
     object-fit: contain;

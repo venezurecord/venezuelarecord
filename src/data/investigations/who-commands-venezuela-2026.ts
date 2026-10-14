@@ -23,6 +23,10 @@ import lgDgcim from '../../assets/investigations/who-commands-venezuela-2026/log
 import lgCicpc from '../../assets/investigations/who-commands-venezuela-2026/logos/cicpc.png';
 import lgPnb from '../../assets/investigations/who-commands-venezuela-2026/logos/pnb.png';
 import lgFanb from '../../assets/investigations/who-commands-venezuela-2026/logos/fanb.png';
+import scColectivos from '../../assets/investigations/who-commands-venezuela-2026/scenes/colectivos.jpg';
+import scConsejo from '../../assets/investigations/who-commands-venezuela-2026/scenes/consejo-comunal.jpg';
+import scPalacio from '../../assets/investigations/who-commands-venezuela-2026/scenes/palacio-de-justicia.jpg';
+import scProtesta from '../../assets/investigations/who-commands-venezuela-2026/scenes/protesta-2024.jpg';
 import ogEn from '../../assets/investigations/who-commands-venezuela-2026/social-en.png';
 import ogEs from '../../assets/investigations/who-commands-venezuela-2026/social-es.png';
 import cover from '../../assets/investigations/who-commands-venezuela-2026/cover.png';
@@ -320,6 +324,10 @@ export interface OrgNode {
   /** Official emblem (public domain, Wikimedia Commons): institutions, and people with no free photo */
   logo?: ImageMetadata;
   logoCredit?: L;
+  /** Free-licensed photo that illustrates a group or institution (not a person) */
+  image?: ImageMetadata;
+  imageAlt?: L;
+  imageCredit?: L;
   facts: { text: L; src: number[] }[];
   /** desktop diagram position (viewBox 0 0 1100 900) */
   x: number;
@@ -519,7 +527,9 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'colectivos', level: 4, kind: 'group', x: 360, y: 700,
+    id: 'colectivos', level: 4, kind: 'group', x: 360, y: 700, image: scColectivos,
+    imageAlt: { en: 'A hooded motorcyclist with a red flag, part of a group of colectivos that blocked an opposition march in Caracas on 19 April 2017', es: 'Motorizado encapuchado con una bandera roja, parte de un grupo de colectivos que bloqueó una marcha opositora en Caracas el 19 de abril de 2017' },
+    imageCredit: { en: 'Photo: Oscar (derivative work: ZiaLater), Caracas, 19 Apr 2017 · CC BY-SA 4.0, via Wikimedia Commons', es: 'Foto: Oscar (obra derivada: ZiaLater), Caracas, 19 abr 2017 · CC BY-SA 4.0, vía Wikimedia Commons' },
     name: { en: 'Colectivos', es: 'Colectivos' },
     role: { en: 'Armed pro-government groups outside the formal law', es: 'Grupos armados progubernamentales, fuera de la ley formal' },
     short: { en: 'Colectivos', es: 'Colectivos' },
@@ -530,7 +540,9 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'consejos', level: 4, kind: 'inst', x: 640, y: 720,
+    id: 'consejos', level: 4, kind: 'inst', x: 640, y: 720, image: scConsejo,
+    imageAlt: { en: 'Headquarters of a commune and its communal council in Maracaibo, with murals', es: 'Sede de una comuna y su consejo comunal en Maracaibo, con murales' },
+    imageCredit: { en: 'Photo: Zerojosefer, Maracaibo, 2025 · CC0, via Wikimedia Commons', es: 'Foto: Zerojosefer, Maracaibo, 2025 · CC0, vía Wikimedia Commons' },
     name: { en: 'Communal councils and communes', es: 'Consejos comunales y comunas' },
     role: { en: 'Neighborhood bodies with a legal security role', es: 'Instancias vecinales con función legal de seguridad' },
     short: { en: 'Communal councils', es: 'Consejos comunales' },
@@ -540,7 +552,9 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'tribunales', level: 4, kind: 'inst', x: 900, y: 760,
+    id: 'tribunales', level: 4, kind: 'inst', x: 900, y: 760, image: scPalacio,
+    imageAlt: { en: 'The Palace of Justice in Caracas', es: 'El Palacio de Justicia de Caracas' },
+    imageCredit: { en: 'Photo: Jesús Rincón · CC BY-SA 4.0, via Wikimedia Commons', es: 'Foto: Jesús Rincón · CC BY-SA 4.0, vía Wikimedia Commons' },
     name: { en: 'Courts and Public Prosecutor’s Office', es: 'Tribunales y Fiscalía' },
     role: { en: 'Apply the anti-hate and Simón Bolívar laws', es: 'Aplican la Ley contra el Odio y la Ley Simón Bolívar' },
     short: { en: 'Courts', es: 'Tribunales' },
@@ -550,7 +564,9 @@ export const NODES: OrgNode[] = [
     ],
   },
   {
-    id: 'disiente', level: 5, kind: 'outcome', x: 550, y: 850,
+    id: 'disiente', level: 5, kind: 'outcome', x: 550, y: 850, image: scProtesta,
+    imageAlt: { en: 'Aerial view of a crowd protesting in Venezuela on 3 August 2024', es: 'Vista aérea de una multitud que protesta en Venezuela el 3 de agosto de 2024' },
+    imageCredit: { en: 'Photo: Confidencial, 3 Aug 2024 · CC BY 3.0, via Wikimedia Commons', es: 'Foto: Confidencial, 3 ago 2024 · CC BY 3.0, vía Wikimedia Commons' },
     name: { en: 'Those who dissent', es: 'Quien disiente' },
     role: { en: 'Opponents, journalists and ordinary citizens', es: 'Opositores, periodistas y ciudadanos' },
     short: { en: 'Those who dissent', es: 'Quien disiente' },
