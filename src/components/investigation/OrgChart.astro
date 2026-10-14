@@ -852,13 +852,20 @@ const nameLines = (s: string) => {
     color: var(--inv-appoint);
   }
   .org.is-live .org-step {
-    opacity: 0.35;
+    color: var(--muted);
+    border-left: 3px solid transparent;
+    padding-left: 14px;
+    margin-left: -17px;
+    transition:
+      color 0.3s ease,
+      border-color 0.3s ease;
   }
   .org.is-live[data-step='0'] .org-step[data-i='0'],
   .org.is-live[data-step='1'] .org-step[data-i='1'],
   .org.is-live[data-step='2'] .org-step[data-i='2'],
   .org.is-live[data-step='3'] .org-step[data-i='3'] {
-    opacity: 1;
+    color: var(--text);
+    border-left-color: var(--inv-appoint);
   }
   .org-free-hint {
     display: none;
@@ -1163,8 +1170,11 @@ const nameLines = (s: string) => {
   .item {
     transition: opacity 0.3s ease;
   }
-  .item.is-dim {
-    opacity: 0.35;
+  /* Guided step on phones: highlight the items in the step (no dimming, so text keeps AA contrast). */
+  .org.is-live[data-mode='guided'] .item:not(.is-dim) .tile {
+    border-color: var(--inv-appoint);
+    box-shadow: inset 4px 0 0 var(--inv-appoint);
+    background: color-mix(in srgb, var(--inv-appoint) 7%, var(--bg));
   }
   .tile {
     display: flex;
