@@ -25,6 +25,7 @@ const year = new Date().getUTCFullYear();
       <h2 id="footer-sections">{t(lang, 'footer.sections')}</h2>
       <ul>
         <li><a href={localePath(lang, '/timeline/')}>{t(lang, 'nav.timeline')}</a></li>
+        <li><a href={localePath(lang, '/investigations/')}>{t(lang, 'nav.investigations')}</a></li>
         {CATEGORIES.map((c) => <li><a href={categoryUrl(lang, c)}>{CATEGORY_INFO[c][lang].name}</a></li>)}
       </ul>
     </nav>

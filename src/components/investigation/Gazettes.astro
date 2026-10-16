@@ -1,0 +1,293 @@
+---
+// Gazette cards styled like the Official Gazette: number, date, act, the key text highlighted,
+// what it proves and what it does not.
+import type { Lang } from '../../i18n/ui';
+import { GAZETTES } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+
+/** "text [[highlight]] text" → HTML with <mark>, escaping everything else */
+const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>');
+---
+
+<section id={A.gz} class="gz" aria-labelledby="gz-title">
+  <header class="inv-head">
+    <p class="inv-kicker">{it(lang, 'gzKicker')}</p>
+    <h2 id="gz-title">{it(lang, 'gzTitle')}</h2>
+    <p class="inv-intro">{it(lang, 'gzIntro')}</p>
+  </header>
+
+  <p class="swipe-hint" aria-hidden="true">{it(lang, 'gzSwipe')} <span>→</span></p>
+  <ul class="gz-grid" aria-label={it(lang, 'gzTitle')} tabindex="0">
+    {
+      GAZETTES.map((g) => (
+        <li class="gz-card" data-reveal>
+          <div class="gz-mast" aria-hidden="true">
+            <span class="gz-title">{g.id.startsWith('tsj') ? 'Tribunal Supremo de Justicia' : 'Gaceta Oficial'}</span>
+            <span class="gz-sub">{g.id.startsWith('tsj') ? 'Sala Constitucional' : 'de la República Bolivariana de Venezuela'}</span>
+          </div>
+          <p class="gz-meta">
+            <span>{g.date[lang]}</span>
+            <span>{g.number[lang]}</span>
+          </p>
+          <h3>{g.act[lang]}</h3>
+          <blockquote class="gz-text" lang="es">
+            <p set:html={marked(g.article.es)} />
+          </blockquote>
+          {lang === 'en' && <p class="gz-tr" set:html={marked(g.article.en)} />}
+          <p class="gz-ref">{g.articleRef[lang]}</p>
+          <div class="gz-verdict">
+            <div class="yes">
+              <p class="gz-v-h">
+                <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                  <path d="M4 10.5l4 4 8-9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                {it(lang, 'gzProves')}
+              </p>
+              <p>{g.proves[lang]}</p>
+            </div>
+            <div class="no">
+              <p class="gz-v-h">
+                <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+                  <path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />
+                </svg>
+                {it(lang, 'gzNot')}
+              </p>
+              <p>{g.doesNot[lang]}</p>
+            </div>
+          </div>
+          <p class="gz-src">
+            {it(lang, 'sources')}: <Cite lang={lang} ids={g.src} anchor={A.src} />
+          </p>
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<script>
+  // Highlighter sweep on the key text when each card enters the viewport.
+  if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const cards = document.querySelectorAll<HTMLElement>('.gz [data-reveal]');
+    cards.forEach((c) => c.classList.add('is-armed'));
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.4 },
+    );
+    cards.forEach((c) => io.observe(c));
+  }
+</script>
+
+<style>
+  .gz {
+    padding-block: 72px 32px;
+  }
+  .gz-grid {
+    list-style: none;
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 0 var(--gutter);
+    display: grid;
+    gap: 22px;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+  }
+  .swipe-hint {
+    display: none;
+  }
+  @media (max-width: 899.98px) {
+    .swipe-hint {
+      display: block;
+      margin: 0 0 10px;
+      padding-inline: var(--gutter);
+      font: 600 0.85rem/1.4 var(--sans);
+      color: var(--muted);
+    }
+    .gz-grid {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      overscroll-behavior-x: contain;
+      scroll-padding-inline: var(--gutter);
+      padding-bottom: 16px;
+      scrollbar-width: thin;
+    }
+    .gz-grid > li {
+      position: relative;
+      flex: 0 0 86%;
+      scroll-snap-align: start;
+    }
+  }
+  .gz-card {
+    --paper: #fffdf8;
+    --ink: #1b1b1b;
+    --ink-muted: #5b5850;
+    container-type: inline-size;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 20px 16px;
+    background: var(--paper);
+    color: var(--ink);
+    border: 1px solid #e7e1d3;
+    border-radius: 2px;
+    box-shadow:
+      0 1px 0 #e7e1d3,
+      0 10px 24px rgba(0, 0, 0, 0.06);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .gz-card {
+      transition:
+        transform 0.25s ease,
+        box-shadow 0.25s ease;
+    }
+    .gz-card:hover {
+      transform: translateY(-3px);
+      box-shadow:
+        0 1px 0 #e7e1d3,
+        0 16px 32px rgba(0, 0, 0, 0.1);
+    }
+  }
+  @media (prefers-color-scheme: dark) {
+    .gz-card {
+      --paper: #1d1c19;
+      --ink: #efebe2;
+      --ink-muted: #b2ac9f;
+      border-color: #34312a;
+      box-shadow: none;
+    }
+  }
+  .gz-mast {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-bottom: 3px double var(--ink);
+    padding-bottom: 6px;
+    margin-bottom: 8px;
+  }
+  .gz-title {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(1.4rem, 9cqi, 2rem);
+    line-height: 1;
+    letter-spacing: -0.01em;
+    text-transform: uppercase;
+    transform: scaleY(1.18);
+    margin-bottom: 4px;
+  }
+  .gz-sub {
+    font-family: var(--serif);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  .gz-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 0 0 12px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--ink);
+    font: 700 0.8rem/1.3 var(--serif);
+  }
+  .gz-card h3 {
+    font-size: 1.1rem;
+    margin: 0 0 10px;
+  }
+  .gz-text {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  .gz-text p,
+  .gz-tr {
+    margin: 0;
+  }
+  .gz-tr {
+    margin-top: 8px;
+    font: italic 0.92rem/1.5 var(--serif);
+    color: var(--ink-muted);
+  }
+  .gz-card :global(mark) {
+    color: inherit;
+    background: linear-gradient(transparent 12%, rgba(255, 205, 0, 0.62) 12%, rgba(255, 205, 0, 0.62) 92%, transparent 92%);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    padding-inline: 1px;
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+  }
+  @media (prefers-color-scheme: dark) {
+    .gz-card :global(mark) {
+      background-image: linear-gradient(transparent 12%, rgba(255, 205, 0, 0.32) 12%, rgba(255, 205, 0, 0.32) 92%, transparent 92%);
+    }
+  }
+  .gz-card.is-armed :global(mark) {
+    background-size: 0% 100%;
+    transition: background-size 1.1s cubic-bezier(0.6, 0, 0.3, 1) 0.2s;
+  }
+  .gz-card.is-armed.is-in :global(mark) {
+    background-size: 100% 100%;
+  }
+  .gz-ref {
+    margin: 10px 0 14px;
+    font: 0.8rem/1.4 var(--sans);
+    color: var(--ink-muted);
+  }
+  .gz-verdict {
+    display: grid;
+    gap: 10px;
+    margin-top: auto;
+    padding-top: 12px;
+    border-top: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
+  }
+  @container (min-width: 420px) {
+    .gz-verdict {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  .gz-verdict p {
+    margin: 0;
+    font: 0.88rem/1.45 var(--sans);
+  }
+  .gz-v-h {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px !important;
+    font-weight: 700 !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .yes .gz-v-h {
+    color: var(--inv-yes);
+  }
+  .no .gz-v-h {
+    color: var(--inv-sec-strong);
+  }
+  @media (prefers-color-scheme: dark) {
+    .no .gz-v-h {
+      color: var(--inv-sec);
+    }
+  }
+  .gz-src {
+    margin: 12px 0 0;
+    font: 0.8rem/1.4 var(--sans);
+    color: var(--ink-muted);
+  }
+</style>

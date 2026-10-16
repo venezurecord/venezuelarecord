@@ -1,0 +1,465 @@
+---
+// 2026 in two lanes. Desktop (JS): an interactive chart (Jan–Oct) with a lane filter and a detail card.
+// Phones and no-JS: a vertical list by month. Both come from the same data.
+import type { Lang } from '../../i18n/ui';
+import { TIMELINE, type Lane } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it, MONTHS } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+
+const start = Date.UTC(2026, 0, 1);
+const end = Date.UTC(2026, 10, 1);
+const pct = (iso: string) => ((Date.parse(`${iso}T00:00:00Z`) - start) / (end - start)) * 100;
+
+// Stack points that would overlap within a lane.
+const last: Record<Lane, number[]> = { base: [], econ: [], sec: [] };
+const events = TIMELINE.map((e, i) => {
+  const x = pct(e.date);
+  const rows = last[e.lane];
+  let row = rows.findIndex((px) => x - px > 3.2);
+  if (row === -1) row = rows.length;
+  rows[row] = x;
+  return { ...e, i, x: Math.round(x * 100) / 100, row };
+});
+
+const monthFmt = new Intl.DateTimeFormat(lang === 'en' ? 'en-GB' : 'es', { month: 'long', timeZone: 'UTC' });
+const months = Array.from({ length: 10 }, (_, m) => ({
+  m,
+  name: monthFmt.format(new Date(Date.UTC(2026, m, 15))),
+  short: MONTHS[lang][m],
+  x: pct(`2026-${String(m + 1).padStart(2, '0')}-01`),
+}));
+const byMonth = months
+  .map((mo) => ({ ...mo, events: events.filter((e) => Number(e.date.slice(5, 7)) - 1 === mo.m) }))
+  .filter((mo) => mo.events.length);
+const laneName = (l: Lane) => (l === 'econ' ? it(lang, 'laneEcon') : l === 'sec' ? it(lang, 'laneSec') : it(lang, 'laneBase'));
+---
+
+<section id={A.tl} class="tl" data-tl data-lane="all" aria-labelledby="tl-title">
+  <header class="inv-head">
+    <p class="inv-kicker">{it(lang, 'tlKicker')}</p>
+    <h2 id="tl-title">{it(lang, 'tlTitle')}</h2>
+    <p class="inv-intro">{it(lang, 'tlIntro')}</p>
+  </header>
+
+  <div class="tl-wrap">
+    <div class="tl-filter" role="group" aria-label={it(lang, 'lanes')}>
+      <button type="button" data-lane-btn="all" aria-pressed="true">{it(lang, 'tlAll')}</button>
+      <button type="button" data-lane-btn="econ" aria-pressed="false"><span class="dot econ" aria-hidden="true"></span>{it(lang, 'laneEcon')}</button>
+      <button type="button" data-lane-btn="sec" aria-pressed="false"><span class="dot sec" aria-hidden="true"></span>{it(lang, 'laneSec')}</button>
+    </div>
+
+    <div class="tl-chart" aria-label={it(lang, 'tlTitle')} role="group">
+      <div class="tl-lanes">
+        <div class="tl-lane-label econ">{it(lang, 'laneEcon')}</div>
+        <div class="tl-lane-label sec">{it(lang, 'laneSec')}</div>
+        <div class="tl-plot">
+          {months.map((mo) => <span class="tl-grid" style={`left:${mo.x}%`} aria-hidden="true" />)}
+          <div class="tl-track econ" aria-hidden="true" />
+          <div class="tl-track sec" aria-hidden="true" />
+          {
+            events.map((e) => (
+              <button
+                type="button"
+                class={`tl-pt lane-${e.lane}`}
+                style={`left:${e.x}%;--row:${e.row};--i:${e.i}`}
+                data-ev={e.i}
+                aria-describedby="tl-card"
+                aria-label={`${e.when[lang]}, ${laneName(e.lane)}: ${e.title[lang]}`}
+              >
+                <span aria-hidden="true" />
+              </button>
+            ))
+          }
+        </div>
+        <div class="tl-axis" aria-hidden="true">
+          {months.map((mo) => <span style={`left:${mo.x}%`}>{mo.short}</span>)}
+        </div>
+      </div>
+
+      <div class="tl-card" id="tl-card" aria-live="polite">
+        {
+          events.map((e) => (
+            <div class={`tl-card-ev lane-${e.lane}`} data-card={e.i} hidden={e.i !== 0}>
+              <p class="tl-card-meta">
+                <span class={`tag lane-${e.lane}`}>{laneName(e.lane)}</span> {e.when[lang]} 2026
+              </p>
+              <h3>{e.title[lang]}</h3>
+              <p>
+                {e.text[lang]}
+                <Cite lang={lang} ids={e.src} anchor={A.src} />
+              </p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <ol class="tl-list">
+      {
+        byMonth.map((mo) => (
+          <li class="tl-month">
+            <h3>{mo.name}</h3>
+            <ul>
+              {mo.events.map((e) => (
+                <li class={`tl-item lane-${e.lane}`}>
+                  <p class="tl-when">
+                    <span class={`tag lane-${e.lane}`}>{laneName(e.lane)}</span> {e.when[lang]}
+                  </p>
+                  <h4>{e.title[lang]}</h4>
+                  <p>
+                    {e.text[lang]}
+                    <Cite lang={lang} ids={e.src} anchor={A.src} />
+                  </p>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tl]').forEach((tl) => {
+    const pts = [...tl.querySelectorAll<HTMLButtonElement>('.tl-pt')];
+    const cards = [...tl.querySelectorAll<HTMLElement>('[data-card]')];
+    let pinned = '0';
+    const show = (i: string) => {
+      cards.forEach((c) => (c.hidden = c.dataset.card !== i));
+      pts.forEach((p) => p.classList.toggle('is-on', p.dataset.ev === i));
+    };
+    pts.forEach((p) => {
+      p.addEventListener('click', () => {
+        pinned = p.dataset.ev!;
+        show(pinned);
+      });
+      p.addEventListener('focus', () => show(p.dataset.ev!));
+      p.addEventListener('pointerenter', () => show(p.dataset.ev!));
+      p.addEventListener('pointerleave', () => show(pinned));
+    });
+    tl.querySelectorAll<HTMLButtonElement>('[data-lane-btn]').forEach((b) =>
+      b.addEventListener('click', () => {
+        tl.dataset.lane = b.dataset.laneBtn!;
+        tl.querySelectorAll('[data-lane-btn]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      }),
+    );
+    show(pinned);
+    if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      tl.classList.add('is-armed');
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            tl.classList.add('is-in');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.25 },
+      );
+      io.observe(tl.querySelector('.tl-chart')!);
+    }
+  });
+</script>
+
+<style>
+  .tl {
+    padding-block: 72px 32px;
+  }
+  .tl-wrap {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+  .tl-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+  :global(html:not(.js)) .tl-filter {
+    display: none;
+  }
+  .tl-filter button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--text);
+    font: 600 0.88rem var(--sans);
+    cursor: pointer;
+  }
+  .tl-filter button[aria-pressed='true'] {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+  .dot.econ {
+    background: var(--inv-econ);
+  }
+  .dot.sec {
+    background: var(--inv-sec);
+  }
+
+  /* chart: desktop + JS only */
+  .tl-chart {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    :global(html.js) .tl-chart {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 28px;
+      align-items: start;
+    }
+    :global(html.js) .tl-list {
+      display: none;
+    }
+  }
+  .tl-lanes {
+    display: grid;
+    grid-template-columns: 110px minmax(0, 1fr);
+    grid-template-rows: 120px 120px 28px;
+  }
+  .tl-lane-label {
+    font: 700 0.76rem/1.3 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    align-self: center;
+    padding-right: 10px;
+  }
+  .tl-lane-label.econ {
+    color: var(--inv-econ);
+    grid-row: 1;
+  }
+  .tl-lane-label.sec {
+    color: var(--inv-sec);
+    grid-row: 2;
+  }
+  .tl-plot {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    position: relative;
+    border-left: 1px solid var(--line);
+    border-right: 1px solid var(--line);
+  }
+  .tl-grid {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0;
+    border-left: 1px dashed var(--line);
+  }
+  .tl-track {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 4px;
+    border-radius: 2px;
+  }
+  .tl-track.econ {
+    top: 58px;
+    background: color-mix(in srgb, var(--inv-econ) 35%, transparent);
+  }
+  .tl-track.sec {
+    top: 178px;
+    background: color-mix(in srgb, var(--inv-sec) 35%, transparent);
+  }
+  .tl-axis {
+    grid-column: 2;
+    grid-row: 3;
+    position: relative;
+  }
+  .tl-axis span {
+    position: absolute;
+    top: 6px;
+    transform: translateX(4px);
+    font: 600 0.75rem var(--sans);
+    color: var(--muted);
+    text-transform: capitalize;
+  }
+  .tl-pt {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    margin: -16px 0 0 -16px;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: pointer;
+    display: grid;
+    place-items: center;
+    transition:
+      opacity 0.3s ease,
+      transform 0.3s ease;
+  }
+  .tl-pt span {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px currentColor;
+    background: currentColor;
+    transition: transform 0.2s ease;
+  }
+  .tl-pt.lane-econ {
+    top: calc(60px - var(--row) * 26px);
+    color: var(--inv-econ);
+  }
+  .tl-pt.lane-sec {
+    top: calc(180px + var(--row) * 24px);
+    color: var(--inv-sec);
+  }
+  .tl-pt.lane-base {
+    top: 120px;
+    color: var(--text);
+  }
+  .tl-pt.lane-base span {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    transform: rotate(45deg);
+  }
+  .tl-pt:hover span,
+  .tl-pt:focus-visible span,
+  .tl-pt.is-on span {
+    transform: scale(1.35);
+  }
+  .tl-pt.lane-base.is-on span,
+  .tl-pt.lane-base:hover span {
+    transform: rotate(45deg) scale(1.3);
+  }
+  .tl[data-lane='econ'] .tl-pt.lane-sec,
+  .tl[data-lane='sec'] .tl-pt.lane-econ {
+    opacity: 0.15;
+  }
+  .tl[data-lane='econ'] .tl-item.lane-sec,
+  .tl[data-lane='sec'] .tl-item.lane-econ {
+    display: none;
+  }
+  .tl.is-armed .tl-pt {
+    opacity: 0;
+    transform: scale(0.4);
+    transition-delay: calc(var(--i) * 70ms);
+  }
+  .tl.is-armed.is-in .tl-pt {
+    opacity: 1;
+    transform: none;
+  }
+  .tl.is-armed.is-in[data-lane='econ'] .tl-pt.lane-sec,
+  .tl.is-armed.is-in[data-lane='sec'] .tl-pt.lane-econ {
+    opacity: 0.15;
+  }
+
+  .tl-card {
+    min-height: 240px;
+    padding: 18px 20px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--surface);
+  }
+  .tl-card h3,
+  .tl-item h4 {
+    font-size: 1.2rem;
+    margin: 6px 0 8px;
+  }
+  .tl-card p,
+  .tl-item p {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+  .tl-card .tl-card-meta,
+  .tl-item .tl-when {
+    font: 600 0.8rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .tag {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font: 700 0.75rem/1.4 var(--sans);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--text);
+  }
+  .tag.lane-econ {
+    color: #fff;
+    background: var(--inv-econ-strong);
+  }
+  .tag.lane-sec {
+    color: #fff;
+    background: var(--inv-sec-strong);
+  }
+
+  /* list */
+  .tl-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tl-month h3 {
+    position: sticky;
+    top: calc(var(--inv-top, 0px) + var(--inv-toc-h, 0px));
+    z-index: 1;
+    margin: 0;
+    padding: 10px 0 8px;
+    background: var(--bg);
+    font: 700 0.8rem/1.4 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+  }
+  .tl-month > ul {
+    list-style: none;
+    margin: 0 0 20px;
+    padding: 0;
+  }
+  .tl-item {
+    position: relative;
+    padding: 14px 0 14px 22px;
+    border-left: 3px solid var(--line);
+    margin-left: 6px;
+  }
+  .tl-item::before {
+    content: '';
+    position: absolute;
+    left: -9px;
+    top: 19px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 3px solid var(--bg);
+    background: var(--text);
+  }
+  .tl-item.lane-econ {
+    border-left-color: color-mix(in srgb, var(--inv-econ) 45%, transparent);
+  }
+  .tl-item.lane-econ::before {
+    background: var(--inv-econ);
+  }
+  .tl-item.lane-sec {
+    border-left-color: color-mix(in srgb, var(--inv-sec) 45%, transparent);
+  }
+  .tl-item.lane-sec::before {
+    background: var(--inv-sec);
+  }
+</style>

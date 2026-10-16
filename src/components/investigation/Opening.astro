@@ -1,0 +1,599 @@
+---
+// Opening: the headline sits on a double rule; as the reader scrolls, a sticky graphic shows the
+// rule splitting into two lanes (economy / security). The curves are illustrative (direction
+// only); every point on them is a dated fact from the timeline. Without JS (or with
+// prefers-reduced-motion) the final state is shown: both lanes drawn, every point visible.
+import type { Lang } from '../../i18n/ui';
+import { META, OPENING } from '../../data/investigations/who-commands-venezuela-2026';
+import { it, longDate, MONTHS } from '../../data/investigations/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const f = (n: number) => Math.round(n * 10) / 10;
+const ease = (m: number, k: number) => 1 - Math.exp(-m / k);
+const months = MONTHS[lang];
+const path = (pts: [number, number][]) => pts.map(([x, y], i) => `${i ? 'L' : 'M'}${f(x)} ${f(y)}`).join('');
+const range = Array.from({ length: 101 }, (_, i) => i * 0.1);
+// Position of a date on the Jan–Oct axis, in months (0 = 1 Jan, 10 = 1 Nov).
+const t0 = Date.UTC(2026, 0, 1);
+const t1 = Date.UTC(2026, 10, 1);
+const monthPos = (iso: string) => ((Date.parse(`${iso}T00:00:00Z`) - t0) / (t1 - t0)) * 10;
+
+// Wide stage (desktop): time runs left → right.
+const W = { x0: 500, x1: 1160, y: 330 };
+const wx = (m: number) => W.x0 + ((W.x1 - W.x0) * m) / 10;
+const wEcon = (m: number) => W.y - 5 - 205 * ease(m, 1.9) - 20 * Math.sin(m * 1.75) * ease(m, 0.8);
+const wSec = (m: number) => W.y + 5 + 78 * ease(m, 0.22);
+const wEconD = path(range.map((m) => [wx(m), wEcon(m)]));
+const wSecD = path(range.map((m) => [wx(m), wSec(m)]));
+
+// Tall stage (phones): time runs top → bottom; economy bends left, security goes right and stays straight.
+// Compact viewBox so the text stays at least 14 px on a phone.
+const T = { y0: 104, y1: 556, x: 200 };
+const ty = (m: number) => T.y0 + ((T.y1 - T.y0) * m) / 10;
+const tEcon = (m: number) => T.x - 4 - 100 * ease(m, 1.6) - 14 * Math.sin(m * 1.8) * ease(m, 0.8);
+const tSec = (m: number) => T.x + 4 + 112 * ease(m, 0.22);
+const tEconD = path(range.map((m) => [tEcon(m), ty(m)]));
+const tSecD = path(range.map((m) => [tSec(m), ty(m)]));
+
+const shortDate = (s: string) => s.split(' · ')[0];
+const econ = OPENING.econLabels.map((l, i) => ({ i, m: monthPos(l.date), label: l.label[lang] }));
+const sec = OPENING.secLabels.map((l, i) => ({ i, m: monthPos(l.date), label: l.label[lang] }));
+// Wide labels: alternate rows so neighbours never collide.
+const wSecDy = (i: number, m: number) => (m < 1 ? 26 : i % 2 ? 56 : 32);
+// Tall labels (date only): nudge the two pairs that fall at similar heights.
+const tEconDy = [0, -14, -10];
+const tSecDy = [6, 0, 18, -20];
+const [first, econStep, secStep] = OPENING.steps;
+const updated = longDate(lang, META.updated);
+---
+
+<section class="op" data-op data-step="0" aria-labelledby="inv-title">
+  <div class="op-stage" aria-hidden="true">
+    <p class="op-note">{OPENING.illustrative[lang]}</p>
+    <svg class="op-svg op-wide" viewBox="0 0 1200 560" preserveAspectRatio="xMidYMid meet" focusable="false" aria-hidden="true">
+      <g class="op-base">
+        <line x1="0" x2={W.x0 + 3} y1={W.y - 5} y2={W.y - 5}></line>
+        <line x1="0" x2={W.x0 + 3} y1={W.y + 5} y2={W.y + 5}></line>
+      </g>
+      <g class="op-split">
+        <line x1={W.x0} x2={W.x0} y1="96" y2="470"></line>
+        <text x={W.x0 + 8} y="104">{first.kicker[lang]}</text>
+      </g>
+      <path class="op-lane op-econ" d={wEconD} pathLength="1"></path>
+      <path class="op-lane op-sec" d={wSecD} pathLength="1"></path>
+      <text class="op-lane-name op-econ-name" x={W.x1} y="42" text-anchor="end">{it(lang, 'laneEcon')}</text>
+      <text class="op-lane-name op-sec-name" x={W.x1} y={f(wSec(10) - 16)} text-anchor="end">{it(lang, 'laneSec')}</text>
+      <g class="op-axis">
+        {months.map((m, i) => <text x={f(wx(i + 0.5))} y="524" text-anchor="middle">{m}</text>)}
+        <line x1={W.x0} x2={W.x1} y1="500" y2="500"></line>
+      </g>
+      {
+        econ.map((e) => (
+          <g class="op-pt op-pt-econ" style={`--i:${e.i}`}>
+            <circle cx={f(wx(e.m))} cy={f(wEcon(e.m))} r="7"></circle>
+            <text
+              x={f(wx(e.m) + (e.m < 1.5 ? 14 : 0))}
+              y={f(wEcon(e.m) - (e.m < 1.5 ? 10 : 18))}
+              text-anchor={e.m < 1.5 ? 'start' : 'middle'}
+            >
+              {e.label}
+            </text>
+          </g>
+        ))
+      }
+      {
+        sec.map((e) => (
+          <g class="op-pt op-pt-sec" style={`--i:${e.i}`}>
+            <circle cx={f(wx(e.m))} cy={f(wSec(e.m))} r="7"></circle>
+            <text x={f(wx(e.m) + (e.m < 1 ? 14 : 0))} y={f(wSec(e.m) + wSecDy(e.i, e.m))} text-anchor={e.m < 1 ? 'start' : 'middle'}>
+              {e.label}
+            </text>
+          </g>
+        ))
+      }
+    </svg>
+
+    <svg class="op-svg op-tall" viewBox="0 0 400 600" preserveAspectRatio="xMidYMin meet" focusable="false" aria-hidden="true">
+      <g class="op-base">
+        <line y1="-400" y2={T.y0 + 3} x1={T.x - 4} x2={T.x - 4}></line>
+        <line y1="-400" y2={T.y0 + 3} x1={T.x + 4} x2={T.x + 4}></line>
+      </g>
+      <g class="op-split">
+        <line x1="64" x2="384" y1={T.y0} y2={T.y0}></line>
+        <text x={T.x - 16} y={T.y0 - 10} text-anchor="end">{lang === 'en' ? '3 Jan 2026' : '3 ene 2026'}</text>
+      </g>
+      <path class="op-lane op-econ" d={tEconD} pathLength="1"></path>
+      <path class="op-lane op-sec" d={tSecD} pathLength="1"></path>
+      <g class="op-axis">
+        {months.map((m, i) => <text x="4" y={f(ty(i + 0.5) + 6)}>{m}</text>)}
+      </g>
+      <text class="op-lane-name op-econ-name" x={f(tEcon(10))} y="592" text-anchor="middle">{it(lang, 'laneEcon')}</text>
+      <text class="op-lane-name op-sec-name" x={f(tSec(10))} y="592" text-anchor="middle">{lang === 'en' ? 'Security' : 'Seguridad'}</text>
+      {
+        econ.map((e) => (
+          <g class="op-pt op-pt-econ" style={`--i:${e.i}`}>
+            <circle cx={f(tEcon(e.m))} cy={f(ty(e.m))} r="7"></circle>
+            <text x={f(tEcon(e.m) + 14)} y={f(ty(e.m) + 7 + tEconDy[e.i])}>{shortDate(e.label)}</text>
+          </g>
+        ))
+      }
+      {
+        sec.map((e) => (
+          <g class="op-pt op-pt-sec" style={`--i:${e.i}`}>
+            <circle cx={f(tSec(e.m))} cy={f(ty(e.m))} r="7"></circle>
+            <text
+              x={f(tSec(e.m) + (e.i === 0 ? 14 : -14))}
+              y={f(ty(e.m) + 7 + tSecDy[e.i])}
+              text-anchor={e.i === 0 ? 'start' : 'end'}
+            >
+              {shortDate(e.label)}
+            </text>
+          </g>
+        ))
+      }
+    </svg>
+  </div>
+
+  <div class="op-steps">
+    <header class="op-step op-hero" data-i="0">
+      <div class="op-hero-inner">
+        <p class="op-kicker"><span>{it(lang, 'kicker')}</span> · {it(lang, 'original')}</p>
+        <h1 id="inv-title">{META.title[lang]}</h1>
+        <p class="op-sub">{META.subtitle[lang]}</p>
+        <p class="op-credit" set:html={it(lang, 'ideaCredit', { name: META.ideaBy })} />
+        <p class="op-date"><time datetime={META.updated}>{it(lang, 'updated', { date: updated })}</time></p>
+        <div class="op-rule" aria-hidden="true"></div>
+        <p class="op-cue">{first.text[lang]} <span aria-hidden="true">↓</span></p>
+      </div>
+    </header>
+
+    <div class="op-step" data-i="1">
+      <div class="op-card">
+        <p class="op-card-kicker">{first.kicker[lang]}</p>
+        <p class="op-dek">{OPENING.dek[lang]}</p>
+      </div>
+    </div>
+
+    <div class="op-step" data-i="2">
+      <div class="op-card op-card-econ">
+        <p class="op-card-kicker">{econStep.kicker[lang]}</p>
+        <p>{econStep.text[lang]}</p>
+      </div>
+    </div>
+
+    <div class="op-step" data-i="3">
+      <div class="op-card op-card-sec">
+        <p class="op-card-kicker">{secStep.kicker[lang]}</p>
+        <p>{secStep.text[lang]}</p>
+      </div>
+    </div>
+
+    {
+      OPENING.quotes.map((q, i) => (
+        <div class="op-step" data-i={4 + i}>
+          <figure class="op-card op-quotes">
+            {i === 0 && <h2 class="op-card-kicker">{it(lang, 'quotesTitle')}</h2>}
+            <p class="op-q-about">{q.about[lang]}</p>
+            <blockquote lang={lang}>
+              <p>“{q[lang]}”</p>
+            </blockquote>
+            {lang === 'es' && (
+              <p class="op-q-orig" lang="en">
+                Original: “{q.en}”
+              </p>
+            )}
+            <figcaption>
+              {it(lang, 'quoteSource', { p: q.para })}
+              {lang === 'es' && <> {it(lang, 'translationNote')}</>}
+            </figcaption>
+          </figure>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<script>
+  // Drive the opening from the step that crosses the middle of the viewport.
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  document.querySelectorAll<HTMLElement>('[data-op]').forEach((op) => {
+    // Static, final state (the CSS step states only apply with motion allowed).
+    if (reduce.matches || !('IntersectionObserver' in window)) {
+      op.dataset.step = '4';
+      return;
+    }
+    // The active step is the last one whose top has crossed the middle of the viewport. Measured
+    // directly (on load, scroll and resize) instead of trusting IntersectionObserver's first report,
+    // which on some phones fired for the wrong step before layout settled and left the page there.
+    const steps = [...op.querySelectorAll<HTMLElement>('.op-step')];
+    let queued = false;
+    const update = () => {
+      queued = false;
+      const box = op.getBoundingClientRect();
+      if (box.bottom < 0 || box.top > innerHeight) return;
+      const mid = innerHeight / 2;
+      let current = steps[0].dataset.i!;
+      for (const s of steps) if (s.getBoundingClientRect().top <= mid) current = s.dataset.i!;
+      if (op.dataset.step !== current) op.dataset.step = current;
+    };
+    const queue = () => {
+      if (!queued) {
+        queued = true;
+        requestAnimationFrame(update);
+      }
+    };
+    addEventListener('scroll', queue, { passive: true });
+    addEventListener('resize', queue);
+    addEventListener('load', update);
+    update();
+  });
+</script>
+
+<style>
+  .op {
+    --op-bg: #0b0f17;
+    --op-text: #f3f0e8;
+    --op-muted: #b3b9c5;
+    --op-econ: #f2a93b;
+    --op-sec: #ff6a70;
+    position: relative;
+    background: var(--op-bg);
+    color: var(--op-text);
+    isolation: isolate;
+  }
+
+  /* ---------- stage ---------- */
+  .op-stage {
+    position: sticky;
+    top: var(--inv-top);
+    height: calc(100vh - var(--inv-top));
+    height: calc(100svh - var(--inv-top));
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .op-note {
+    position: absolute;
+    top: 12px;
+    right: var(--gutter);
+    left: var(--gutter);
+    margin: 0;
+    text-align: right;
+    max-width: 560px;
+    margin-left: auto;
+    font: 500 0.8rem/1.4 var(--sans);
+    color: var(--op-muted);
+  }
+  .op-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .op-wide {
+    display: none;
+  }
+  .op-tall {
+    inset: 72px 0 auto;
+    height: calc(58% - 28px);
+  }
+  @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+    .op-wide {
+      display: block;
+    }
+    .op-tall {
+      display: none;
+    }
+  }
+
+  .op-base line {
+    stroke: var(--op-text);
+    stroke-width: 3;
+  }
+  .op-split line {
+    stroke: var(--op-muted);
+    stroke-width: 1;
+    stroke-dasharray: 3 5;
+  }
+  .op-split text {
+    fill: var(--op-muted);
+    font: 600 14px var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .op-axis text {
+    fill: var(--op-muted);
+    font: 600 15px var(--sans);
+  }
+  .op-tall .op-split text,
+  .op-tall .op-axis text {
+    font-size: 19px;
+  }
+  .op-axis line {
+    stroke: rgba(255, 255, 255, 0.18);
+  }
+  .op-lane {
+    fill: none;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .op-tall .op-lane {
+    stroke-width: 5;
+  }
+  .op-econ {
+    stroke: var(--op-econ);
+  }
+  .op-sec {
+    stroke: var(--op-sec);
+  }
+  .op-lane-name {
+    font: 700 15px var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .op-tall .op-lane-name {
+    font-size: 18px;
+  }
+  .op-econ-name {
+    fill: var(--op-econ);
+  }
+  .op-sec-name {
+    fill: var(--op-sec);
+  }
+  .op-pt text {
+    font: 600 15px var(--sans);
+    fill: var(--op-text);
+    paint-order: stroke;
+    stroke: var(--op-bg);
+    stroke-width: 5px;
+    stroke-linejoin: round;
+  }
+  .op-tall .op-pt text {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .op-pt-econ circle {
+    fill: var(--op-bg);
+    stroke: var(--op-econ);
+    stroke-width: 3;
+  }
+  .op-pt-sec circle {
+    fill: var(--op-bg);
+    stroke: var(--op-sec);
+    stroke-width: 3;
+  }
+
+  /* Live states per step: JS available (html.js is set before first paint) and motion allowed.
+     Without JS or with reduced motion the final state shows. */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .op .op-svg,
+    :global(html.js) .op .op-note {
+      transition: opacity 0.6s ease;
+    }
+    :global(html.js) .op[data-step='0'] :is(.op-svg, .op-note) {
+      opacity: 0;
+    }
+    :global(html.js) .op .op-lane {
+      transition:
+        stroke-dashoffset 1.6s cubic-bezier(0.65, 0, 0.35, 1),
+        opacity 0.5s ease;
+    }
+    :global(html.js) .op[data-step='0'] .op-lane {
+      stroke-dashoffset: 1;
+    }
+    :global(html.js) .op .op-pt {
+      transition:
+        opacity 0.5s ease calc(var(--i) * 120ms),
+        transform 0.5s ease calc(var(--i) * 120ms);
+    }
+    :global(html.js) .op:is([data-step='0'], [data-step='1']) .op-pt {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    :global(html.js) .op .op-lane-name {
+      transition: opacity 0.5s ease;
+    }
+    :global(html.js) .op[data-step='2'] :is(.op-pt-sec, .op-sec-name) {
+      opacity: 0;
+    }
+    :global(html.js) .op[data-step='2'] .op-sec {
+      opacity: 0.3;
+    }
+    :global(html.js) .op[data-step='3'] :is(.op-econ, .op-pt-econ, .op-econ-name) {
+      opacity: 0.3;
+    }
+  }
+
+  /* ---------- steps ---------- */
+  .op-steps {
+    position: relative;
+    margin-top: calc(-100vh + var(--inv-top));
+    margin-top: calc(-100svh + var(--inv-top));
+    z-index: 1;
+  }
+  .op-step {
+    min-height: calc(72vh - var(--inv-top));
+    min-height: calc(72svh - var(--inv-top));
+    display: flex;
+    align-items: center;
+    padding: 6svh var(--gutter);
+  }
+  .op-hero {
+    min-height: calc(100vh - var(--inv-top));
+    min-height: calc(100svh - var(--inv-top));
+    align-items: flex-start;
+    padding-top: clamp(28px, 6svh, 64px);
+  }
+  .op-hero-inner {
+    max-width: 980px;
+    width: 100%;
+    margin-inline: auto;
+  }
+  .op-kicker {
+    margin: 0 0 18px;
+    font: 600 0.8rem/1.4 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--op-muted);
+  }
+  .op-kicker span {
+    color: var(--vz-yellow);
+  }
+  h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 8.4vw, 5.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  .op-sub {
+    font-family: var(--serif);
+    font-size: clamp(1.15rem, 2.6vw, 1.55rem);
+    line-height: 1.35;
+    color: #d9d5cc;
+    margin: 0 0 22px;
+    max-width: 40ch;
+    text-wrap: pretty;
+  }
+  .op-credit,
+  .op-date {
+    margin: 0;
+    font: 0.95rem/1.5 var(--sans);
+    color: var(--op-muted);
+  }
+  .op-credit :global(strong) {
+    color: var(--op-text);
+  }
+  /* The double rule the headline sits on: it becomes the two lanes as the reader scrolls. */
+  .op-rule {
+    height: 10px;
+    margin: 28px calc(var(--gutter) * -1) 0;
+    border-block: 3px solid var(--op-text);
+  }
+  @media (min-width: 1040px) {
+    .op-rule {
+      margin-inline: calc((100vw - 980px) / -2);
+    }
+  }
+  .op-cue {
+    margin: 16px 0 0;
+    max-width: 46ch;
+    font: 500 1.05rem/1.5 var(--serif);
+    color: #d9d5cc;
+  }
+  .op-cue span {
+    display: inline-block;
+    margin-left: 6px;
+    font-family: var(--sans);
+    animation: op-bob 1.8s ease-in-out 1.5s 3;
+  }
+  @keyframes op-bob {
+    50% {
+      transform: translateY(4px);
+    }
+  }
+
+  .op-card {
+    width: min(100%, 420px);
+    margin: 0;
+    background: rgba(11, 15, 23, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 8px;
+    padding: 18px 20px;
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    line-height: 1.55;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+  }
+  .op-card p {
+    margin: 0;
+  }
+  .op-card-kicker {
+    font: 700 0.78rem/1.4 var(--sans) !important;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--op-muted);
+    margin: 0 0 10px !important;
+  }
+  .op-card-econ {
+    border-left: 4px solid var(--op-econ);
+  }
+  .op-card-econ .op-card-kicker {
+    color: var(--op-econ);
+  }
+  .op-card-sec {
+    border-left: 4px solid var(--op-sec);
+  }
+  .op-card-sec .op-card-kicker {
+    color: var(--op-sec);
+  }
+  .op-quotes {
+    width: min(100%, 520px);
+  }
+  .op-q-about {
+    font: 600 0.85rem/1.4 var(--sans) !important;
+    color: var(--op-muted);
+    margin-bottom: 6px !important;
+  }
+  .op-quotes blockquote {
+    margin: 0;
+    font-size: clamp(1.2rem, 3.2vw, 1.55rem);
+    line-height: 1.3;
+    font-style: italic;
+    color: #fff;
+  }
+  .op-q-orig {
+    margin-top: 8px !important;
+    font: italic 0.95rem/1.45 var(--serif);
+    color: var(--op-muted);
+  }
+  .op-quotes figcaption {
+    margin-top: 8px;
+    font: 0.8rem/1.4 var(--sans);
+    color: var(--op-muted);
+  }
+
+  /* Desktop: cards in a left column that ends before the split, so they never cover the lanes or the axis */
+  @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
+    .op-step:not(.op-hero) {
+      padding-left: max(var(--gutter), calc((100vw - 1200px) / 2 + 24px));
+    }
+    .op-card,
+    .op-quotes {
+      width: min(calc(41vw - 48px), 420px);
+    }
+  }
+
+  /* Phones / portrait: graphic in the upper part of the screen, cards anchored at the bottom */
+  @media not ((min-width: 900px) and (min-aspect-ratio: 1/1)) {
+    .op-step:not(.op-hero) {
+      align-items: flex-end;
+      padding-bottom: max(14px, 2svh);
+    }
+    .op-card {
+      width: 100%;
+      font-size: 1rem;
+      padding: 14px 16px;
+    }
+    .op-dek {
+      font-size: 1rem;
+    }
+    .op-quotes blockquote {
+      font-size: 1.15rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .op-cue span {
+      animation: none;
+    }
+  }
+</style>

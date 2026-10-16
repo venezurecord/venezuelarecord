@@ -1,0 +1,262 @@
+---
+// Maximum prison sentence per law on a 0–30-year scale. A real table (readable without CSS);
+// the bars grow when the table scrolls into view (scroll-driven where supported).
+import type { Lang } from '../../i18n/ui';
+import { LAWS, META } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it, longDate } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+const MAX = 30;
+const ticks = [0, 10, 20, 30];
+---
+
+<section id={A.pen} class="pen" aria-labelledby="pen-title">
+  <header class="inv-head">
+    <p class="inv-kicker">{it(lang, 'penKicker')}</p>
+    <h2 id="pen-title">{it(lang, 'penTitle')}</h2>
+    <p class="inv-intro">{it(lang, 'penIntro', { date: longDate(lang, META.updated) })}</p>
+  </header>
+
+  <div class="pen-wrap" data-pen>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">{it(lang, 'penLaw')}</th>
+          <th scope="col">
+            {it(lang, 'penMax')}
+            <span class="scale" aria-hidden="true">
+              {ticks.map((t) => <span style={`left:${(t / MAX) * 100}%`}>{t}</span>)}
+            </span>
+          </th>
+          <th scope="col">{it(lang, 'penStatus')}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          LAWS.map((l, i) => (
+            <tr>
+              <th scope="row">
+                <span class="law">{l.name[lang]}</span>
+                <span class="gz">{l.gazette[lang]}</span>
+              </th>
+              <td class="bar-cell">
+                <span class="track" aria-hidden="true">
+                  {ticks.slice(1, -1).map((t) => (
+                    <span class="tick" style={`left:${(t / MAX) * 100}%`} />
+                  ))}
+                  {l.max > 0 && (
+                    <span class="bar" style={`--w:${(l.max / MAX) * 100}%;--i:${i}`}>
+                      {l.min > 0 && <span class="bar-min" style={`width:${(l.min / l.max) * 100}%`} />}
+                    </span>
+                  )}
+                </span>
+                <span class={l.max > 0 ? 'val' : 'val zero'}>{l.maxLabel[lang]}</span>
+              </td>
+              <td class="status">
+                {l.status[lang]}
+                <Cite lang={lang} ids={l.src} anchor={A.src} />
+              </td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<script>
+  // Fallback for browsers without scroll-driven animations.
+  if (!CSS.supports('animation-timeline: view()') && 'IntersectionObserver' in window) {
+    document.querySelectorAll<HTMLElement>('[data-pen]').forEach((el) => {
+      el.classList.add('is-armed');
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (entries.some((e) => e.isIntersecting)) {
+            el.classList.add('is-in');
+            io.disconnect();
+          }
+        },
+        { threshold: 0.3 },
+      );
+      io.observe(el);
+    });
+  }
+</script>
+
+<style>
+  .pen {
+    padding-block: 72px 32px;
+  }
+  .pen-wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--sans);
+  }
+  thead th {
+    text-align: left;
+    vertical-align: bottom;
+    padding: 0 12px 10px 0;
+    font: 700 0.75rem/1.3 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    border-bottom: 2px solid var(--text);
+  }
+  .scale {
+    position: relative;
+    display: block;
+    height: 16px;
+    margin-top: 6px;
+  }
+  .scale span {
+    position: absolute;
+    transform: translateX(-50%);
+    font-weight: 600;
+    letter-spacing: 0;
+  }
+  .scale span:first-child {
+    transform: none;
+  }
+  .scale span:last-child {
+    transform: translateX(-100%);
+  }
+  tbody tr {
+    border-bottom: 1px solid var(--line);
+  }
+  tbody th,
+  tbody td {
+    padding: 16px 12px 16px 0;
+    vertical-align: top;
+    text-align: left;
+  }
+  .law {
+    display: block;
+    font: 700 1.02rem/1.3 var(--sans);
+  }
+  .gz {
+    display: block;
+    font: 0.8rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .bar-cell {
+    width: 42%;
+  }
+  .track {
+    position: relative;
+    display: block;
+    height: 18px;
+    border-radius: 3px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .tick {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid var(--line);
+  }
+  .bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--w);
+    background: var(--inv-sec);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .bar-min {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background: color-mix(in srgb, var(--inv-sec) 45%, var(--bg));
+  }
+  .val {
+    display: block;
+    margin-top: 6px;
+    font: 700 0.95rem var(--sans);
+    color: var(--inv-sec-strong);
+  }
+  @media (prefers-color-scheme: dark) {
+    .val {
+      color: var(--inv-sec);
+    }
+  }
+  .val.zero {
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .status {
+    font: 0.88rem/1.45 var(--sans);
+  }
+
+  /* Grow with transform (compositor-only), never by animating width. */
+  .bar {
+    transform-origin: 0 50%;
+  }
+  @supports (animation-timeline: view()) {
+    .bar {
+      animation: pen-grow linear both;
+      animation-timeline: view();
+      animation-range: entry 20% cover 45%;
+    }
+  }
+  @keyframes pen-grow {
+    from {
+      transform: scaleX(0);
+    }
+  }
+  .pen-wrap.is-armed .bar {
+    transform: scaleX(0);
+    transition: transform 1.2s cubic-bezier(0.6, 0, 0.3, 1) calc(var(--i) * 150ms);
+  }
+  .pen-wrap.is-armed.is-in .bar {
+    transform: none;
+  }
+
+  @media (max-width: 640px) {
+    table,
+    tbody,
+    tr,
+    th,
+    td {
+      display: block;
+    }
+    thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    tbody tr {
+      padding: 14px 0;
+    }
+    tbody th,
+    tbody td {
+      padding: 0 0 8px;
+    }
+    .bar-cell {
+      width: auto;
+    }
+    .track::after {
+      content: '0 — 30';
+      position: absolute;
+      right: 6px;
+      top: 1px;
+      font: 600 0.75rem var(--sans);
+      color: var(--muted);
+    }
+  }
+</style>

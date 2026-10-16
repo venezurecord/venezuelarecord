@@ -1,0 +1,1637 @@
+---
+// "Who appoints whom". Desktop: a sticky SVG diagram with guided steps (scroll or Previous/Next) and a
+// free mode; tapping a node lights up its links and opens its profile in a side sheet.
+// Phones: a list by levels with the same profiles in a bottom sheet (no tiny diagram).
+// Without JS: the diagram is static and every profile is open in the list.
+import { getImage, Image } from 'astro:assets';
+import type { Lang } from '../../i18n/ui';
+import {
+  EDGES,
+  EDGE_TYPES,
+  LEVELS,
+  NODES,
+  STEPS,
+  type EdgeType,
+  type OrgNode,
+} from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+
+const OX = 80; // left margin for level labels
+const VBW = 1180;
+const VBH = 920;
+const R = 38;
+// Box width from the label length (17–19 px text), plus room for an emblem or photo.
+const textW = (s: string, px: number) => Math.ceil(s.length * px * 0.56);
+const size = (n: OrgNode) => {
+  const slot = n.logo || n.image ? 46 : 0;
+  if (n.kind === 'person') return { w: R * 2, h: R * 2 };
+  if (n.kind === 'outcome') return { w: Math.max(230, textW(n.short[lang], 19) + 48) + slot, h: 60 };
+  return { w: Math.max(150, textW(n.short[lang], 17) + 36) + slot, h: 56 };
+};
+
+const byId = new Map(NODES.map((n) => [n.id, n]));
+const X = (n: OrgNode) => n.x + OX;
+const f = (v: number) => Math.round(v * 10) / 10;
+
+function boundary(n: OrgNode, tx: number, ty: number) {
+  const cx = X(n);
+  const cy = n.y;
+  const dx = tx - cx;
+  const dy = ty - cy;
+  if (n.kind === 'person') {
+    const L = Math.hypot(dx, dy) || 1;
+    return { x: cx + (dx / L) * (R + 5), y: cy + (dy / L) * (R + 5) };
+  }
+  const { w, h } = size(n);
+  const t = Math.min(dx ? Math.abs((w / 2 + 4) / dx) : Infinity, dy ? Math.abs((h / 2 + 4) / dy) : Infinity);
+  return { x: cx + dx * t, y: cy + dy * t };
+}
+
+const edges = EDGES.map((e, i) => {
+  const a = byId.get(e.from)!;
+  const b = byId.get(e.to)!;
+  const p1 = boundary(a, X(b), b.y);
+  const p2 = boundary(b, X(a), a.y);
+  const dy = p2.y - p1.y;
+  let c1, c2;
+  if (Math.abs(dy) > 50) {
+    c1 = { x: p1.x, y: p1.y + dy * 0.45 };
+    c2 = { x: p2.x, y: p2.y - dy * 0.45 };
+  } else {
+    const mx = (p1.x + p2.x) / 2;
+    const bend = 46;
+    c1 = { x: mx, y: Math.min(p1.y, p2.y) - bend };
+    c2 = c1;
+  }
+  const mid = {
+    x: (p1.x + 3 * c1.x + 3 * c2.x + p2.x) / 8,
+    y: (p1.y + 3 * c1.y + 3 * c2.y + p2.y) / 8,
+  };
+  const label = e.label[lang];
+  return {
+    ...e,
+    i,
+    d: `M${f(p1.x)} ${f(p1.y)} C${f(c1.x)} ${f(c1.y)} ${f(c2.x)} ${f(c2.y)} ${f(p2.x)} ${f(p2.y)}`,
+    mid,
+    label,
+    lw: Math.min(420, Math.ceil(label.length * 14 * 0.56) + 22),
+  };
+});
+
+const portraits = Object.fromEntries(
+  await Promise.all(
+    NODES.filter((n) => n.photo).map(async (n) => {
+      const img = await getImage({ src: n.photo!, width: 168, height: 168, format: 'webp', quality: 72 });
+      return [n.id, img.src] as const;
+    }),
+  ),
+);
+
+const logos = Object.fromEntries(
+  await Promise.all(
+    NODES.filter((n) => n.logo).map(async (n) => {
+      const img = await getImage({ src: n.logo!, width: 120, format: 'webp', quality: 80 });
+      return [n.id, img.src] as const;
+    }),
+  ),
+);
+
+const scenes = Object.fromEntries(
+  await Promise.all(
+    NODES.filter((n) => n.image).map(async (n) => {
+      const img = await getImage({ src: n.image!, width: 160, format: 'webp', quality: 72 });
+      return [n.id, img.src] as const;
+    }),
+  ),
+);
+
+const typeLabel = (t: EdgeType) => EDGE_TYPES.find((x) => x.type === t)!.label[lang];
+const nodeName = (id: string) => byId.get(id)!.name[lang];
+const relations = (id: string) => ({
+  up: EDGES.filter((e) => e.to === id && e.type !== 'family'),
+  down: EDGES.filter((e) => e.from === id && e.type !== 'family'),
+  ties: EDGES.filter((e) => (e.from === id || e.to === id) && e.type === 'family'),
+});
+const stepEdges = STEPS.map((s) => EDGES.filter((e) => s.nodes.includes(e.from) && s.nodes.includes(e.to)));
+const levels = LEVELS.map((l, i) => ({ label: l[lang], nodes: NODES.filter((n) => n.level === i) }));
+const levelY = [64, 200, 340, 500, 712, 850];
+
+const swatch = (t: EdgeType) => t;
+// Simple line icons for non-person nodes (24×24, stroked).
+const ICONS: Record<string, string> = {
+  // per node
+  venapp: 'M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm3 17h2M12 7v4m0 2.5v.5',
+  polest: 'M12 2l7 3v6c0 5-3 8.5-7 11-4-2.5-7-6-7-11V5zM9 12l2 2 4-4',
+  // per kind
+  inst: 'M3 21h18M4 10h16M5 10v8m4.67-8v8m4.66-8v8M19 10v8M12 3l8 5H4z',
+  group: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3 2.7-5 6-5s6 2 6 5m-1.5-4.6C13.4 15.1 14.7 15 16 15c3.3 0 6 2 6 5',
+  outcome: 'M12 3l9 16H3zM12 10v4m0 3v.5',
+};
+/** Names under the portraits: first name as an initial when there are three words (the full name is
+ *  in the aria-label and the profile), then two balanced lines when still long. */
+const nameLines = (full: string) => {
+  const parts = full.split(' ');
+  const s = parts.length >= 3 ? [`${parts[0][0]}.`, ...parts.slice(1)].join(' ') : full;
+  if (s.length <= 12) return [s];
+  const w = s.split(' ');
+  let best = [s];
+  let diff = Infinity;
+  for (let i = 1; i < w.length; i++) {
+    const a = w.slice(0, i).join(' ');
+    const b = w.slice(i).join(' ');
+    const d = Math.abs(a.length - b.length);
+    if (d < diff) {
+      diff = d;
+      best = [a, b];
+    }
+  }
+  return best;
+};
+---
+
+<section id={A.org} class="org" data-org data-mode="guided" data-step="0" aria-labelledby="org-title">
+  <header class="inv-head">
+    <p class="inv-kicker">{it(lang, 'orgKicker')}</p>
+    <h2 id="org-title">{it(lang, 'orgTitle')}</h2>
+    <p class="inv-intro">{it(lang, 'orgIntro')}</p>
+  </header>
+
+  <div class="org-controls">
+    <div class="seg" role="group" aria-label={it(lang, 'modeLabel')}>
+      <button type="button" data-mode-btn="guided" aria-pressed="true">{it(lang, 'modeGuided')}</button>
+      <button type="button" data-mode-btn="free" aria-pressed="false">{it(lang, 'modeFree')}</button>
+    </div>
+    <fieldset class="filters">
+      <legend>{it(lang, 'filters')}</legend>
+      {
+        EDGE_TYPES.map((t) => (
+          <label class={`chip t-${t.type}`}>
+            <input type="checkbox" checked data-filter={t.type} />
+            <svg width="30" height="12" viewBox="0 0 30 12" aria-hidden="true">
+              <line x1="1" y1="6" x2={t.type === 'appoint' || t.type === 'result' ? 22 : 29} y2="6" class={`sw sw-${swatch(t.type)}`} />
+              {(t.type === 'appoint' || t.type === 'result') && <path d="M21 1 L29 6 L21 11 Z" class={`sw-head sw-${t.type}`} />}
+            </svg>
+            <span>{t.label[lang]}</span>
+          </label>
+        ))
+      }
+    </fieldset>
+  </div>
+
+  <div class="org-body">
+    <div class="org-steps">
+      {
+        STEPS.map((s, i) => (
+          <article class="org-step" data-i={i} aria-labelledby={`org-step-${i}`}>
+            <p class="org-step-n">{it(lang, 'step', { n: i + 1, total: STEPS.length })}</p>
+            <h3 id={`org-step-${i}`}>{s.title[lang].replace(/^\d+ · /, '')}</h3>
+            <p>{s.text[lang]}</p>
+            <ul class="rels">
+              {stepEdges[i].map((e) => (
+                <li class={`rel t-${e.type}`}>
+                  <span class={`sw-dot sw-${e.type}`} aria-hidden="true" />
+                  <span>
+                    <strong>{nodeName(e.from)}</strong> {e.type === 'family' ? '—' : '→'} <strong>{nodeName(e.to)}</strong>:{' '}
+                    {e.label[lang]} <span class="rel-type">({typeLabel(e.type)})</span>
+                    <Cite lang={lang} ids={e.src} anchor={A.src} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </article>
+        ))
+      }
+      <article class="org-step org-free-hint" data-i="free">
+        <p>{it(lang, 'freeHint')}</p>
+      </article>
+    </div>
+
+    <div class="org-stage">
+      <svg
+        class="org-svg"
+        viewBox={`0 0 ${VBW} ${VBH}`}
+        role="group"
+        aria-label={it(lang, 'orgTitle')}
+        focusable="false"
+      >
+        <defs>
+          <marker id="m-appoint" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="11" markerHeight="11" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 Z" class="mk-appoint" />
+          </marker>
+          <marker id="m-result" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 Z" class="mk-result" />
+          </marker>
+          <clipPath id="clip-face" clipPathUnits="objectBoundingBox">
+            <circle cx="0.5" cy="0.5" r="0.5" />
+          </clipPath>
+          <clipPath id="clip-slot" clipPathUnits="objectBoundingBox">
+            <rect width="1" height="1" rx="0.16" ry="0.16" />
+          </clipPath>
+        </defs>
+
+        <g class="lv" aria-hidden="true">
+          {
+            levels.map((l, i) => (
+              <text x="6" y={levelY[i] - 48}>
+                {i} · {l.label}
+              </text>
+            ))
+          }
+        </g>
+
+        <g class="edges" aria-hidden="true">
+          {
+            edges.map((e) => (
+              <path
+                class={`edge t-${e.type}`}
+                d={e.d}
+                data-from={e.from}
+                data-to={e.to}
+                data-e={e.i}
+                pathLength={e.type === 'appoint' || e.type === 'legal' || e.type === 'result' ? 1 : undefined}
+                marker-end={e.type === 'appoint' ? 'url(#m-appoint)' : e.type === 'result' ? 'url(#m-result)' : undefined}
+              />
+            ))
+          }
+        </g>
+
+        <g class="nodes">
+          {
+            NODES.map((n) => {
+              const { w, h } = size(n);
+              const cx = X(n);
+              return (
+                <a
+                  class={`node k-${n.kind}`}
+                  href={`#ficha-${n.id}`}
+                  data-id={n.id}
+                  style={`--lvl:${n.level}`}
+                  aria-label={`${n.name[lang]}. ${n.role[lang]}. ${it(lang, 'open')}`}
+                >
+                  {n.kind === 'person' ? (
+                    <g>
+                      <circle class="ring" cx={cx} cy={n.y} r={R + 4} />
+                      <circle class="face-bg" cx={cx} cy={n.y} r={R} />
+                      {portraits[n.id] ? (
+                        <image
+                          href={portraits[n.id]}
+                          x={cx - R}
+                          y={n.y - R}
+                          width={R * 2}
+                          height={R * 2}
+                          clip-path="url(#clip-face)"
+                          preserveAspectRatio="xMidYMid slice"
+                        />
+                      ) : logos[n.id] ? (
+                        <g>
+                          <circle class="face-logo" cx={cx} cy={n.y} r={R} />
+                          <image
+                            href={logos[n.id]}
+                            x={cx - R * 0.72}
+                            y={n.y - R * 0.72}
+                            width={R * 1.44}
+                            height={R * 1.44}
+                            preserveAspectRatio="xMidYMid meet"
+                          />
+                          <circle class="ini-chip" cx={cx + R * 0.74} cy={n.y + R * 0.7} r="15" />
+                          <text class="ini-chip-t" x={cx + R * 0.74} y={n.y + R * 0.7 + 4.5} text-anchor="middle">
+                            {n.initials}
+                          </text>
+                        </g>
+                      ) : (
+                        <text class="ini" x={cx} y={n.y + 8} text-anchor="middle">
+                          {n.initials}
+                        </text>
+                      )}
+                      <text class="nm" x={cx} y={n.y + R + 26} text-anchor="middle">
+                        {nameLines(n.name[lang]).map((l, j) => (
+                          <tspan x={cx} dy={j ? 22 : 0}>
+                            {l}
+                          </tspan>
+                        ))}
+                      </text>
+                      <text class="sh" x={cx} y={n.y + R + 47 + (nameLines(n.name[lang]).length - 1) * 22} text-anchor="middle">
+                        {n.short[lang]}
+                      </text>
+                    </g>
+                  ) : (
+                    <g>
+                      <rect
+                        class="box"
+                        x={cx - w / 2}
+                        y={n.y - h / 2}
+                        width={w}
+                        height={h}
+                        rx={n.kind === 'outcome' ? h / 2 : 6}
+                      />
+                      {logos[n.id] ? (
+                        <image
+                          href={logos[n.id]}
+                          x={cx - w / 2 + 8}
+                          y={n.y - 19}
+                          width="38"
+                          height="38"
+                          preserveAspectRatio="xMidYMid meet"
+                        />
+                      ) : scenes[n.id] ? (
+                        <image
+                          href={scenes[n.id]}
+                          x={cx - w / 2 + (n.kind === 'outcome' ? 9 : 8)}
+                          y={n.y - (n.kind === 'outcome' ? 20 : 19)}
+                          width={n.kind === 'outcome' ? 40 : 38}
+                          height={n.kind === 'outcome' ? 40 : 38}
+                          clip-path={n.kind === 'outcome' ? 'url(#clip-face)' : 'url(#clip-slot)'}
+                          preserveAspectRatio="xMidYMid slice"
+                        />
+                      ) : null}
+                      <text class="bx" x={logos[n.id] || scenes[n.id] ? cx + 23 : cx} y={n.y + 6} text-anchor="middle">
+                        {n.short[lang]}
+                      </text>
+                    </g>
+                  )}
+                </a>
+              );
+            })
+          }
+        </g>
+
+        <g class="elabels" aria-hidden="true">
+          {
+            edges.map((e) => (
+              <g
+                class="elabel"
+                data-e={e.i}
+                data-x={f(Math.min(VBW - e.lw / 2 - 4, Math.max(e.lw / 2 + 4, e.mid.x)))}
+                data-y={f(e.mid.y)}
+                data-w={e.lw}
+                transform={`translate(${f(e.mid.x)} ${f(e.mid.y)})`}
+              >
+                <rect x={-e.lw / 2} y="-14" width={e.lw} height="27" rx="13" />
+                <text y="5" text-anchor="middle">
+                  {e.label}
+                </text>
+              </g>
+            ))
+          }
+        </g>
+      </svg>
+
+      <div class="stepper" data-stepper>
+        <button type="button" data-prev>
+          <span aria-hidden="true">←</span> {it(lang, 'prev')}
+        </button>
+        <p class="stepper-n" aria-live="polite" data-step-label>{it(lang, 'step', { n: 1, total: STEPS.length })}</p>
+        <button type="button" data-next>
+          {it(lang, 'next')} <span aria-hidden="true">→</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Phones and no-JS: the same structure as a list by levels, every profile complete. -->
+  <div class="org-list">
+    {
+      levels.map((l, i) => (
+        <section class="lvl" aria-labelledby={`lvl-${i}`}>
+          <h3 id={`lvl-${i}`}>
+            <span class="lvl-n">{i}</span> {l.label}
+          </h3>
+          <ul>
+            {l.nodes.map((n) => {
+              const rel = relations(n.id);
+              return (
+                <li class="item" data-id={n.id}>
+                  <a class={`tile k-${n.kind}`} href={`#ficha-${n.id}`} data-open={n.id} aria-haspopup="dialog">
+                    <span class="av" aria-hidden="true">
+                      {n.photo ? (
+                        <Image src={n.photo} alt="" width={112} height={112} loading="lazy" decoding="async" />
+                      ) : n.image ? (
+                        <Image class="av-photo" src={n.image} alt="" width={160} loading="lazy" decoding="async" />
+                      ) : n.logo ? (
+                        <>
+                          <Image class="av-logo" src={n.logo} alt="" width={96} loading="lazy" decoding="async" />
+                          {n.initials && <span class="av-chip">{n.initials}</span>}
+                        </>
+                      ) : n.kind === 'person' ? (
+                        <span class="av-ini">{n.initials}</span>
+                      ) : (
+                        <svg class="av-ico" viewBox="0 0 24 24" width="24" height="24">
+                          <path d={ICONS[n.id] ?? ICONS[n.kind]} />
+                        </svg>
+                      )}
+                    </span>
+                    <span class="tile-t">
+                      <strong>{n.name[lang]}</strong>
+                      <span>{n.kind === 'person' ? n.short[lang] : n.role[lang]}</span>
+                    </span>
+                    <span class="tile-go" aria-hidden="true">
+                      ›
+                    </span>
+                  </a>
+                  <div class="ficha" id={`ficha-${n.id}`} data-ficha={n.id}>
+                    {n.image && n.imageAlt && (
+                      <Image class="f-banner" src={n.image} alt={n.imageAlt[lang]} width={640} loading="lazy" decoding="async" />
+                    )}
+                    <div class="f-head">
+                      {n.photo ? (
+                        <Image class="f-photo" src={n.photo} alt={n.name[lang]} width={176} height={176} loading="lazy" decoding="async" />
+                      ) : n.logo ? (
+                        <span class="f-logo" aria-hidden="true">
+                          <Image src={n.logo} alt="" width={176} loading="lazy" decoding="async" />
+                          {n.initials && <span class="av-chip">{n.initials}</span>}
+                        </span>
+                      ) : n.kind === 'person' ? (
+                        <span class="f-ini" aria-hidden="true">
+                          {n.initials}
+                        </span>
+                      ) : null}
+                      <div>
+                        <h4>{n.name[lang]}</h4>
+                        <p class="f-role">{n.role[lang]}</p>
+                      </div>
+                    </div>
+                    {n.photoCredit && <p class="f-credit">{n.photoCredit[lang]}</p>}
+                    {n.logoCredit && <p class="f-credit">{n.logoCredit[lang]}</p>}
+                    {n.imageCredit && <p class="f-credit">{n.imageCredit[lang]}</p>}
+                    {rel.up.length > 0 && (
+                      <>
+                        <h5>{it(lang, 'appointedBy')}</h5>
+                        <ul class="rels">
+                          {rel.up.map((e) => (
+                            <li class={`rel t-${e.type}`}>
+                              <span class={`sw-dot sw-${e.type}`} aria-hidden="true" />
+                              <span>
+                                <strong>{nodeName(e.from)}</strong>: {e.label[lang]} <span class="rel-type">({typeLabel(e.type)})</span>
+                                <Cite lang={lang} ids={e.src} anchor={A.src} />
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                    {rel.down.length > 0 && (
+                      <>
+                        <h5>{it(lang, 'appoints')}</h5>
+                        <ul class="rels">
+                          {rel.down.map((e) => (
+                            <li class={`rel t-${e.type}`}>
+                              <span class={`sw-dot sw-${e.type}`} aria-hidden="true" />
+                              <span>
+                                <strong>{nodeName(e.to)}</strong>: {e.label[lang]} <span class="rel-type">({typeLabel(e.type)})</span>
+                                <Cite lang={lang} ids={e.src} anchor={A.src} />
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                    {rel.ties.length > 0 && (
+                      <>
+                        <h5>{it(lang, 'linksIn')}</h5>
+                        <ul class="rels">
+                          {rel.ties.map((e) => (
+                            <li class={`rel t-${e.type}`}>
+                              <span class={`sw-dot sw-${e.type}`} aria-hidden="true" />
+                              <span>
+                                <strong>{nodeName(e.from === n.id ? e.to : e.from)}</strong>: {e.label[lang]}
+                                <Cite lang={lang} ids={e.src} anchor={A.src} />
+                              </span>
+                            </li>
+                          ))}
+                        </ul>
+                      </>
+                    )}
+                    <h5>{it(lang, 'facts')}</h5>
+                    <ul class="facts">
+                      {n.facts.map((x) => (
+                        <li>
+                          {x.text[lang]}
+                          {x.src.length ? <Cite lang={lang} ids={x.src} anchor={A.src} /> : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))
+    }
+
+    <div class="mbar" data-mbar>
+      {
+        STEPS.map((s, i) => (
+          <div class="mbar-step" data-i={i}>
+            <p class="mbar-t">{s.title[lang]}</p>
+            <p class="mbar-p">{s.text[lang]}</p>
+          </div>
+        ))
+      }
+      <div class="mbar-step" data-i="free">
+        <p class="mbar-p">{it(lang, 'freeHint')}</p>
+      </div>
+      <div class="mbar-nav">
+        <button type="button" data-prev aria-label={it(lang, 'prev')}>←</button>
+        <span data-step-label aria-live="polite">{it(lang, 'step', { n: 1, total: STEPS.length })}</span>
+        <button type="button" data-next aria-label={it(lang, 'next')}>→</button>
+      </div>
+    </div>
+  </div>
+
+  <dialog class="sheet" data-sheet aria-label="">
+    <div class="sheet-bar">
+      <button type="button" class="sheet-close" data-close>
+        <span aria-hidden="true">×</span>
+        <span class="visually-hidden">{it(lang, 'close')}</span>
+      </button>
+    </div>
+    <div class="sheet-body" data-sheet-body></div>
+  </dialog>
+
+  <script
+    type="application/json"
+    data-org-data
+    set:html={JSON.stringify({
+      steps: STEPS.map((s) => s.nodes),
+      edges: EDGES.map((e) => [e.from, e.to]),
+      labels: { step: it(lang, 'step', { n: '{n}', total: STEPS.length }) },
+      names: Object.fromEntries(NODES.map((n) => [n.id, n.name[lang]])),
+    })}
+  />
+</section>
+
+<script>
+  type OrgData = { steps: string[][]; edges: [string, string][]; labels: { step: string }; names: Record<string, string> };
+
+  document.querySelectorAll<HTMLElement>('[data-org]').forEach((org) => {
+    const data: OrgData = JSON.parse(org.querySelector('[data-org-data]')!.textContent!);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const desktop = window.matchMedia('(min-width: 900px)');
+    const svg = org.querySelector<SVGSVGElement>('.org-svg')!;
+    const nodes = [...org.querySelectorAll<SVGAElement>('.node')];
+    const edges = [...org.querySelectorAll<SVGPathElement>('.edge')];
+    const labels = [...org.querySelectorAll<SVGGElement>('.elabel')];
+    const items = [...org.querySelectorAll<HTMLElement>('.org-list .item')];
+    const stepEls = [...org.querySelectorAll<HTMLElement>('.org-step')];
+    const sheet = org.querySelector<HTMLDialogElement>('[data-sheet]')!;
+    const sheetBody = org.querySelector<HTMLElement>('[data-sheet-body]')!;
+    let step = 0;
+    let selected: string | null = null;
+
+    org.classList.add('is-live');
+
+    // Visible line labels are stacked so they never overlap (greedy, top to bottom).
+    function layoutLabels() {
+      const shown = labels.filter((l) => l.classList.contains('is-on') || l.classList.contains('is-hover'));
+      shown.sort((a, b) => Number(a.dataset.y) - Number(b.dataset.y));
+      const placed: { x: number; y: number; w: number }[] = [];
+      for (const l of shown) {
+        const x = Number(l.dataset.x);
+        const w = Number(l.dataset.w);
+        let y = Number(l.dataset.y);
+        for (let k = 0; k < 20 && placed.some((q) => Math.abs(q.x - x) < (q.w + w) / 2 + 6 && Math.abs(q.y - y) < 31); k++) y += 31;
+        placed.push({ x, y, w });
+        l.setAttribute('transform', `translate(${x} ${y})`);
+      }
+    }
+
+    function paint() {
+      const guided = org.dataset.mode === 'guided';
+      let on: Set<string> | null = null;
+      if (selected) {
+        on = new Set([selected]);
+        data.edges.forEach(([a, b]) => {
+          if (a === selected) on!.add(b);
+          if (b === selected) on!.add(a);
+        });
+      } else if (guided) on = new Set(data.steps[step]);
+      const edgeOn = (a: string, b: string) =>
+        !on || (selected ? a === selected || b === selected : on.has(a) && on.has(b));
+      nodes.forEach((n) => n.classList.toggle('is-dim', !!on && !on.has(n.dataset.id!)));
+      nodes.forEach((n) => n.classList.toggle('is-sel', n.dataset.id === selected));
+      items.forEach((n) => n.classList.toggle('is-dim', !!on && !on.has(n.dataset.id!)));
+      edges.forEach((e, i) => {
+        const [a, b] = data.edges[i];
+        const active = edgeOn(a, b);
+        e.classList.toggle('is-dim', !active);
+        e.classList.toggle('is-on', active && !!on);
+      });
+      // Line labels only appear on hover: a selected node's relations are listed in its profile.
+      labels.forEach((l) => l.classList.remove('is-hover'));
+      org.dataset.step = guided ? String(step) : 'free';
+      const text = data.labels.step.replace('{n}', String(step + 1));
+      org.querySelectorAll<HTMLElement>('[data-step-label]').forEach((el) => (el.textContent = guided ? text : ''));
+      org.querySelectorAll<HTMLButtonElement>('[data-prev]').forEach((b) => (b.disabled = !guided || step === 0));
+      org.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((b) => (b.disabled = !guided || step === data.steps.length - 1));
+    }
+
+    function go(i: number, scroll: boolean) {
+      step = Math.max(0, Math.min(data.steps.length - 1, i));
+      selected = null;
+      paint();
+      if (scroll && desktop.matches) {
+        stepEls[step]?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      } else if (scroll) {
+        const first = items.find((n) => !n.classList.contains('is-dim'));
+        first?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+      }
+    }
+
+    function setMode(mode: 'guided' | 'free') {
+      org.dataset.mode = mode;
+      org.querySelectorAll<HTMLButtonElement>('[data-mode-btn]').forEach((b) =>
+        b.setAttribute('aria-pressed', String(b.dataset.modeBtn === mode)),
+      );
+      selected = null;
+      paint();
+    }
+
+    function open(id: string, opener: HTMLElement | SVGElement) {
+      const src = org.querySelector<HTMLElement>(`[data-ficha="${id}"]`);
+      if (!src) return;
+      selected = id;
+      paint();
+      const clone = src.cloneNode(true) as HTMLElement;
+      clone.removeAttribute('id');
+      clone.querySelectorAll('[id]').forEach((el) => el.removeAttribute('id'));
+      clone.querySelectorAll('img').forEach((img) => img.setAttribute('loading', 'eager'));
+      sheetBody.replaceChildren(clone);
+      sheet.setAttribute('aria-label', data.names[id]);
+      sheet.showModal();
+      sheet.querySelector<HTMLElement>('[data-close]')!.focus();
+      sheet.addEventListener(
+        'close',
+        () => {
+          selected = null;
+          paint();
+          (opener as HTMLElement).focus?.();
+        },
+        { once: true },
+      );
+    }
+
+    // mode + filters
+    org.querySelectorAll<HTMLButtonElement>('[data-mode-btn]').forEach((b) =>
+      b.addEventListener('click', () => setMode(b.dataset.modeBtn as 'guided' | 'free')),
+    );
+    org.querySelectorAll<HTMLInputElement>('[data-filter]').forEach((c) =>
+      c.addEventListener('change', () => org.classList.toggle(`hide-${c.dataset.filter}`, !c.checked)),
+    );
+    org.querySelectorAll<HTMLButtonElement>('[data-prev]').forEach((b) => b.addEventListener('click', () => go(step - 1, true)));
+    org.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((b) => b.addEventListener('click', () => go(step + 1, true)));
+
+    // open profiles
+    nodes.forEach((n) =>
+      n.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        open(n.dataset.id!, n);
+      }),
+    );
+    nodes.forEach((n) => {
+      n.addEventListener('pointerenter', () => {
+        if (sheet.open) return;
+        labels.forEach((l, i) => {
+          const [a, b] = data.edges[i];
+          l.classList.toggle('is-hover', a === n.dataset.id || b === n.dataset.id);
+        });
+        layoutLabels();
+      });
+      n.addEventListener('pointerleave', () => labels.forEach((l) => l.classList.remove('is-hover')));
+    });
+    org.querySelectorAll<HTMLAnchorElement>('[data-open]').forEach((a) =>
+      a.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        open(a.dataset.open!, a);
+      }),
+    );
+    sheet.querySelector('[data-close]')!.addEventListener('click', () => sheet.close());
+    sheet.addEventListener('click', (ev) => {
+      if (ev.target === sheet) sheet.close(); // backdrop
+      const link = (ev.target as HTMLElement).closest('a[href^="#"]');
+      if (link) sheet.close();
+    });
+
+    // guided steps follow the scroll on desktop
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const e of entries) {
+            const i = (e.target as HTMLElement).dataset.i!;
+            if (e.isIntersecting && i !== 'free' && org.dataset.mode === 'guided' && desktop.matches && !sheet.open) {
+              step = Number(i);
+              selected = null;
+              paint();
+            }
+          }
+        },
+        { rootMargin: '-48% 0px -48% 0px' },
+      );
+      stepEls.forEach((s) => io.observe(s));
+
+      // faces enter in order of command the first time the chart is seen
+      if (!reduce) {
+        svg.classList.add('is-armed');
+        const io2 = new IntersectionObserver(
+          (entries) => {
+            if (entries.some((e) => e.isIntersecting)) {
+              svg.classList.add('is-in');
+              io2.disconnect();
+            }
+          },
+          { threshold: 0.2 },
+        );
+        io2.observe(svg);
+      }
+    }
+
+    paint();
+  });
+</script>
+
+<style>
+  .org {
+    --org-appoint: var(--inv-appoint);
+    --org-legal: var(--text);
+    --org-coord: var(--muted);
+    --org-un: var(--inv-un);
+    --org-family: var(--muted);
+    --org-result: var(--inv-sec);
+    padding-block: 72px 32px;
+    background: var(--inv-band);
+    border-block: 1px solid var(--line);
+  }
+
+  /* controls */
+  .org-controls {
+    max-width: 1360px;
+    margin: 0 auto 20px;
+    padding-inline: var(--gutter);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    align-items: center;
+  }
+  .seg {
+    display: inline-flex;
+    padding: 3px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+  }
+  .seg button {
+    min-height: 44px;
+    padding: 0 18px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--text);
+    font: 600 0.95rem var(--sans);
+    cursor: pointer;
+  }
+  .seg button[aria-pressed='true'] {
+    background: var(--text);
+    color: var(--bg);
+  }
+  :global(html:not(.js)) .org-controls {
+    display: none;
+  }
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+  .filters legend {
+    float: left;
+    margin-right: 6px;
+    padding: 8px 0;
+    font: 700 0.75rem/1.4 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    padding: 0 14px 0 10px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+    font: 500 0.9rem var(--sans);
+    cursor: pointer;
+    user-select: none;
+  }
+  .chip input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--text);
+  }
+  .chip:has(input:not(:checked)) {
+    opacity: 0.55;
+  }
+  .chip:has(input:focus-visible) {
+    outline: 3px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  /* line styles (shared by the diagram, the swatches and the lists) */
+  .sw,
+  .edge {
+    fill: none;
+    stroke-linecap: round;
+  }
+  .sw-appoint {
+    stroke: var(--org-appoint);
+    stroke-width: 4;
+  }
+  .sw-legal {
+    stroke: var(--org-legal);
+    stroke-width: 2;
+  }
+  .sw-coord {
+    stroke: var(--org-coord);
+    stroke-width: 2;
+    stroke-dasharray: 6 4;
+  }
+  .sw-un {
+    stroke: var(--org-un);
+    stroke-width: 2.6;
+    stroke-dasharray: 0.5 5;
+  }
+  .sw-family {
+    stroke: var(--org-family);
+    stroke-width: 1.5;
+    stroke-dasharray: 8 3 1 3;
+  }
+  .sw-result {
+    stroke: var(--org-result);
+    stroke-width: 2.4;
+  }
+  .sw-head.sw-appoint {
+    fill: var(--org-appoint);
+    stroke: none;
+  }
+  .sw-head.sw-result {
+    fill: var(--org-result);
+    stroke: none;
+  }
+  .sw-dot {
+    flex: none;
+    display: inline-block;
+    width: 22px;
+    height: 0;
+    margin-top: 0.7em;
+    border-top: 3px solid var(--org-legal);
+  }
+  .sw-dot.sw-appoint {
+    border-top: 5px solid var(--org-appoint);
+  }
+  .sw-dot.sw-coord {
+    border-top: 2px dashed var(--org-coord);
+  }
+  .sw-dot.sw-un {
+    border-top: 3px dotted var(--org-un);
+  }
+  .sw-dot.sw-family {
+    border-top: 2px dashed var(--org-family);
+  }
+  .sw-dot.sw-result {
+    border-top: 3px solid var(--org-result);
+  }
+
+  /* body: steps + sticky stage (desktop) */
+  .org-body {
+    max-width: 1360px;
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+    display: none;
+  }
+  @media (min-width: 900px) {
+    .org-body {
+      display: grid;
+      grid-template-columns: minmax(260px, 330px) minmax(0, 1fr);
+      gap: 32px;
+      align-items: start;
+    }
+  }
+  :global(html:not(.js)) .org-body {
+    display: grid;
+  }
+  .org-step {
+    min-height: 72vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 24px;
+    transition: opacity 0.3s ease;
+  }
+  .org-step h3 {
+    font-size: 1.45rem;
+    margin: 4px 0 10px;
+  }
+  .org-step > p {
+    font-family: var(--serif);
+    font-size: 1.08rem;
+    line-height: 1.6;
+    margin: 0 0 14px;
+  }
+  .org-step-n {
+    margin: 0;
+    font: 700 0.75rem/1.4 var(--sans) !important;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--inv-appoint);
+  }
+  .org.is-live .org-step {
+    color: var(--muted);
+    border-left: 3px solid transparent;
+    padding-left: 14px;
+    margin-left: -17px;
+    transition:
+      color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .org.is-live[data-step='0'] .org-step[data-i='0'],
+  .org.is-live[data-step='1'] .org-step[data-i='1'],
+  .org.is-live[data-step='2'] .org-step[data-i='2'],
+  .org.is-live[data-step='3'] .org-step[data-i='3'] {
+    color: var(--text);
+    border-left-color: var(--inv-appoint);
+  }
+  .org-free-hint {
+    display: none;
+  }
+  .org.is-live[data-mode='free'] .org-step {
+    display: none;
+  }
+  .org.is-live[data-mode='free'] .org-free-hint {
+    display: flex;
+    opacity: 1;
+    position: sticky;
+    top: 120px;
+    min-height: 0;
+  }
+  .rels {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+    font: 0.9rem/1.45 var(--sans);
+  }
+  .rel {
+    display: flex;
+    gap: 10px;
+  }
+  .rel-type {
+    color: var(--muted);
+  }
+  .org.hide-appoint .rel.t-appoint,
+  .org.hide-legal .rel.t-legal,
+  .org.hide-coord .rel.t-coord,
+  .org.hide-un .rel.t-un,
+  .org.hide-family .rel.t-family,
+  .org.hide-result .rel.t-result {
+    display: none;
+  }
+
+  .org-stage {
+    position: sticky;
+    top: 64px;
+    padding-block: 8px;
+  }
+  .org-svg {
+    width: 100%;
+    height: auto;
+    max-height: calc(100vh - 140px);
+    display: block;
+    overflow: visible;
+  }
+  .lv text {
+    font: 700 15px var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    fill: var(--muted);
+  }
+  .edge {
+    transition:
+      opacity 0.35s ease,
+      stroke-dashoffset 0.9s cubic-bezier(0.6, 0, 0.3, 1);
+  }
+  .edge.t-appoint {
+    stroke: var(--org-appoint);
+    stroke-width: 4.5;
+  }
+  .edge.t-legal {
+    stroke: var(--org-legal);
+    stroke-width: 2;
+  }
+  .edge.t-coord {
+    stroke: var(--org-coord);
+    stroke-width: 2;
+    stroke-dasharray: 7 6;
+  }
+  .edge.t-un {
+    stroke: var(--org-un);
+    stroke-width: 3;
+    stroke-dasharray: 0.5 7;
+  }
+  .edge.t-family {
+    stroke: var(--org-family);
+    stroke-width: 1.6;
+    stroke-dasharray: 9 4 1.5 4;
+  }
+  .edge.t-result {
+    stroke: var(--org-result);
+    stroke-width: 2.6;
+  }
+  .edge:is(.t-appoint, .t-legal, .t-result) {
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+  .mk-appoint {
+    fill: var(--org-appoint);
+  }
+  .mk-result {
+    fill: var(--org-result);
+  }
+  .edge.is-dim {
+    opacity: 0.08;
+  }
+  .org.is-live .edge.is-dim:is(.t-appoint, .t-legal, .t-result) {
+    stroke-dashoffset: 1;
+    opacity: 0.08;
+  }
+  .org.hide-appoint .edge.t-appoint,
+  .org.hide-legal .edge.t-legal,
+  .org.hide-coord .edge.t-coord,
+  .org.hide-un .edge.t-un,
+  .org.hide-family .edge.t-family,
+  .org.hide-result .edge.t-result {
+    display: none;
+  }
+
+  .node {
+    cursor: pointer;
+    outline: none;
+    transition: opacity 0.35s ease;
+  }
+  .node .ring {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 3;
+  }
+  .node .face-bg {
+    fill: var(--surface);
+    stroke: var(--line);
+    stroke-width: 1.5;
+  }
+  .node .face-logo {
+    fill: #fff;
+    stroke: var(--line);
+    stroke-width: 1.5;
+  }
+  .node .ini-chip {
+    fill: var(--text);
+    stroke: var(--inv-band);
+    stroke-width: 3;
+  }
+  .node .ini-chip-t {
+    font: 700 13px var(--sans);
+    fill: var(--bg);
+  }
+  .node .ini {
+    font: 700 26px var(--sans);
+    fill: var(--muted);
+  }
+  .node .nm {
+    font: 700 20px var(--sans);
+    fill: var(--text);
+    paint-order: stroke;
+    stroke: var(--inv-band);
+    stroke-width: 5px;
+    stroke-linejoin: round;
+  }
+  .node .sh {
+    font: 500 16px var(--sans);
+    fill: var(--muted);
+    paint-order: stroke;
+    stroke: var(--inv-band);
+    stroke-width: 5px;
+  }
+  .node .box {
+    fill: var(--bg);
+    stroke: var(--text);
+    stroke-width: 1.5;
+  }
+  .node.k-group .box {
+    stroke-dasharray: 6 4;
+    stroke: var(--org-un);
+  }
+  .node.k-outcome .box {
+    fill: var(--inv-sec-strong);
+    stroke: none;
+  }
+  .node .bx {
+    font: 700 17px var(--sans);
+    fill: var(--text);
+  }
+  .node.k-outcome .bx {
+    fill: #fff;
+    font-size: 19px;
+  }
+  .node:hover .ring,
+  .node:focus-visible .ring,
+  .node.is-sel .ring {
+    stroke: var(--inv-appoint);
+  }
+  .node:hover .box,
+  .node:focus-visible .box,
+  .node.is-sel .box {
+    stroke: var(--inv-appoint);
+    stroke-width: 3;
+  }
+  .node:focus-visible .nm {
+    text-decoration: underline;
+  }
+  .node.is-dim {
+    opacity: 0.45;
+  }
+  .org-svg.is-armed .node {
+    opacity: 0;
+    transform: translateY(10px);
+    transform-box: fill-box;
+    transition:
+      opacity 0.5s ease calc(var(--lvl) * 140ms),
+      transform 0.5s ease calc(var(--lvl) * 140ms);
+  }
+  .org-svg.is-armed.is-in .node {
+    opacity: 1;
+    transform: none;
+  }
+  .org-svg.is-armed.is-in .node.is-dim {
+    opacity: 0.45;
+  }
+  .elabel {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+  .elabel rect {
+    fill: var(--text);
+  }
+  .elabel text {
+    font: 600 14px var(--sans);
+    fill: var(--bg);
+  }
+  .elabel.is-on,
+  .elabel.is-hover {
+    opacity: 1;
+  }
+
+  .stepper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 8px;
+  }
+  :global(html:not(.js)) .stepper {
+    display: none;
+  }
+  .stepper button,
+  .mbar-nav button {
+    min-height: 44px;
+    padding: 0 16px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--text);
+    font: 600 0.9rem var(--sans);
+    cursor: pointer;
+  }
+  .stepper button:disabled,
+  .mbar-nav button:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+  .stepper-n {
+    margin: 0;
+    min-width: 7em;
+    text-align: center;
+    font: 600 0.9rem var(--sans);
+    color: var(--muted);
+  }
+  .org[data-mode='free'] .stepper {
+    visibility: hidden;
+  }
+
+  /* list (phones + no JS) */
+  .org-list {
+    max-width: var(--reading);
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+  @media (min-width: 900px) {
+    :global(html.js) .org-list {
+      display: none;
+    }
+    :global(html:not(.js)) .org-list {
+      margin-top: 40px;
+    }
+  }
+  .lvl {
+    margin-bottom: 18px;
+  }
+  .lvl h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 10px;
+    font: 700 0.75rem/1.4 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .lvl-n {
+    display: inline-grid;
+    place-items: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--text);
+    color: var(--bg);
+    font-size: 0.75rem;
+    letter-spacing: 0;
+  }
+  .lvl > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 10px;
+    border-left: 2px solid var(--line);
+    display: grid;
+    gap: 8px;
+  }
+  .item {
+    transition: opacity 0.3s ease;
+  }
+  /* Guided step on phones: highlight the items in the step (no dimming, so text keeps AA contrast). */
+  .org.is-live[data-mode='guided'] .item:not(.is-dim) .tile {
+    border-color: var(--inv-appoint);
+    box-shadow: inset 4px 0 0 var(--inv-appoint);
+    background: color-mix(in srgb, var(--inv-appoint) 7%, var(--bg));
+  }
+  .tile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 8px 12px 8px 8px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--text);
+    text-decoration: none;
+  }
+  .tile:hover {
+    border-color: var(--inv-appoint);
+  }
+  .av {
+    flex: none;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+  }
+  .k-inst .av,
+  .k-group .av,
+  .k-outcome .av {
+    border-radius: 8px;
+  }
+  .k-group .av {
+    border-style: dashed;
+    border-color: var(--org-un);
+  }
+  .k-outcome .av {
+    background: var(--inv-sec-strong);
+    border: 0;
+  }
+  .av :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .av {
+    position: relative;
+    overflow: visible;
+  }
+  .av :global(img) {
+    border-radius: inherit;
+  }
+  .av :global(.av-photo) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ficha :global(.f-banner) {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 14px;
+  }
+  .av :global(.av-logo) {
+    object-fit: contain;
+    padding: 5px;
+    background: #fff;
+  }
+  .av-chip {
+    position: absolute;
+    right: -6px;
+    bottom: -4px;
+    display: grid;
+    place-items: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 12px;
+    border: 2px solid var(--bg);
+    background: var(--text);
+    color: var(--bg);
+    font: 700 0.75rem var(--sans);
+  }
+  .f-logo {
+    position: relative;
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: #fff;
+    border: 1px solid var(--line);
+  }
+  .f-logo :global(img) {
+    width: 72%;
+    height: 72%;
+    object-fit: contain;
+  }
+  .av-ico {
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .k-group .av-ico {
+    stroke: var(--org-un);
+  }
+  .k-outcome .av-ico {
+    stroke: #fff;
+  }
+  .av-ini {
+    font: 700 1rem var(--sans);
+    color: var(--muted);
+  }
+  .tile-t {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1;
+  }
+  .tile-t strong {
+    font: 700 1rem/1.25 var(--sans);
+  }
+  .tile-t span {
+    font: 0.9rem/1.35 var(--sans);
+    color: var(--muted);
+  }
+  .tile-go {
+    font-size: 1.6rem;
+    color: var(--muted);
+  }
+  :global(html:not(.js)) .tile-go {
+    display: none;
+  }
+
+  /* profile (open in the list without JS; cloned into the sheet with JS) */
+  .ficha {
+    padding: 14px 4px 18px 12px;
+  }
+  :global(html.js) .org-list .ficha {
+    display: none;
+  }
+  .f-head {
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    margin-bottom: 6px;
+  }
+  .ficha :global(.f-photo) {
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex: none;
+  }
+  .f-ini {
+    flex: none;
+    display: grid;
+    place-items: center;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    font: 700 1.6rem var(--sans);
+    color: var(--muted);
+  }
+  .ficha h4 {
+    font-size: 1.35rem;
+    margin: 0 0 4px;
+  }
+  .f-role {
+    margin: 0;
+    font: 0.9rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .f-credit {
+    margin: 6px 0 0;
+    font: 0.78rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .ficha h5 {
+    margin: 18px 0 8px;
+    font: 700 0.75rem/1.4 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .facts {
+    margin: 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 8px;
+    font-family: var(--serif);
+    font-size: 1.02rem;
+    line-height: 1.55;
+  }
+
+  /* bottom bar with the guided steps (phones, JS) */
+  .mbar {
+    display: none;
+  }
+  @media (max-width: 899.98px) {
+    :global(html.js) .mbar {
+      display: block;
+      position: sticky;
+      bottom: 0;
+      z-index: 5;
+      margin: 12px calc(var(--gutter) * -1) 0;
+      padding: 12px var(--gutter) calc(10px + env(safe-area-inset-bottom));
+      background: var(--bg);
+      border-top: 1px solid var(--line);
+      box-shadow: 0 -8px 24px rgba(0, 0, 0, 0.08);
+    }
+  }
+  .mbar-step {
+    display: none;
+  }
+  .org[data-step='0'] .mbar-step[data-i='0'],
+  .org[data-step='1'] .mbar-step[data-i='1'],
+  .org[data-step='2'] .mbar-step[data-i='2'],
+  .org[data-step='3'] .mbar-step[data-i='3'],
+  .org[data-step='free'] .mbar-step[data-i='free'] {
+    display: block;
+  }
+  .mbar-t {
+    margin: 0 0 4px;
+    font: 700 0.95rem/1.3 var(--sans);
+  }
+  .mbar-p {
+    margin: 0;
+    font: 0.9rem/1.45 var(--sans);
+    color: var(--muted);
+    max-height: 6.2em;
+    overflow-y: auto;
+  }
+  .mbar-nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 8px;
+    font: 600 0.88rem var(--sans);
+    color: var(--muted);
+  }
+  .org[data-mode='free'] .mbar-nav {
+    display: none;
+  }
+
+  /* sheet: side panel on desktop, bottom sheet on phones */
+  .sheet {
+    border: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    max-width: none;
+    max-height: none;
+  }
+  .sheet::backdrop {
+    background: rgba(10, 12, 16, 0.35);
+  }
+  .sheet[open] {
+    position: fixed;
+    inset: auto 0 0 0;
+    width: 100%;
+    max-height: 86svh;
+    margin: 0;
+    border-radius: 16px 16px 0 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-bottom: env(safe-area-inset-bottom);
+    animation: sheet-up 0.32s cubic-bezier(0.3, 0.9, 0.3, 1);
+  }
+  @media (min-width: 900px) {
+    .sheet[open] {
+      inset: 0 0 0 auto;
+      width: min(440px, 92vw);
+      height: 100vh;
+      max-height: none;
+      border-radius: 0;
+      animation-name: sheet-in;
+    }
+  }
+  @keyframes sheet-up {
+    from {
+      transform: translateY(30%);
+      opacity: 0;
+    }
+  }
+  @keyframes sheet-in {
+    from {
+      transform: translateX(30%);
+      opacity: 0;
+    }
+  }
+  .sheet-bar {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: flex-end;
+    padding: 8px 8px 0;
+    background: var(--bg);
+    z-index: 1;
+  }
+  .sheet-bar::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 8px;
+    width: 40px;
+    height: 4px;
+    margin-left: -20px;
+    border-radius: 2px;
+    background: var(--line);
+  }
+  @media (min-width: 900px) {
+    .sheet-bar::before {
+      display: none;
+    }
+  }
+  .sheet-close {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--text);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  .sheet-body {
+    padding: 0 20px 28px 16px;
+  }
+  .sheet-body :global(.ficha) {
+    display: block !important;
+  }
+</style>

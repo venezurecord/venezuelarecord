@@ -1,0 +1,221 @@
+---
+// What changed / what did not: two sourced columns compared with a slider (desktop), plus a
+// waffle of the 214 political detentions the UN documented (207 before February 2026).
+import type { Lang } from '../../i18n/ui';
+import { CHANGED, DETENTIONS, UNCHANGED } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+const cells = Array.from({ length: DETENTIONS.total }, (_, i) => i < DETENTIONS.beforeFeb);
+---
+
+<section id={A.bal} class="bal" data-bal aria-labelledby="bal-title" style="--split:50">
+  <header class="inv-head">
+    <p class="inv-kicker">{it(lang, 'balKicker')}</p>
+    <h2 id="bal-title">{it(lang, 'balTitle')}</h2>
+    <p class="inv-intro">{it(lang, 'balIntro')}</p>
+  </header>
+
+  <div class="bal-wrap">
+    <label class="bal-slider">
+      <span class="visually-hidden">{it(lang, 'balSlider')}</span>
+      <span class="end yes" aria-hidden="true">{it(lang, 'balChanged')}</span>
+      <input type="range" min="20" max="80" value="50" step="1" data-split aria-valuetext="50%" />
+      <span class="end no" aria-hidden="true">{it(lang, 'balUnchanged')}</span>
+    </label>
+
+    <div class="bal-cols">
+      <div class="col yes">
+        <h3>{it(lang, 'balChanged')}</h3>
+        <ul>
+          {
+            CHANGED.map((c) => (
+              <li>
+                {c.text[lang]}
+                <Cite lang={lang} ids={c.src} anchor={A.src} />
+              </li>
+            ))
+          }
+        </ul>
+        <figure class="waffle">
+          <div class="cells" role="img" aria-label={it(lang, 'waffleCaption', { before: DETENTIONS.beforeFeb, total: DETENTIONS.total })}>
+            {cells.map((b) => <span class={b ? 'b' : 'a'} />)}
+          </div>
+          <figcaption>
+            <span class="key"><span class="sq b" aria-hidden="true" />{it(lang, 'waffleBefore')}</span>
+            <span class="key"><span class="sq a" aria-hidden="true" />{it(lang, 'waffleAfter')}</span>
+            <span class="cap">
+              {it(lang, 'waffleCaption', { before: DETENTIONS.beforeFeb, total: DETENTIONS.total })}
+              <Cite lang={lang} ids={[1]} anchor={A.src} />
+            </span>
+          </figcaption>
+        </figure>
+      </div>
+      <div class="col no">
+        <h3>{it(lang, 'balUnchanged')}</h3>
+        <ul>
+          {
+            UNCHANGED.map((c) => (
+              <li>
+                {c.text[lang]}
+                <Cite lang={lang} ids={c.src} anchor={A.src} />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-bal]').forEach((bal) => {
+    const input = bal.querySelector<HTMLInputElement>('[data-split]')!;
+    const update = () => {
+      bal.style.setProperty('--split', input.value);
+      input.setAttribute('aria-valuetext', `${input.value}%`);
+    };
+    input.addEventListener('input', update);
+    update();
+  });
+</script>
+
+<style>
+  .bal {
+    padding-block: 72px 32px;
+  }
+  .bal-wrap {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+  .bal-slider {
+    display: none;
+  }
+  @media (min-width: 900px) {
+    :global(html.js) .bal-slider {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      max-width: 640px;
+      margin: 0 auto 26px;
+    }
+  }
+  .end {
+    font: 700 0.75rem/1.2 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .end.yes {
+    color: var(--inv-yes);
+  }
+  .end.no {
+    color: var(--inv-sec-strong);
+  }
+  input[type='range'] {
+    flex: 1;
+    accent-color: var(--text);
+    min-height: 44px;
+    direction: rtl;
+  }
+  .bal-cols {
+    display: grid;
+    gap: 22px;
+  }
+  @media (min-width: 900px) {
+    .bal-cols {
+      display: flex;
+      gap: 28px;
+      align-items: stretch;
+    }
+    .col.yes {
+      flex: 0 0 calc(var(--split) * 1% - 14px);
+    }
+    .col.no {
+      flex: 1 1 0;
+    }
+    .col {
+      transition: opacity 0.2s ease;
+      opacity: clamp(0.45, calc((var(--split) - 20) / 30), 1);
+    }
+    .col.no {
+      opacity: clamp(0.45, calc((80 - var(--split)) / 30), 1);
+    }
+  }
+  .col {
+    min-width: 0;
+    padding: 22px 22px 18px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    border-top-width: 5px;
+  }
+  .col.yes {
+    border-top-color: var(--inv-yes);
+    background: color-mix(in srgb, var(--inv-yes) 6%, var(--bg));
+  }
+  .col.no {
+    border-top-color: var(--inv-sec);
+    background: color-mix(in srgb, var(--inv-sec) 6%, var(--bg));
+  }
+  .col h3 {
+    font-size: 1.5rem;
+    margin: 0 0 12px;
+  }
+  .col ul {
+    margin: 0;
+    padding-left: 20px;
+    display: grid;
+    gap: 10px;
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    line-height: 1.55;
+  }
+  .waffle {
+    margin: 22px 0 0;
+  }
+  .cells {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 11px);
+    gap: 3px;
+  }
+  .cells span {
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+  }
+  .b {
+    background: var(--inv-sec);
+  }
+  .a {
+    background: var(--inv-yes);
+  }
+  .waffle figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin-top: 10px;
+    font: 0.8rem/1.45 var(--sans);
+    color: var(--muted);
+  }
+  .key {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+  }
+  .sq {
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 2px;
+  }
+  .cap {
+    flex-basis: 100%;
+  }
+</style>

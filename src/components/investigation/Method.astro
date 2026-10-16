@@ -1,0 +1,178 @@
+---
+// Method, warning, what could not be verified, corrections and the numbered source list.
+import type { Lang } from '../../i18n/ui';
+import { localePath, PAGES } from '../../i18n/ui';
+import { META, SOURCES } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it, itList, longDate } from '../../data/investigations/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(lang, 'correctionsPage')}</a>`;
+---
+
+<section class="mt" aria-labelledby="mt-title">
+  <div class="mt-inner">
+    <p class="inv-kicker">{it(lang, 'methodKicker')}</p>
+    <h2 id="mt-title">{it(lang, 'methodTitle')}</h2>
+    <p class="mt-body">{it(lang, 'methodBody')}</p>
+    <p class="mt-warn" role="note">{it(lang, 'methodWarning')}</p>
+
+    <h3>{it(lang, 'methodUnverified')}</h3>
+    <ul class="mt-unv">
+      {itList(lang, 'methodUnverifiedItems').map((x) => <li>{x}</li>)}
+    </ul>
+
+    <p class="mt-credit" set:html={it(lang, 'ideaCredit', { name: META.ideaBy })} />
+    <p class="mt-small">{it(lang, 'methodChecked', { date: longDate(lang, META.updated) })}</p>
+    <p class="mt-small" set:html={it(lang, 'methodCorrections', { link: corrections })} />
+
+    <details class="mt-details" data-sources={A.src} open>
+      <summary>
+        <h3 id={A.src}>{it(lang, 'sources')} <span class="mt-count">({SOURCES.length})</span></h3>
+      </summary>
+    <ol class="mt-src">
+      {
+        [...SOURCES].sort((a, b) => a.id - b.id).map((s) => (
+          <li id={`${A.src}-${s.id}`} value={s.id}>
+            <span class="o">{s.outlet}</span>{' '}
+            {s.url ? (
+              <a href={s.url} rel="noopener">
+                {s.title[lang]}
+              </a>
+            ) : (
+              <span>{s.title[lang]}</span>
+            )}
+            {s.date && <span class="d"> · {s.date}</span>}
+          </li>
+        ))
+      }
+    </ol>
+    </details>
+  </div>
+</section>
+
+<script>
+  // Phones: the source list starts collapsed; any link to a source (or to the list) opens it first.
+  document.querySelectorAll<HTMLDetailsElement>('details[data-sources]').forEach((d) => {
+    const prefix = `#${d.dataset.sources}`;
+    const wants = (hash: string) => hash === prefix || hash.startsWith(`${prefix}-`);
+    if (window.matchMedia('(max-width: 899.98px)').matches && !wants(location.hash)) d.open = false;
+    document.addEventListener(
+      'click',
+      (ev) => {
+        const a = (ev.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#"]');
+        if (a && wants(a.hash)) d.open = true;
+      },
+      true,
+    );
+    window.addEventListener('hashchange', () => {
+      if (wants(location.hash)) d.open = true;
+    });
+  });
+</script>
+
+<style>
+  .mt {
+    padding-block: 72px 24px;
+    border-top: 1px solid var(--line);
+  }
+  .mt-inner {
+    max-width: var(--reading);
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 2.4rem);
+    margin: 4px 0 16px;
+  }
+  h3 {
+    font-size: 1.25rem;
+    margin: 32px 0 12px;
+    scroll-margin-top: calc(var(--inv-top) + 72px);
+  }
+  .mt-body {
+    font-family: var(--serif);
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+  .mt-warn {
+    margin: 20px 0;
+    padding: 16px 18px;
+    border-left: 4px solid var(--inv-hl-ink);
+    background: var(--surface);
+    font: 600 1rem/1.55 var(--sans);
+  }
+  .mt-unv {
+    padding-left: 20px;
+    display: grid;
+    gap: 6px;
+    font: 0.95rem/1.5 var(--sans);
+  }
+  .mt-credit {
+    margin-top: 28px;
+    font: 1rem/1.5 var(--sans);
+  }
+  .mt-small {
+    font: 0.88rem/1.5 var(--sans);
+    color: var(--muted);
+    margin: 6px 0;
+  }
+  .mt-details > summary {
+    list-style: none;
+    cursor: pointer;
+  }
+  .mt-details > summary::-webkit-details-marker {
+    display: none;
+  }
+  .mt-details > summary h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 44px;
+  }
+  .mt-details > summary h3::after {
+    content: '';
+    width: 9px;
+    height: 9px;
+    margin-left: 4px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg) translateY(-3px);
+    transition: transform 0.2s ease;
+  }
+  .mt-details[open] > summary h3::after {
+    transform: rotate(-135deg) translateY(-1px);
+  }
+  .mt-count {
+    font: 500 0.95rem var(--sans);
+    color: var(--muted);
+  }
+  .mt-src {
+    padding-left: 30px;
+    display: grid;
+    gap: 10px;
+    font: 0.9rem/1.45 var(--sans);
+  }
+  .mt-src li {
+    scroll-margin-top: calc(var(--inv-top) + 80px);
+  }
+  .mt-src a {
+    padding-block: 12px;
+    margin-block: -12px;
+  }
+  .mt-src li:target {
+    background: var(--badge-bg);
+    color: var(--badge-text);
+    border-radius: 4px;
+    outline: 4px solid var(--badge-bg);
+  }
+  .o {
+    font-weight: 700;
+  }
+  .d {
+    color: var(--muted);
+  }
+</style>
