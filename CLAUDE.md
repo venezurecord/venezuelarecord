@@ -34,6 +34,12 @@ Repo: `github.com/venezurecord/venezuelarecord`.
 - **2026-10-13 — Investigaciones (Roger):** piezas originales en /investigations/, crédito de idea a la persona que la
   propuso, autor = Venezuela Record, sin nombres del equipo. Primera pieza: "Cambió el petróleo, no el poder" /
   "The Oil Changed. The Power Didn't." (idea original: Minerva Mendoza). No lleva bloque de republicación ni `sourceTier`.
+- **2026-10-16 — Agente semanal (Roger):** todos los viernes a las 9:00 a. m. (hora del Pacífico) una tarea programada de
+  la app de Claude (`venezuelarecord-noticias-semanales`, guardada en la carpeta `scheduled-tasks` del perfil de Claude)
+  busca las noticias de la semana (nivel A: todas las de VP y VenAmérica que cumplan el alcance; nivel B: 3–6 hechos
+  clave), las carga en los dos idiomas con los mismos criterios de este archivo, valida con `npm run build` y **publica
+  directo en `main`**; las dudosas quedan en el reporte como "pendiente de tu decisión". Corre mientras la app esté
+  abierta (si está cerrada a esa hora, corre al abrirla).
 - **Fase 4 — ritmo de lectura:** `voluntadpopular.com/robots.txt` pide `Crawl-delay: 60` y prohíbe URL con `?`:
   una página por minuto como máximo, solo URL limpias. Su lista de noticias está en `/noticias/page/N/`.
   Ojo: algunas notas tienen mal la fecha en la web (p. ej. las del 25M figuran como 21/04/2024): usar la fecha
