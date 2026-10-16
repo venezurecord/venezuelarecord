@@ -268,9 +268,11 @@ const nameLines = (full: string) => {
               const { w, h } = size(n);
               const cx = X(n);
               return (
-                <a
+                <g
                   class={`node k-${n.kind}`}
-                  href={`#ficha-${n.id}`}
+                  role="button"
+                  tabindex="0"
+                  aria-haspopup="dialog"
                   data-id={n.id}
                   style={`--lvl:${n.level}`}
                   aria-label={`${n.name[lang]}. ${n.role[lang]}. ${it(lang, 'open')}`}
@@ -356,7 +358,7 @@ const nameLines = (full: string) => {
                       </text>
                     </g>
                   )}
-                </a>
+                </g>
               );
             })
           }
@@ -576,7 +578,9 @@ const nameLines = (full: string) => {
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const desktop = window.matchMedia('(min-width: 900px)');
     const svg = org.querySelector<SVGSVGElement>('.org-svg')!;
-    const nodes = [...org.querySelectorAll<SVGAElement>('.node')];
+    // Nodes are SVG <g role="button">, not SVG links: Cloudflare's email obfuscation script crashes on
+    // SVG <a> elements (their href is not a string).
+    const nodes = [...org.querySelectorAll<SVGGElement>('.node')];
     const edges = [...org.querySelectorAll<SVGPathElement>('.edge')];
     const labels = [...org.querySelectorAll<SVGGElement>('.elabel')];
     const items = [...org.querySelectorAll<HTMLElement>('.org-list .item')];
@@ -689,12 +693,18 @@ const nameLines = (full: string) => {
     org.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((b) => b.addEventListener('click', () => go(step + 1, true)));
 
     // open profiles
-    nodes.forEach((n) =>
+    nodes.forEach((n) => {
       n.addEventListener('click', (ev) => {
         ev.preventDefault();
         open(n.dataset.id!, n);
-      }),
-    );
+      });
+      n.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter' || ev.key === ' ') {
+          ev.preventDefault();
+          open(n.dataset.id!, n);
+        }
+      });
+    });
     nodes.forEach((n) => {
       n.addEventListener('pointerenter', () => {
         if (sheet.open) return;
