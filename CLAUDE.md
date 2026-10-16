@@ -132,7 +132,10 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
 4. Contenido inicial ✅ (30 noticias VP + VenAmérica, 2026-10-09) · 5. Cloudflare Pages ✅ (adelantada) ·
 6. Control de calidad ✅ · 7. Dominio `.com` ✅ (2026-10-09) ·
 8. Foto de portada para todas las noticias ✅ (2026-10-09: 26 fotos libres de Commons / gobierno de EE. UU. / Provea;
-   nivel B solo con licencia libre y `imageLicense`).
+   nivel B solo con licencia libre y `imageLicense`). · 9. Primera investigación publicada ✅ (2026-10-16,
+   PR #6: `/investigations/who-commands-venezuela-2026/`).
+- Ojo en producción: Cloudflare (Scrape Shield → Email Address Obfuscation) inyecta `email-decode.min.js` en el .com
+  (no en las vistas previas); falla con enlaces `<a>` dentro de SVG, así que en los SVG se usan `<g role="button">`.
 
 ## Investigaciones (piezas originales)
 - Rutas: `/investigations/` (índice) y `/investigations/<slug>/`, con su par en `/es/`. Menú, pie e inicio (bloque
