@@ -16,7 +16,7 @@ const href = investigationUrl(lang, inv.slug);
 const H = `h${headingLevel}` as 'h2' | 'h3';
 ---
 
-<article class="ic">
+<article class:list={["ic", { photo: !!inv.coverCredit }]}>
   <a class="ic-media" href={href} tabindex="-1" aria-hidden="true">
     <Image src={inv.cover ?? inv.social[lang]} alt="" widths={[480, 800, 1200]} sizes="(min-width: 900px) 560px, 100vw" loading="lazy" decoding="async" />
   </a>
@@ -27,6 +27,7 @@ const H = `h${headingLevel}` as 'h2' | 'h3';
     <p class="ic-sum">{inv.summary[lang]}</p>
     <p class="ic-credit" set:html={it(lang, 'ideaCredit', { name: inv.ideaBy })} />
     <p class="ic-meta"><time datetime={inv.updated}>{it(lang, 'updated', { date: longDate(lang, inv.updated) })}</time></p>
+    {inv.coverCredit && <p class="ic-photo">{inv.coverCredit.url ? <a href={inv.coverCredit.url} rel="noopener license" target="_blank">{inv.coverCredit.text[lang]}</a> : inv.coverCredit.text[lang]}</p>}
     <a class="ic-cta" href={href}>{it(lang, 'readInvestigation')} <span aria-hidden="true">→</span></a>
   </div>
 </article>
@@ -55,6 +56,17 @@ const H = `h${headingLevel}` as 'h2' | 'h3';
     height: 100%;
     object-fit: cover;
     transition: transform 0.6s ease;
+  }
+  /* Photo covers fill the whole height of the card on wide screens (illustrations keep their frame). */
+  @media (min-width: 900px) {
+    .ic.photo .ic-media {
+      aspect-ratio: auto;
+      height: 100%;
+      min-height: 320px;
+    }
+    .ic.photo .ic-media :global(img) {
+      object-position: 62% 60%;
+    }
   }
   .ic:hover .ic-media :global(img) {
     transform: scale(1.03);
@@ -124,5 +136,13 @@ const H = `h${headingLevel}` as 'h2' | 'h3';
   }
   .ic :global(:focus-visible) {
     outline-color: var(--vz-yellow);
+  }
+  .ic-photo {
+    margin: 6px 0 0;
+    font: 0.72rem/1.4 var(--sans);
+    color: #8b93a1;
+  }
+  .ic-photo a {
+    color: inherit;
   }
 </style>

@@ -4,6 +4,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ShareBar from '../../components/ShareBar.astro';
 import Opening from '../../components/investigation/Opening.astro';
+import InvCover from '../../components/investigation/InvCover.astro';
 import Signatures from '../../components/investigation/Signatures.astro';
 import OrgChart from '../../components/investigation/OrgChart.astro';
 import TwoLanes from '../../components/investigation/TwoLanes.astro';
@@ -86,7 +87,12 @@ const toc = [
   jsonLd={jsonLd}
 >
   <article class="inv">
-    <Opening lang={lang} />
+    {
+      META.hero && (
+        <InvCover lang={lang} image={META.hero} alt={META.heroAlt?.[lang] ?? ''} kicker={`${it(lang, 'kicker')} · ${it(lang, 'original')}`} title={title} subtitle={META.subtitle[lang]} credit={META.coverCredit} posPhone="95% 50%" posDesk="50% 50%" titleId="inv-title" />
+      )
+    }
+    <Opening lang={lang} titled={!META.hero} />
 
     <nav class="inv-toc" aria-label={it(lang, 'toc')} data-toc>
       <div class="inv-toc-inner">

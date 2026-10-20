@@ -29,7 +29,8 @@ import scPalacio from '../../assets/investigations/who-commands-venezuela-2026/s
 import scProtesta from '../../assets/investigations/who-commands-venezuela-2026/scenes/protesta-2024.jpg';
 import ogEn from '../../assets/investigations/who-commands-venezuela-2026/social-en.png';
 import ogEs from '../../assets/investigations/who-commands-venezuela-2026/social-es.png';
-import cover from '../../assets/investigations/who-commands-venezuela-2026/cover.png';
+import cover from '../../assets/investigations/who-commands-venezuela-2026/cover.jpg';
+import hero from '../../assets/investigations/who-commands-venezuela-2026/hero.jpg';
 
 export const META: InvestigationMeta = {
   slug: 'who-commands-venezuela-2026',
@@ -46,6 +47,17 @@ export const META: InvestigationMeta = {
   updated: '2026-10-16',
   ideaBy: 'Minerva Mendoza Paipa',
   cover,
+  hero,
+  heroAlt: {
+    en: 'AI-generated illustration: an empty government office, desk and chair in place, while an oil refinery burns its flare outside the window.',
+    es: 'Ilustración generada con IA: un despacho de gobierno vacío, con el escritorio y el sillón en su sitio, mientras afuera una refinería quema su mechurrio.',
+  },
+  coverCredit: {
+    text: {
+      en: 'AI-generated illustration (Google Flow) for Venezuela Record.',
+      es: 'Ilustración generada con IA (Google Flow) para Venezuela Record.',
+    },
+  },
   social: { en: ogEn, es: ogEs },
 };
 

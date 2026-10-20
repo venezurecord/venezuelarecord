@@ -162,7 +162,13 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
   `src/assets/investigations/<slug>/gazettes/`; las cajas del resaltador (en %) están en
   `src/data/investigations/<slug>.signatures.json`. Se generaron con PyMuPDF desde los PDF de las gacetas (no se guardan
   los PDF en el repo).
-- Imagen social (1200×630, en/es) y portada sin texto: `node scripts/investigation-social.mjs`.
+- Portada (2026-10-20, elegida por Roger): **ilustración generada con IA en Google Flow** (despacho de gobierno vacío;
+  afuera una refinería quema su mechurrio), original 2K en `brand/investigations/who-commands-venezuela-2026/`.
+  `python scripts/investigation-cover-1.py` y luego `node scripts/investigation-social.mjs` (imágenes sociales con título).
+  La página abre con `InvCover` (título en HTML sobre la imagen; crédito de IA debajo, también en la tarjeta del inicio);
+  con portada, `Opening` no repite el título y empieza en el crédito y la doble línea. Toda imagen hecha con IA se
+  rotula siempre como tal (`coverCredit`). Imágenes de IA: Google Flow (cuenta de Roger, Chrome), sin personas,
+  texto ni banderas.
 
 ## Panel admin / PWA
 El sitio **no tiene panel de administración**: se publica desde la web de GitHub (issues + PR). Por eso la

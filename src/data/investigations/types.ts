@@ -26,6 +26,12 @@ export interface InvestigationMeta {
   /** Who proposed the idea (credited, never as author) */
   ideaBy: string;
   cover?: ImageMetadata;
+  /** Credit for a cover that uses third-party material (license requires it next to the image). */
+  coverCredit?: { text: L; url?: string };
+  /** Optional full-width photo band in the page hero. */
+  hero?: ImageMetadata;
+  /** Text description of the hero image. */
+  heroAlt?: L;
   social: Record<Lang, ImageMetadata>;
 }
 
