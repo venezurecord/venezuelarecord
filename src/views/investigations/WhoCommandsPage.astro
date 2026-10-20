@@ -12,6 +12,7 @@ import Penalties from '../../components/investigation/Penalties.astro';
 import VenApp from '../../components/investigation/VenApp.astro';
 import Balance from '../../components/investigation/Balance.astro';
 import Method from '../../components/investigation/Method.astro';
+import InvCover from '../../components/investigation/InvCover.astro';
 import InvToc from '../../components/investigation/InvToc.astro';
 import NextPart from '../../components/investigation/NextPart.astro';
 import '../../styles/investigation.css';
@@ -89,7 +90,12 @@ const toc = [
   jsonLd={jsonLd}
 >
   <article class="inv">
-    <Opening lang={lang} />
+    {
+      META.hero && (
+        <InvCover lang={lang} image={META.hero} alt={META.heroAlt?.[lang] ?? ''} kicker={`${it(lang, 'kicker')} · ${it(lang, 'original')}`} title={title} subtitle={META.subtitle[lang]} credit={META.coverCredit} posPhone="95% 50%" posDesk="50% 50%" titleId="inv-title" />
+      )
+    }
+    <Opening lang={lang} titled={!META.hero} />
 
     <InvToc lang={lang} items={toc} />
 

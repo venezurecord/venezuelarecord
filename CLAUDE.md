@@ -162,7 +162,11 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
   `src/assets/investigations/<slug>/gazettes/`; las cajas del resaltador (en %) están en
   `src/data/investigations/<slug>.signatures.json`. Se generaron con PyMuPDF desde los PDF de las gacetas (no se guardan
   los PDF en el repo).
-- Imagen social (1200×630, en/es) y portada sin texto: `node scripts/investigation-social.mjs`.
+- Portada de la primera investigación (2026-10-20, elegida por Roger): **ilustración generada con IA en Google Flow**
+  (despacho de gobierno vacío; afuera una refinería quema su mechurrio), original 2K en
+  `brand/investigations/who-commands-venezuela-2026/oficina-refineria-flow.jpg`. `python scripts/investigation-cover-1.py`
+  y luego `node scripts/investigation-social.mjs`. Las dos investigaciones abren con `InvCover` (título en HTML sobre la
+  imagen, crédito de IA debajo); con portada, `Opening` ya no repite el título y empieza en el crédito y la doble línea.
 - **Segunda investigación (idea: Minerva Mendoza Paipa):** «La capacidad de perseguir sigue ahí» / «The Capacity to
   Persecute Is Still There» en `/investigations/residual-capacity-2026/`. Datos y fuentes propias (1–35, comparte
   algunas con la primera por id) en `src/data/investigations/residual-capacity-2026.ts`; vista

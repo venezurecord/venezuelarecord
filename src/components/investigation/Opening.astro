@@ -9,8 +9,10 @@ import { it, longDate, MONTHS } from '../../data/investigations/ui';
 
 interface Props {
   lang: Lang;
+  /** false when the page shows the headline on a cover image above (InvCover): the opening keeps the rest. */
+  titled?: boolean;
 }
-const { lang } = Astro.props;
+const { lang, titled = true } = Astro.props;
 
 const f = (n: number) => Math.round(n * 10) / 10;
 const ease = (m: number, k: number) => 1 - Math.exp(-m / k);
@@ -139,11 +141,17 @@ const updated = longDate(lang, META.updated);
   </div>
 
   <div class="op-steps">
-    <header class="op-step op-hero" data-i="0">
+    <header class:list={['op-step op-hero', { 'op-hero-short': !titled }]} data-i="0">
       <div class="op-hero-inner">
-        <p class="op-kicker"><span>{it(lang, 'kicker')}</span> · {it(lang, 'original')}</p>
-        <h1 id="inv-title">{META.title[lang]}</h1>
-        <p class="op-sub">{META.subtitle[lang]}</p>
+        {
+          titled && (
+            <>
+              <p class="op-kicker"><span>{it(lang, 'kicker')}</span> · {it(lang, 'original')}</p>
+              <h1 id="inv-title">{META.title[lang]}</h1>
+              <p class="op-sub">{META.subtitle[lang]}</p>
+            </>
+          )
+        }
         <p class="op-credit" set:html={it(lang, 'ideaCredit', { name: META.ideaBy })} />
         <p class="op-date"><time datetime={META.updated}>{it(lang, 'updated', { date: updated })}</time></p>
         <div class="op-rule" aria-hidden="true"></div>
@@ -429,6 +437,13 @@ const updated = longDate(lang, META.updated);
     min-height: calc(100svh - var(--inv-top));
     align-items: flex-start;
     padding-top: clamp(28px, 6svh, 64px);
+  }
+  /* Headline already shown on the cover above: the opening starts at the credit and the double rule. */
+  .op-hero.op-hero-short {
+    min-height: 0;
+    padding-top: 28px;
+    padding-bottom: 12svh;
+    background: linear-gradient(var(--op-bg) 85%, rgb(11 15 23 / 0));
   }
   .op-hero-inner {
     max-width: 980px;

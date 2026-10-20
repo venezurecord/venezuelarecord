@@ -1,0 +1,141 @@
+---
+// Investigation cover: the headline (kicker, h1, subtitle) sits on the illustration — at the bottom on phones, on the
+// dark left side on desktop. The image credit goes right below it (AI illustrations are always labelled as such).
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { Lang } from '../../i18n/ui';
+import type { L } from '../../data/investigations/types';
+
+interface Props {
+  lang: Lang;
+  image: ImageMetadata;
+  alt: string;
+  kicker: string;
+  title: string;
+  subtitle: string;
+  credit?: { text: L; url?: string };
+  /** object-position on phones (4:5 crop) and on desktop (16:9). */
+  posPhone?: string;
+  posDesk?: string;
+  titleId?: string;
+}
+const { lang, image, alt, kicker, title, subtitle, credit, posPhone = '50% 50%', posDesk = '50% 50%', titleId } = Astro.props;
+---
+
+<div class="ivc" style={`--pos-m:${posPhone};--pos-d:${posDesk}`}>
+  <div class="ivc-media">
+    <Image src={image} alt={alt} widths={[640, 960, 1440, 2048, 2752]} sizes="100vw" loading="eager" fetchpriority="high" decoding="async" />
+    <div class="ivc-over">
+      <p class="ivc-kicker">{kicker}</p>
+      <h1 id={titleId}>{title}</h1>
+      <p class="ivc-sub">{subtitle}</p>
+    </div>
+  </div>
+  {
+    credit && (
+      <p class="ivc-credit">
+        {credit.url ? (
+          <a href={credit.url} rel="noopener license" target="_blank">{credit.text[lang]}</a>
+        ) : (
+          credit.text[lang]
+        )}
+      </p>
+    )
+  }
+</div>
+
+<style>
+  .ivc {
+    background: #0b0f17;
+    color: #f3f0e8;
+    border-top: 6px solid transparent;
+    border-image: linear-gradient(90deg, #ffcc00 0 33.3%, #00247d 33.3% 66.6%, #cf142b 66.6%) 1;
+  }
+  .ivc-media {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    aspect-ratio: 4 / 5;
+    max-height: 92svh;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .ivc-media :global(img) {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--pos-m);
+  }
+  .ivc-media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, rgb(11 15 23 / 0) 30%, rgb(11 15 23 / 0.72) 58%, #0b0f17 100%);
+  }
+  .ivc-over {
+    width: 100%;
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 0 var(--gutter) 4px;
+  }
+  .ivc-kicker {
+    margin: 0 0 12px;
+    font: 700 0.76rem/1.4 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #ffcc00;
+  }
+  h1 {
+    margin: 0 0 14px;
+    font: 700 clamp(2.3rem, 9vw, 4.2rem)/1.02 var(--serif);
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    color: #f3f0e8;
+  }
+  .ivc-sub {
+    max-width: 680px;
+    margin: 0;
+    font: 400 clamp(1.08rem, 2.6vw, 1.3rem)/1.5 var(--serif);
+    color: #ddd8ce;
+  }
+  .ivc-credit {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 10px var(--gutter) 0;
+    font: 0.74rem/1.4 var(--sans);
+    color: #8b93a1;
+  }
+  .ivc-credit a {
+    color: inherit;
+  }
+  @media (min-width: 900px) {
+    .ivc-media {
+      aspect-ratio: 16 / 9;
+      max-height: min(88vh, 860px);
+      justify-content: center;
+    }
+    .ivc-media :global(img) {
+      object-position: var(--pos-d);
+    }
+    .ivc-media::after {
+      background:
+        linear-gradient(90deg, rgb(11 15 23 / 0.9) 0%, rgb(11 15 23 / 0.62) 34%, rgb(11 15 23 / 0) 60%),
+        linear-gradient(180deg, rgb(11 15 23 / 0) 70%, #0b0f17 100%);
+    }
+    .ivc-over {
+      max-width: 1200px;
+      padding-block: 40px;
+    }
+    .ivc-over > * {
+      max-width: 540px;
+    }
+    .ivc-credit {
+      max-width: 1200px;
+    }
+  }
+</style>

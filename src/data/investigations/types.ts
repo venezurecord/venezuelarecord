@@ -30,6 +30,8 @@ export interface InvestigationMeta {
   coverCredit?: { text: L; url?: string };
   /** Optional full-width photo band in the page hero. */
   hero?: ImageMetadata;
+  /** Text description of the hero image. */
+  heroAlt?: L;
   social: Record<Lang, ImageMetadata>;
 }
 

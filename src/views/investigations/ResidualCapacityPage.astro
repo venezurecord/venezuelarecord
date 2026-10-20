@@ -5,12 +5,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ShareBar from '../../components/ShareBar.astro';
 import InvToc from '../../components/investigation/InvToc.astro';
+import InvCover from '../../components/investigation/InvCover.astro';
 import FpSeries from '../../components/investigation/FpSeries.astro';
 import Capacity from '../../components/investigation/Capacity.astro';
 import PieceMethod from '../../components/investigation/PieceMethod.astro';
 import Cite from '../../components/investigation/Cite.astro';
 import '../../styles/investigation.css';
-import { getImage, Image } from 'astro:assets';
+import { getImage } from 'astro:assets';
 import { localePath, type Lang } from '../../i18n/ui';
 import { SITE } from '../../lib/constants';
 import { META, R_ANCHORS, R_UI, SOURCES } from '../../data/investigations/residual-capacity-2026';
@@ -83,30 +84,18 @@ const jsonLd = {
 >
   <article class="inv">
     <header class="rc-hero">
-      <div class:list={['rc-cover', { 'no-photo': !META.hero }]}>
-        {
-          META.hero && (
-            <Image src={META.hero} alt={U.heroAlt} widths={[640, 960, 1440, 2048, 2752]} sizes="100vw" loading="eager" fetchpriority="high" decoding="async" />
-          )
-        }
-        <div class="rc-over">
-          <p class="rc-kicker">{U.kicker}</p>
-          <h1>{title}</h1>
-          <p class="rc-sub">{META.subtitle[lang]}</p>
-        </div>
-      </div>
       {
-        META.coverCredit && (
-          <p class="rc-in rc-photo-credit">
-            {META.coverCredit.url ? (
-              <a href={META.coverCredit.url} rel="noopener license" target="_blank">{META.coverCredit.text[lang]}</a>
-            ) : (
-              META.coverCredit.text[lang]
-            )}
-          </p>
+        META.hero ? (
+          <InvCover lang={lang} image={META.hero} alt={META.heroAlt?.[lang] ?? ''} kicker={U.kicker} title={title} subtitle={META.subtitle[lang]} credit={META.coverCredit} posPhone="72% 50%" posDesk="60% 50%" />
+        ) : (
+          <div class="rc-in rc-plain">
+            <p class="rc-kicker">{U.kicker}</p>
+            <h1>{title}</h1>
+            <p class="rc-sub">{META.subtitle[lang]}</p>
+          </div>
         )
       }
-      <div class="rc-in">
+      <div class="rc-in rc-after">
         <div class="rc-figs">
           <p class="rc-fig a"><b>{fmt(1104)}</b><span>{U.heroA}</span></p>
           <p class="rc-fig b"><b>{fmt(11468)}</b><span>{U.heroB}</span></p>
@@ -154,8 +143,12 @@ const jsonLd = {
     background: #0b0f17;
     color: #f3f0e8;
     padding-block: 0 36px;
-    border-top: 6px solid transparent;
-    border-image: linear-gradient(90deg, #ffcc00 0 33.3%, #00247d 33.3% 66.6%, #cf142b 66.6%) 1;
+  }
+  .rc-plain {
+    padding-top: 40px;
+  }
+  .rc-after {
+    padding-top: 28px;
   }
   .rc-in {
     max-width: 880px;
@@ -260,77 +253,6 @@ const jsonLd = {
   .rc-prev.bottom {
     margin: 0 0 20px;
     background: #0b0f17;
-  }
-  /* Cover: the headline sits on the illustration (bottom on phones, dark left wall on desktop). */
-  .rc-cover {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    aspect-ratio: 4 / 5;
-    max-height: 92svh;
-    overflow: hidden;
-    isolation: isolate;
-  }
-  .rc-cover.no-photo {
-    aspect-ratio: auto;
-    padding-top: 40px;
-  }
-  .rc-cover :global(img) {
-    position: absolute;
-    inset: 0;
-    z-index: -2;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: 72% 50%;
-  }
-  .rc-cover::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    background: linear-gradient(180deg, rgb(11 15 23 / 0) 30%, rgb(11 15 23 / 0.72) 58%, #0b0f17 100%);
-  }
-  .rc-over {
-    width: 100%;
-    max-width: 880px;
-    margin: 0 auto;
-    padding: 0 var(--gutter) 4px;
-  }
-  .rc-over .rc-sub {
-    margin-bottom: 0;
-    color: #ddd8ce;
-  }
-  @media (min-width: 900px) {
-    .rc-cover {
-      aspect-ratio: 16 / 9;
-      max-height: min(88vh, 860px);
-      justify-content: center;
-    }
-    .rc-cover :global(img) {
-      object-position: 60% 50%;
-    }
-    .rc-cover::after {
-      background:
-        linear-gradient(90deg, rgb(11 15 23 / 0.9) 0%, rgb(11 15 23 / 0.62) 34%, rgb(11 15 23 / 0) 60%),
-        linear-gradient(180deg, rgb(11 15 23 / 0) 70%, #0b0f17 100%);
-    }
-    .rc-over {
-      max-width: 1200px;
-      padding-block: 40px;
-    }
-    .rc-over > * {
-      max-width: 540px;
-    }
-  }
-  .rc-photo-credit {
-    margin: 10px auto 28px;
-    font: 0.74rem/1.4 var(--sans);
-    color: #8b93a1;
-  }
-  .rc-photo-credit a {
-    color: inherit;
   }
   .rc-sec {
     padding-block: 64px 8px;

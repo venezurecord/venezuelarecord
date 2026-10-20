@@ -25,6 +25,10 @@ export const META: InvestigationMeta = {
   ideaBy: 'Minerva Mendoza Paipa',
   cover,
   hero,
+  heroAlt: {
+    en: 'AI-generated illustration: an open cell door; the shadow of the bars is still on the floor.',
+    es: 'Ilustración generada con IA: una puerta de celda abierta; la sombra de los barrotes sigue en el suelo.',
+  },
   coverCredit: {
     text: {
       en: 'AI-generated illustration (Google Flow) for Venezuela Record.',
@@ -324,7 +328,6 @@ export const R_UI = {
   en: {
     kicker: 'Investigation · Part two',
     readTime: '9-minute read',
-    heroAlt: 'AI-generated illustration: an open cell door; the shadow of the bars is still on the floor.',
     heroA: 'releases of political prisoners verified in 2026',
     heroB: 'people still live with their freedom restricted by the courts',
     heroSrc: 'Foro Penal, figures as of 5 October 2026',
@@ -350,7 +353,6 @@ export const R_UI = {
   es: {
     kicker: 'Investigación · Segunda entrega',
     readTime: 'Lectura de 9 minutos',
-    heroAlt: 'Ilustración generada con IA: una puerta de celda abierta; la sombra de los barrotes sigue en el suelo.',
     heroA: 'excarcelaciones de presos políticos verificadas en 2026',
     heroB: 'personas siguen con su libertad restringida por los tribunales',
     heroSrc: 'Foro Penal, cifras al 5 de octubre de 2026',
