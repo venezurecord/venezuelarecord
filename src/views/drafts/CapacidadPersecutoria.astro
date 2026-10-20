@@ -1,0 +1,1250 @@
+---
+// INTERNAL DRAFT (not published): proposal to extend the investigation "Cambió el petróleo, no el poder"
+// with the idea of Minerva Mendoza Paipa — the State's residual capacity to persecute. Spanish only,
+// noindex, generated only in branch previews (see src/pages/es/borradores/[slug].astro).
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Cite from '../../components/drafts/DraftCite.astro';
+
+const FP = 'https://foropenal.com/articulo/';
+
+interface Src {
+  outlet: string;
+  title: string;
+  date: string;
+  url: string;
+  note?: string;
+}
+const SRC: Record<number, Src> = {
+  1: { outlet: 'Foro Penal', title: 'La represión en cifras', date: 'cifras al 5 oct 2026', url: 'https://foropenal.com/represion-en-cifras', note: 'Página que se actualiza sola: las cifras citadas son las del 5 de octubre.' },
+  2: { outlet: 'Foro Penal', title: 'Balance de presos políticos en Venezuela al 05/10/2026', date: '9 oct 2026', url: `${FP}balance-de-presos-politicos-en-venezuela-al-05102026-por` },
+  3: { outlet: 'Foro Penal', title: 'Propuesta de modificación al proyecto de Ley de Amnistía para la Convivencia Democrática (PDF, 11 págs.)', date: '7 feb 2026', url: 'https://foropenal.com/wp-content/uploads/2026/02/Propuesta-FORO-PENAL-a-la-AN-7-2-2026-EDITADA-PARA-DIVULGACION.pdf' },
+  4: { outlet: 'Asamblea Nacional', title: 'Ley de Amnistía para la Convivencia Democrática, Gaceta Oficial N° 6.990 Extraordinario (copia en Foro Penal)', date: '19 feb 2026', url: `${FP}asamblea-nacional-ley-de-amnistia-para-la-convivencia-democratica-gaceta-oficial-n-6-990-extraordinario-19-de-febrero-2026` },
+  5: { outlet: 'Foro Penal', title: 'Reporte sobre la represión política en Venezuela, enero–febrero 2026 (PDF, 8 págs.)', date: '13 mar 2026', url: 'https://foropenal.com/wp-content/uploads/2026/03/Reporte-EneroFebrero_2026_260313.pdf' },
+  6: { outlet: 'Foro Penal', title: '«La Ley de Amnistía es un paso positivo, pero el aparato represivo sigue intacto»', date: '20 feb 2026', url: `${FP}foro-penal-la-ley-de-amnistia-es-un-paso-positivo-pero-el-aparato-represivo-sigue-intacto` },
+  7: { outlet: 'Foro Penal / EFE', title: 'Menos del 25 % de las excarcelaciones en Venezuela se deben a la amnistía', date: '22 abr 2026', url: `${FP}foro-penal-revelo-que-menos-del-25-de-las-excarcelaciones-en-venezuela-se-deben-a-la-amnistia` },
+  8: { outlet: 'Foro Penal', title: 'Foro Penal sobre la derogación de la Ley de Amnistía', date: '24 abr 2026', url: `${FP}foro-penal-sobre-la-derogacion-de-la-ley-de-amnistia` },
+  9: { outlet: 'Foro Penal / Versión Final', title: 'Foro Penal advierte que solo el Parlamento puede derogar la ley de amnistía', date: '24 abr 2026', url: `${FP}foro-penal-advierte-que-solo-el-parlamento-puede-derogar-la-ley-de-amnistia` },
+  10: { outlet: 'Foro Penal / El Diario', title: 'Foro Penal cuestionó la negativa de tribunales a recibir solicitudes de amnistía', date: '23 feb 2026', url: `${FP}foro-penal-cuestiono-la-negativa-de-tribunales-a-recibir-solicitudes-de-amnistia` },
+  11: { outlet: 'Foro Penal', title: 'Se han excarcelado 894 presos políticos desde el 8 de enero (cita la cifra oficial de 8.740 «libertades plenas»)', date: '12 jun 2026', url: `${FP}se-han-excarcelado-894-presos-politicos-desde-el-8-de-enero-informa-foro-penal` },
+  12: { outlet: 'ONU · Consejo de Derechos Humanos', title: 'Misión Internacional Independiente de Determinación de los Hechos sobre Venezuela, informe A/HRC/63/57 (PDF)', date: '17 ago 2026', url: 'https://www.ohchr.org/sites/default/files/documents/hrbodies/hrcouncil/sessions-regular/session63/a-hrc-63-57-auv.pdf' },
+  13: { outlet: 'ACNUDH', title: 'Venezuela: pese a cambios políticos limitados, el aparato represivo permanece intacto, afirma la Misión de la ONU', date: '16 sep 2026', url: 'https://www.ohchr.org/en/press-releases/2026/09/venezuela-amidst-limited-political-changes-countrys-repressive-apparatus' },
+  14: { outlet: 'Gaceta Oficial', title: 'G.O. N° 6.957 Extraordinaria: Decreto 5.203, director de la DGCIM (Wikimedia Commons)', date: '6 ene 2026', url: 'https://commons.wikimedia.org/wiki/File:Gaceta_Oficial_de_Venezuela_(Extraordinaria)_-_6957.pdf' },
+  15: { outlet: 'Gaceta Oficial', title: 'G.O. N° 7.006 Extraordinaria: Decreto 5.284, nuevo director de la DGCIM (Wikimedia Commons)', date: '18 mar 2026', url: 'https://commons.wikimedia.org/wiki/File:Gaceta_Oficial_de_Venezuela_(Extraordinaria)_-_7006.pdf' },
+  16: { outlet: 'El Imparcial', title: 'Delcy Rodríguez destituyó a Vladimir Padrino López tras 12 años al frente y nombró a Gustavo González López', date: '19 mar 2026', url: 'https://www.elimparcial.com/mundo/2026/03/19/delcy-rodriguez-destituyo-a-vladimir-padrino-lopez-tras-12-anos-al-frente-y-nombro-a-gustavo-gonzalez-lopez/' },
+  17: { outlet: 'Efecto Cocuyo', title: 'SEBIN, DGCIM y CESPPA con Delcy Rodríguez (Cocuyo Chequea)', date: '5 mar 2026', url: 'https://efectococuyo.com/cocuyo-chequea/sebin-dgcim-cesppa-delcy/' },
+  18: { outlet: 'Infobae', title: 'El Parlamento aprobó aumentar el número de magistrados del Tribunal Supremo de Justicia', date: '5 may 2026', url: 'https://www.infobae.com/venezuela/2026/05/06/el-parlamento-venezolano-aprobo-el-proyecto-para-aumentar-el-numero-de-magistrados-en-el-tribunal-supremo-de-justicia/' },
+  19: { outlet: 'El Tiempo', title: 'Un venezolano permanece detenido por comentar en TikTok sobre captura de Maduro, según ONG', date: '8 abr 2026', url: 'https://www.eltiempo.com/mundo/venezuela/un-venezolano-permanece-detenido-por-comentar-en-tiktok-sobre-captura-de-maduro-segun-ong-3546227' },
+  20: { outlet: 'El Pitazo', title: 'PNB detiene a exalcalde Javier Oropeza: tenía 48 horas de haber regresado al país', date: '17 sep 2026', url: 'https://elpitazo.net/politica/pnb-detiene-a-exalcalde-javier-oropeza-tenia-48-horas-de-haber-regresado-al-pais/' },
+  21: { outlet: 'El Nacional', title: 'El TSJ avala la reforma a la Ley contra el Odio y autoriza a la AN a continuar el debate (sentencia N.° 1034)', date: '15 oct 2026', url: 'https://www.elnacional.com/2026/10/el-tsj-avala-la-reforma-a-la-ley-contra-el-odio-y-autoriza-a-la-asamblea-nacional-a-continuar-el-debate-legislativo/' },
+  22: { outlet: 'Foro Penal / Unión Radio', title: 'Foro Penal reporta el traslado de 94 presos políticos desde Rodeo I', date: '3 sep 2026', url: `${FP}foro-penal-reporta-el-traslado-de-94-presos-politicos-desde-rodeo-i` },
+  23: { outlet: 'Foro Penal', title: 'Renovación del TSJ debe incluir cambios de estructura judicial', date: '20 oct 2026', url: `${FP}renovacion-del-tsj-debe-incluir-cambios-de-estructura-judicial-segun-foro-penal` },
+  24: { outlet: 'Maldita.es', title: 'VenApp, la aplicación del Gobierno de Venezuela para denunciar a ciudadanos', date: '31 jul 2024', url: 'https://maldita.es/malditatecnologia/20240731/venapp-aplicacion-venezuela-maduro-denunciar-ciudadanos/' },
+  25: { outlet: 'Gaceta Oficial', title: 'G.O. N° 6.859 Extraordinaria: Ley Orgánica Libertador Simón Bolívar (PDF)', date: '29 nov 2024', url: 'https://www.traviesoevans.com/travieso/wp-content/uploads/gacetas/2024/11-noviembre/2024-11-29-6859-extraordinario.pdf' },
+  26: { outlet: 'Venezuela Record', title: 'Investigación «Cambió el petróleo, no el poder»: organigrama y sus fuentes', date: '16 oct 2026', url: 'https://venezuelarecord.com/es/investigations/who-commands-venezuela-2026/' },
+};
+
+// Foro Penal weekly series: every point links to the Foro Penal page that reports it.
+const PRISONERS: [string, number, string][] = [
+  ['2026-01-28', 711, `${FP}seguimiento-foro-penal-711-presos-politicos-52-desaparecidos-y-302-excarcelaciones-en-venezuela`],
+  ['2026-02-02', 687, `${FP}foro-penal-registra-687-presos-politicos-para-este-lunes-2-2-2026`],
+  ['2026-02-26', 568, `${FP}foro-penal-contabiliza-568-presos-politicos-tras-excarcelaciones-de-la-nueva-amnistia`],
+  ['2026-03-02', 526, `${FP}foro-penal-registra-que-aun-hay-526-presos-politicos-en-venezuela-y-alerta-sobre-11-desaparecidos`],
+  ['2026-03-09', 508, `${FP}seguimiento-nuevo-balance-de-foro-penal-fija-en-508-los-presos-politicos-en-venezuela`],
+  ['2026-03-23', 503, `${FP}ong-foro-penal-contabiliza-503-presos-politicos-en-venezuela-en-medio-del-proceso-de-amnistia`],
+  ['2026-03-30', 490, `${FP}foro-penal-cifra-en-490-los-presos-politicos-en-venezuela`],
+  ['2026-04-06', 485, `${FP}foro-penal-contabilizo-485-presos-politicos-en-venezuela`],
+  ['2026-04-20', 473, `${FP}foro-penal-registro-473-presos-politicos-en-venezuela-incluidos-mas-de-40-extranjeros`],
+  ['2026-04-27', 454, `${FP}vpitv-foro-penal-contabiliza-454-presos-politicos-al-27-de-abril-2026`],
+  ['2026-05-25', 409, `${FP}seguimiento-foro-penal-contabiliza-409-presos-politicos-en-venezuela-en-su-mas-reciente-balance-y-tras-excarcelaciones`],
+  ['2026-06-01', 404, `${FP}foro-penal-reporta-404-presos-politicos-en-venezuela`],
+  ['2026-06-09', 389, `${FP}balance-de-presos-politicos-en-venezuela-al-09062026-por`],
+  ['2026-07-06', 372, `${FP}balance-de-presos-poliiicos-en-venezuela-al-06072026-por`],
+  ['2026-07-27', 379, `${FP}balance-de-presos-politicos-en-venezuela-al-27072026-por`],
+  ['2026-08-03', 382, `${FP}balance-de-presos-politicos-en-venezuela-al-03082026-por`],
+  ['2026-08-10', 391, `${FP}balance-de-presos-politicos-en-venezuela-al-10082026-por`],
+  ['2026-08-31', 328, `${FP}balance-de-presos-politicos-en-venezuela-al-31082026-por`],
+  ['2026-09-14', 344, `${FP}balance-de-presos-politicos-en-venezuela-al-14092026-por`],
+  ['2026-09-28', 324, `${FP}balance-de-presos-politicos-en-venezuela-al-28092026-por`],
+  ['2026-10-05', 322, `${FP}balance-de-presos-politicos-en-venezuela-al-05102026-por`],
+];
+const RELEASES: [string, number, string][] = [
+  ['2026-01-17', 270, SRC[5].url],
+  ['2026-01-28', 302, `${FP}seguimiento-foro-penal-711-presos-politicos-52-desaparecidos-y-302-excarcelaciones-en-venezuela`],
+  ['2026-02-15', 444, `${FP}seguimiento-foro-penal-reporta-444-excarcelaciones-de-presos-politicos-al-15feb-en-venezuela`],
+  ['2026-02-20', 452, `${FP}seguimiento-foro-penal-contabiliza-452-excarcelaciones-pero-mas-de-600-presos-politicos-siguen-detenidos`],
+  ['2026-03-02', 621, `${FP}foro-penal-confirma-excarcelacion-de-621-presos-politicos-desde-el-8ene`],
+  ['2026-03-08', 670, `${FP}foro-penal-confirmo-que-se-han-registrado-670-excarcelaciones-de-presos-politicos-en-venezuela`],
+  ['2026-03-13', 690, `${FP}foro-penal-contabiliza-690-presos-politicos-tras-proceso-de-excarcelaciones-y-amnistia-en-venezuela`],
+  ['2026-04-21', 786, SRC[7].url],
+  ['2026-06-12', 894, SRC[11].url],
+  ['2026-10-05', 1104, SRC[1].url],
+];
+const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct'];
+const label = (s: string) => {
+  const [, m, d] = s.split('-');
+  return `${+d} ${MONTHS[+m - 1]} 2026`;
+};
+const fmt = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const dates = [...new Set([...PRISONERS, ...RELEASES].map((p) => p[0]))].sort();
+
+type St = 'no' | 'holder' | 'formal' | 'gone' | 'tbd';
+const ST: Record<St, { label: string; cls: string }> = {
+  no: { label: 'Sin cambio', cls: 'c-no' },
+  holder: { label: 'Cambió el titular', cls: 'c-holder' },
+  formal: { label: 'Cambio formal', cls: 'c-formal' },
+  gone: { label: 'Suprimido', cls: 'c-yes' },
+  tbd: { label: 'Por verificar', cls: 'c-tbd' },
+};
+interface Row {
+  name: string;
+  sub?: string;
+  jan: string;
+  oct: string;
+  st: St;
+  src: number[];
+}
+// Component 1a — norms in force
+const NORMS: Row[] = [
+  { name: 'Ley contra el Odio', sub: '2017', jan: 'Vigente y aplicada por los tribunales', oct: 'Vigente. Delcy Rodríguez reconoció un «uso abusivo» y pidió reformarla; el TSJ declaró constitucional la reforma el 15 de octubre y el debate volvió a la AN', st: 'formal', src: [21] },
+  { name: 'Ley Orgánica Libertador Simón Bolívar', sub: 'nov. 2024', jan: 'Vigente', oct: 'Vigente, sin reforma conocida', st: 'no', src: [25] },
+  { name: 'Ley de Amnistía', sub: '19 feb 2026', jan: 'No existía', oct: 'El Ejecutivo la dio por terminada el 23 de abril; no derogó ninguna de las normas usadas para perseguir', st: 'no', src: [4, 8, 9] },
+];
+// Component 1b — bodies and operational means that remain
+const BODIES: Row[] = [
+  { name: 'Presidencia', jan: 'Nicolás Maduro, capturado el 3 de enero', oct: 'Delcy Rodríguez, presidenta encargada, que sigue siendo vicepresidenta ejecutiva', st: 'holder', src: [5, 26] },
+  { name: 'Asamblea Nacional', jan: 'Jorge Rodríguez', oct: 'Jorge Rodríguez', st: 'no', src: [5, 26] },
+  { name: 'Interior, Justicia y Paz', jan: 'Diosdado Cabello', oct: 'Diosdado Cabello, también vicepresidente sectorial de Seguridad', st: 'no', src: [26] },
+  { name: 'Defensa', jan: 'Vladimir Padrino López, ministro desde 2014', oct: 'Gustavo González López, desde el 18 de marzo', st: 'holder', src: [16] },
+  { name: 'DGCIM', sub: 'contrainteligencia militar', jan: 'Gustavo González López, desde el 6 de enero (director del SEBIN de 2019 a 2024)', oct: 'Germán Gómez Lárez, desde el 18 de marzo', st: 'holder', src: [14, 15] },
+  { name: 'SEBIN', sub: 'inteligencia', jan: 'Alexis Rodríguez Cabello, desde octubre de 2024', oct: 'Sin confirmación posterior a marzo de 2026', st: 'tbd', src: [17] },
+  { name: 'CESPPA', sub: 'centro de «patria» de inteligencia', jan: 'Existía', oct: 'Suprimido por el Decreto 5.248 (9 de febrero)', st: 'gone', src: [17] },
+  { name: 'CICPC', sub: 'policía científica', jan: 'Douglas Rico, en el cargo desde 2016', oct: 'Douglas Rico', st: 'no', src: [26] },
+  { name: 'TSJ', jan: '20 magistrados', oct: '32 magistrados tras la ampliación de abril y mayo; la ONU advierte un mayor riesgo de influencia política (párr. 47)', st: 'formal', src: [18, 12] },
+  { name: 'Tribunales y Fiscalía', jan: 'Jueces y fiscales de las causas políticas', oct: 'Siguen en sus cargos, según Foro Penal; pide que la renovación del TSJ cambie la estructura judicial', st: 'no', src: [6, 23] },
+  { name: 'VenApp', sub: 'medio operativo', jan: 'Activa, con un canal de denuncias anónimas desde 2024', oct: 'Sin dato verificado', st: 'tbd', src: [24] },
+];
+const tally = (rows: Row[]) =>
+  (Object.keys(ST) as St[]).map((k) => ({ k, n: rows.filter((r) => r.st === k).length })).filter((x) => x.n > 0);
+
+// Component 2 — documented exercise in 2026
+const ACTIONS: { when: string; text: string; src: number[] }[] = [
+  { when: '13 ene', text: 'El SEBIN detiene a un ciudadano por un comentario en TikTok sobre la captura de Maduro y lo acusa de «instigación al odio».', src: [19] },
+  { when: 'feb–mar', text: 'Tribunales se niegan a recibir solicitudes de amnistía o a entregar copia de sus decisiones, denuncia Foro Penal.', src: [10] },
+  { when: '23 abr', text: 'El Ejecutivo da por terminada la amnistía. Solo el 24 % de las excarcelaciones se había debido a ella.', src: [7, 8] },
+  { when: '3 sep', text: '94 presos políticos son trasladados desde Rodeo I sin aviso; Foro Penal solo pudo confirmar el destino de 24.', src: [22] },
+  { when: '16 sep', text: 'La Misión de la ONU concluye que, pese a cambios políticos limitados, el aparato represivo sigue intacto.', src: [13, 12] },
+  { when: '17 sep', text: 'Detienen a un dirigente opositor 48 horas después de volver del exilio; lo liberan unas seis horas después.', src: [20] },
+  { when: 'ene–oct', text: '32 encarcelaciones nuevas por motivos políticos y 11.468 personas que siguen con su libertad restringida.', src: [1] },
+];
+
+// Component 3 input — Foro Penal's 7 Feb proposals vs what the State did
+type RSt = 'done' | 'part' | 'unver' | 'not';
+const RST: Record<RSt, { label: string; cls: string }> = {
+  done: { label: 'Ejecutada', cls: 'c-yes' },
+  part: { label: 'Ejecutada en parte', cls: 'c-holder' },
+  unver: { label: 'Sin verificación', cls: 'c-tbd' },
+  not: { label: 'No ejecutada', cls: 'c-no' },
+};
+const REFORMS: { ask: string; did: string; st: RSt; src: number[] }[] = [
+  { ask: 'Nulidad absoluta de los procesos y de todos sus efectos', did: 'La ley optó por la «extinción de pleno derecho» de las acciones (art. 10), que Foro Penal había calificado de insuficiente.', st: 'not', src: [3, 4] },
+  { ask: 'Restitución plena de derechos civiles, políticos, administrativos y patrimoniales', did: 'La ley ordena cesar las medidas, pero no menciona la restitución de derechos ni de bienes.', st: 'not', src: [3, 4] },
+  { ask: 'Derogar las normas usadas para perseguir', did: 'La ley no deroga ninguna. La Ley contra el Odio sigue vigente; su reforma está en trámite.', st: 'not', src: [3, 21] },
+  { ask: 'Eliminación total de antecedentes y registros', did: 'El art. 14 ordena eliminarlos. No hay forma pública de comprobar que se cumpla.', st: 'unver', src: [3, 4] },
+  { ask: 'Aplicación de oficio y sin dilaciones', did: 'El art. 4 la declara de orden público, pero el tribunal actúa «a instancia de parte» (art. 11), y hubo tribunales que no recibían solicitudes.', st: 'part', src: [4, 10] },
+  { ask: 'Amplitud: civiles y militares, todo el período', did: 'El art. 9 excluye delitos usados a menudo contra disidentes; según Foro Penal cubre unos 20 meses de casi 28 años de persecución.', st: 'part', src: [4, 6] },
+  { ask: 'Control con participación vinculante de ONG y víctimas', did: 'Una Comisión Especial de la Asamblea Nacional con apoyo de expertos (art. 15), sin participación vinculante.', st: 'part', src: [4] },
+  { ask: 'Que las excarcelaciones sigan y se conviertan en libertades plenas', did: 'Siguieron (1.104 en 2026), pero 11.468 personas siguen con medidas restrictivas.', st: 'part', src: [1] },
+];
+const rtally = (Object.keys(RST) as RSt[]).map((k) => ({ k, n: REFORMS.filter((r) => r.st === k).length }));
+
+const chartData = JSON.stringify({ P: PRISONERS.map(([d, v]) => [d, v]), R: RELEASES.map(([d, v]) => [d, v]) });
+const title = 'Borrador: capacidad persecutoria estatal residual';
+---
+
+<BaseLayout lang="es" title={title} description="Borrador interno para revisión. No publicado." noindex alternates={false}>
+  <article class="draft">
+    <div class="d-banner">
+      <div class="d-in">
+        <strong>Borrador interno · no publicado.</strong> Esta página solo existe en la vista previa de una rama: no está enlazada desde venezuelarecord.com ni aparece en buscadores. Para revisión con Minerva Mendoza Paipa. Datos verificados el 20 de octubre de 2026.
+      </div>
+    </div>
+
+    <header class="d-head d-in">
+      <p class="d-kicker">Propuesta de ampliación · Cambió el petróleo, no el poder</p>
+      <h1>Capacidad persecutoria estatal residual</h1>
+      <p class="d-intro">La investigación publicada documenta quién conserva el poder. Esta ampliación propone examinar qué capacidad tiene el Estado de seguir persiguiendo y qué garantías existen de que esa capacidad deje de usarse de forma arbitraria.</p>
+      <p class="d-credit">Idea original: Minerva Mendoza Paipa.</p>
+    </header>
+
+    <section class="d-sec d-in" aria-labelledby="s-idea">
+      <p class="d-kicker">La idea</p>
+      <h2 id="s-idea">Una categoría nueva, con tres componentes separados</h2>
+      <blockquote class="d-def">
+        <p>La persistencia verificable de facultades normativas, estructuras institucionales y medios operativos que permiten al Estado identificar, investigar, restringir o sancionar arbitrariamente a personas por motivos políticos, aun después de cambios en la conducción gubernamental o de una reducción documentada de las detenciones.</p>
+        <footer>Definición propuesta por Minerva Mendoza Paipa</footer>
+      </blockquote>
+      <ol class="d-comp">
+        <li class="k1">
+          <span class="d-tag">1</span>
+          <h3>Capacidad disponible</h3>
+          <p>Normas, organismos, competencias y recursos que permanecen.</p>
+          <p class="d-ev"><b>Evidencia:</b> actos oficiales (gacetas, decretos, sentencias).</p>
+        </li>
+        <li class="k2">
+          <span class="d-tag">2</span>
+          <h3>Ejercicio documentado</h3>
+          <p>Detenciones, investigaciones, restricciones y actuaciones verificadas.</p>
+          <p class="d-ev"><b>Evidencia:</b> cifras con fecha de corte (Foro Penal, ONU) y hechos reportados.</p>
+        </li>
+        <li class="k3">
+          <span class="d-tag">3</span>
+          <h3>Riesgo de repetición</h3>
+          <p>Inferencia condicionada por el perfil de la persona, sus antecedentes y la existencia de garantías efectivas.</p>
+          <p class="d-ev"><b>Evidencia:</b> criterios explícitos, nunca una predicción sobre una persona concreta.</p>
+        </li>
+      </ol>
+      <p class="d-note">Nuestra contribución: formular criterios que permitan identificar cuándo esa capacidad conserva relevancia para evaluar un riesgo.</p>
+    </section>
+
+    <section class="d-sec d-in" aria-labelledby="s-where">
+      <p class="d-kicker">Dónde va</p>
+      <h2 id="s-where">El nuevo orden de la investigación</h2>
+      <ul class="d-toc" aria-label="Secciones propuestas">
+        <li>La firma</li>
+        <li>Organigrama</li>
+        <li class="new">Capacidad persecutoria residual <em>nueva</em></li>
+        <li>2026</li>
+        <li>Gacetas</li>
+        <li>Leyes</li>
+        <li>VenApp</li>
+        <li class="upd">Balance <em>actualizado</em></li>
+        <li>Fuentes</li>
+      </ul>
+      <p class="d-p">Justo después del organigrama, el lector pasa de «quiénes mandan» a «qué pueden seguir haciendo». Las secciones Gacetas, Leyes y VenApp ya explican varias normas en detalle: la sección nueva las resume y enlaza a cada una, sin repetirlas.</p>
+      <ol class="d-plan">
+        <li><b>Balance actualizado</b> con la serie de Foro Penal, separando presos políticos, detenciones, excarcelaciones y restricciones judiciales. <span class="d-state ok">Muestra abajo</span></li>
+        <li><b>Sección nueva «Capacidad persecutoria estatal residual»</b>: normas vigentes, organismos que permanecen y actuaciones documentadas en 2026. <span class="d-state wait">Espera el cuadro de Minerva</span></li>
+        <li><b>Matriz de las propuestas de Foro Penal</b>: solicitadas, ejecutadas y sin verificación. <span class="d-state wait">Espera la matriz de Minerva</span></li>
+        <li><b>Cada afirmación con su fuente original</b>, que se abre desde el número de cita. <span class="d-state ok">Funciona en esta página</span></li>
+      </ol>
+    </section>
+
+    <section class="d-sec d-in" aria-labelledby="s-bal">
+      <p class="d-kicker">Cambio 1 · Balance actualizado</p>
+      <h2 id="s-bal">Cuatro cifras que no se deben mezclar</h2>
+      <div class="d-figs">
+        <div class="d-fig r"><b>322</b><span>presos políticos</span><small>detenidos al 5 oct 2026<Cite ids={[2]} /></small></div>
+        <div class="d-fig r"><b>32</b><span>detenciones nuevas</span><small>encarcelaciones en 2026<Cite ids={[1]} /></small></div>
+        <div class="d-fig g"><b>1.104</b><span>excarcelaciones</span><small>verificadas en 2026<Cite ids={[1]} /></small></div>
+        <div class="d-fig a"><b>11.468</b><span>restricciones judiciales</span><small>personas con medidas cautelares<Cite ids={[1]} /></small></div>
+      </div>
+      <p class="d-small">La página «Represión en cifras» de Foro Penal se actualiza sola. Por eso cada cifra de la serie enlaza a su balance con fecha, que no cambia. El total histórico de detenciones desde 2014 (19.253)<Cite ids={[2]} /> crece también con casos reportados tarde y no se presenta como detenciones nuevas.</p>
+
+      <div class="d-chart">
+        <div class="d-readout" id="d-readout" aria-live="polite"></div>
+        <div id="d-chart" tabindex="0" role="img" aria-label="Gráfico de enero a octubre de 2026: presos políticos según Foro Penal bajan de 711 a 322; excarcelaciones acumuladas suben de 270 a 1.104. Use las flechas para recorrer los cortes."></div>
+        <p class="d-legend">
+          <span><i class="lp"></i>Presos políticos (fecha de corte)</span>
+          <span><i class="lr"></i>Excarcelaciones acumuladas desde el 8 de enero</span>
+          <span><i class="la"></i>Ley de Amnistía vigente (19 feb – 23 abr)</span>
+        </p>
+      </div>
+      <p class="d-gap">
+        <strong>La cuenta que no cuadra.</strong> Entre el 28 de enero y el 5 de octubre Foro Penal verificó 802 excarcelaciones, pero la cifra de presos políticos bajó solo 389. La diferencia, 413 personas, son detenciones nuevas y casos que nadie había denunciado antes.
+        <span>Cálculo nuestro: (1.104 − 302) − (711 − 322) = 413. Foro Penal registra 32 encarcelaciones nuevas en 2026; el resto son casos reportados tarde.</span>
+      </p>
+      <details class="d-data">
+        <summary>Ver cada cifra con su enlace a Foro Penal</summary>
+        <div class="d-scroll">
+          <table class="d-mini">
+            <thead><tr><th scope="col">Fecha de corte</th><th scope="col">Presos políticos</th><th scope="col">Excarcelaciones acumuladas</th></tr></thead>
+            <tbody>
+              {
+                dates.map((d) => {
+                  const p = PRISONERS.find((x) => x[0] === d);
+                  const r = RELEASES.find((x) => x[0] === d);
+                  return (
+                    <tr>
+                      <td>{label(d)}</td>
+                      <td>{p && <a href={p[2]} target="_blank" rel="noopener">{fmt(p[1])}</a>}</td>
+                      <td>{r && <a href={r[2]} target="_blank" rel="noopener">{fmt(r[1])}</a>}</td>
+                    </tr>
+                  );
+                })
+              }
+            </tbody>
+          </table>
+        </div>
+      </details>
+    </section>
+
+    <section class="d-sec d-in" aria-labelledby="s-cap">
+      <p class="d-kicker">Cambio 2 · Sección nueva (esquema provisional)</p>
+      <h2 id="s-cap">Capacidad persecutoria estatal residual</h2>
+      <p class="d-p">Organizada con los dos primeros componentes. La forma final dependerá del cuadro explicativo de Minerva. Un estado solo cambia con un acto oficial verificable.</p>
+
+      <h3 class="d-h3"><span class="d-tag sm">1</span> Capacidad disponible · normas vigentes</h3>
+      <table class="d-grid">
+        <thead><tr><th scope="col">Norma</th><th scope="col">Enero 2026</th><th scope="col">Octubre 2026</th><th scope="col">Estado</th></tr></thead>
+        <tbody>
+          {
+            NORMS.map((r) => (
+              <tr>
+                <td>{r.name}{r.sub && <span class="sub">{r.sub}</span>}</td>
+                <td data-k="Enero 2026">{r.jan}</td>
+                <td data-k="Octubre 2026">{r.oct}<Cite ids={r.src} /></td>
+                <td class="st"><span class={`chip ${ST[r.st].cls}`}>{ST[r.st].label}</span></td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+
+      <h3 class="d-h3"><span class="d-tag sm">1</span> Capacidad disponible · organismos y medios que permanecen</h3>
+      <ul class="d-tally" aria-label="Resumen">
+        {tally(BODIES).map((x) => <li><b>{x.n}</b><span class={`chip ${ST[x.k].cls}`}>{ST[x.k].label}</span></li>)}
+      </ul>
+      <table class="d-grid">
+        <thead><tr><th scope="col">Organismo</th><th scope="col">Enero 2026</th><th scope="col">Octubre 2026</th><th scope="col">Estado</th></tr></thead>
+        <tbody>
+          {
+            BODIES.map((r) => (
+              <tr>
+                <td>{r.name}{r.sub && <span class="sub">{r.sub}</span>}</td>
+                <td data-k="Enero 2026">{r.jan}</td>
+                <td data-k="Octubre 2026">{r.oct}<Cite ids={r.src} /></td>
+                <td class="st"><span class={`chip ${ST[r.st].cls}`}>{ST[r.st].label}</span></td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+
+      <h3 class="d-h3"><span class="d-tag sm">2</span> Ejercicio documentado en 2026</h3>
+      <ol class="d-acts">
+        {ACTIONS.map((a) => <li><span class="w">{a.when}</span><span>{a.text}<Cite ids={a.src} /></span></li>)}
+      </ol>
+      <p class="d-small">Sin nombres de personas afectadas: la regla de la investigación es no exponer casos personales.</p>
+    </section>
+
+    <section class="d-sec d-in" aria-labelledby="s-ref">
+      <p class="d-kicker">Cambio 3 · Matriz de las propuestas de Foro Penal (esquema provisional)</p>
+      <h2 id="s-ref">Lo que se solicitó y lo que se ejecutó</h2>
+      <p class="d-p">Todas las filas son reformas que Foro Penal solicitó a la Asamblea Nacional el 7 de febrero<Cite ids={[3]} />, contrastadas con el texto de la Ley de Amnistía publicada el 19 de febrero<Cite ids={[4]} />. Los estados se ajustarán a la matriz de Minerva.</p>
+      <ul class="d-tally" aria-label="Resumen">
+        {rtally.map((x) => <li><b>{x.n}</b><span class={`chip ${RST[x.k].cls}`}>{RST[x.k].label}</span></li>)}
+      </ul>
+      <table class="d-grid">
+        <thead><tr><th scope="col">Solicitado por Foro Penal</th><th scope="col">Lo que hizo el Estado</th><th scope="col">Estado</th></tr></thead>
+        <tbody>
+          {
+            REFORMS.map((r) => (
+              <tr>
+                <td>{r.ask}</td>
+                <td data-k="Lo que hizo el Estado">{r.did}<Cite ids={r.src} /></td>
+                <td class="st"><span class={`chip ${RST[r.st].cls}`}>{RST[r.st].label}</span></td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      <p class="d-end"><b>23 de abril.</b> El Ejecutivo dio por terminada la Ley de Amnistía. Foro Penal respondió que la ley no tenía fecha de vencimiento y que solo la Asamblea Nacional puede derogarla.<Cite ids={[8, 9]} /></p>
+    </section>
+
+    <section class="d-sec d-in" aria-labelledby="s-src4">
+      <p class="d-kicker">Cambio 4 · Cada afirmación con su fuente original</p>
+      <h2 id="s-src4">Del número de cita al documento, en un toque</h2>
+      <p class="d-p">Hoy, en la investigación publicada, cada número de cita baja a la lista de fuentes del final. Aquí ya funciona la propuesta: toca cualquier número (por ejemplo, este<Cite ids={[12]} />) y se abre una ficha con el título, la fecha y el botón «Abrir documento original»: gacetas, informes de la ONU o documentos de Foro Penal. En los PDF largos, el enlace abrirá en la página citada.</p>
+      <p class="d-small">De las 41 fuentes de la investigación, 40 ya tienen enlace. Falta el Reglamento Orgánico del SEBIN (Gaceta 40.153, 2013).</p>
+    </section>
+
+    <section class="d-sec d-in" aria-labelledby="s-crit">
+      <p class="d-kicker">Componente 3 · Para discutir con Minerva</p>
+      <h2 id="s-crit">Criterios propuestos</h2>
+      <p class="d-p">Una capacidad conserva relevancia para evaluar un riesgo cuando se cumple lo siguiente:</p>
+      <ol class="d-crit">
+        <li><b>Vigencia.</b> La norma u organismo sigue en vigor según un acto oficial: no fue derogado ni anulado.</li>
+        <li><b>Continuidad de mando.</b> Lo dirigen las mismas personas o personas designadas por la misma cadena.</li>
+        <li><b>Uso documentado después del cambio.</b> Se aplicó después de enero de 2026.</li>
+        <li><b>Ausencia de control efectivo.</b> Ningún juez independiente, órgano externo o mecanismo de las víctimas puede frenarla.</li>
+        <li><b>Reversibilidad.</b> La mejora depende de una decisión revocable (un anuncio, una excarcelación condicional, una amnistía terminada por el Ejecutivo) y no de un cambio legal firme.</li>
+      </ol>
+      <p class="d-p"><b>Factores que agravan el riesgo de repetición</b> (por grupos, nunca por personas): proceso abierto o medidas cautelares vigentes sin nulidad; pertenecer a un grupo excluido de la amnistía (militares, delitos del art. 9); detención previa o antecedente sin borrar; actividad política o periodística visible; regreso del exilio. En sentido contrario, garantías efectivas que lo reducen.</p>
+      <p class="d-p"><b>«Arbitrario»</b> se definiría con las categorías del Grupo de Trabajo de la ONU sobre la Detención Arbitraria, para que el criterio no dependa de nuestro juicio.</p>
+    </section>
+
+    <section class="d-sec d-in" aria-labelledby="s-ask">
+      <p class="d-kicker">Para avanzar</p>
+      <h2 id="s-ask">Lo que necesitamos de Minerva</h2>
+      <ol class="d-ask">
+        <li>El cuadro explicativo de la capacidad persecutoria residual.</li>
+        <li>Su idea de matriz para las propuestas de Foro Penal, y si usamos sus tres estados (solicitada, ejecutada, sin verificación) o los de este borrador.</li>
+        <li>¿Quién usará los criterios? Si son abogados, jueces u organismos que evalúan casos, los haremos citables uno por uno; si es para el público general, más visuales.</li>
+        <li>¿Le sirven los cinco criterios como base, o tiene su propia lista?</li>
+        <li>Riesgo de repetición: ¿solo criterios generales, o también aplicados a perfiles de grupo?</li>
+        <li>¿Definimos «arbitrario» con las categorías del Grupo de Trabajo de la ONU?</li>
+        <li>¿Otras fuentes además de Foro Penal? (Misión de la ONU, Provea, Justicia, Encuentro y Perdón).</li>
+        <li>Si sabe si Alexis Rodríguez Cabello sigue al frente del SEBIN después de marzo, y si la VenApp sigue activa.</li>
+        <li>¿Mantenemos «Idea original: Minerva Mendoza Paipa» también para esta ampliación?</li>
+      </ol>
+    </section>
+
+    <section class="d-sec d-in" aria-labelledby="s-list">
+      <p class="d-kicker">Fuentes de este borrador</p>
+      <h2 id="s-list" class="d-h2s">Fuentes</h2>
+      <ol class="d-srclist">
+        {
+          Object.entries(SRC).map(([n, s]) => (
+            <li id={`dsrc-${n}`} value={+n}>
+              {s.outlet}, <a href={s.url} target="_blank" rel="noopener">{s.title}</a>, {s.date}.{s.note && <> {s.note}</>}
+            </li>
+          ))
+        }
+      </ol>
+    </section>
+
+    {
+      Object.entries(SRC).map(([n, s]) => (
+        <div id={`dsrc-pop-${n}`} popover class="d-pop">
+          <p class="o">Fuente {n} · {s.outlet} · {s.date}</p>
+          <p class="t">{s.title}</p>
+          {s.note && <p class="nt">{s.note}</p>}
+          <div class="b">
+            <a href={s.url} target="_blank" rel="noopener">Abrir documento original ↗</a>
+            <button type="button" popovertarget={`dsrc-pop-${n}`} popovertargetaction="hide">Cerrar</button>
+          </div>
+        </div>
+      ))
+    }
+    <script type="application/json" id="d-data" set:html={chartData} />
+  </article>
+</BaseLayout>
+
+<script>
+  // Fallback for browsers without the Popover API: jump to the source list.
+  if (!('popover' in HTMLElement.prototype)) {
+    document.querySelectorAll<HTMLButtonElement>('.dcite button').forEach((b) =>
+      b.addEventListener('click', () => document.getElementById(b.dataset.fallback!)?.scrollIntoView({ block: 'center' })),
+    );
+  }
+
+  const { P, R } = JSON.parse(document.getElementById('d-data')!.textContent!) as { P: [string, number][]; R: [string, number][] };
+  const MONTHS = ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct'];
+  const AXIS = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct'];
+  const day = (s: string) => (Date.parse(s + 'T12:00:00Z') - Date.parse('2026-01-01T12:00:00Z')) / 864e5;
+  const END = day('2026-10-31');
+  const fmt = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  const label = (s: string) => {
+    const [, m, d] = s.split('-');
+    return `${+d} ${MONTHS[+m - 1]}`;
+  };
+  const dates = [...new Set([...P, ...R].map((p) => p[0]))].sort();
+  const lastBefore = (arr: [string, number][], s: string) => {
+    let r: [string, number] | null = null;
+    for (const p of arr) if (p[0] <= s) r = p;
+    return r;
+  };
+  const el = document.getElementById('d-chart')!;
+  const out = document.getElementById('d-readout')!;
+  let idx = dates.length - 1;
+  let X: (s: string) => number = () => 0;
+
+  function readout(i: number) {
+    const s = dates[i];
+    const p = lastBefore(P, s);
+    const r = lastBefore(R, s);
+    const note = (q: [string, number] | null) => (q && q[0] !== s ? ` <span class="m">(corte ${label(q[0])})</span>` : '');
+    out.innerHTML =
+      `<span class="d">${label(s)} 2026</span>` +
+      `<span>Presos políticos: <span class="p">${p ? fmt(p[1]) : '—'}</span>${note(p)}</span>` +
+      `<span>Excarcelaciones acumuladas: <span class="x">${r ? fmt(r[1]) : '—'}</span>${note(r)}</span>`;
+  }
+
+  function draw() {
+    const W = Math.max(300, el.clientWidth);
+    const narrow = W < 560;
+    const H = narrow ? 300 : 380;
+    const m = { l: narrow ? 40 : 48, r: narrow ? 12 : 20, t: 26, b: 30 };
+    const iw = W - m.l - m.r;
+    const ih = H - m.t - m.b;
+    X = (s) => m.l + (day(s) / END) * iw;
+    const Y = (v: number) => m.t + ih - (v / 1200) * ih;
+    const fs = narrow ? 11 : 12;
+    let g = '';
+    const a0 = X('2026-02-19');
+    const a1 = X('2026-04-23');
+    g += `<rect x="${a0}" y="${m.t}" width="${a1 - a0}" height="${ih}" class="band"/>`;
+    g += `<text x="${a0 + 6}" y="${m.t + 14}" font-size="${fs}" font-weight="700" class="tb">Amnistía</text>`;
+    for (const v of [0, 300, 600, 900, 1200]) {
+      g += `<line x1="${m.l}" x2="${m.l + iw}" y1="${Y(v)}" y2="${Y(v)}" class="grid"/>`;
+      g += `<text x="${m.l - 8}" y="${Y(v) + 4}" text-anchor="end" font-size="${fs}" class="tm">${fmt(v)}</text>`;
+    }
+    for (let i = 0; i < 10; i++) {
+      const x0 = X(`2026-${String(i + 1).padStart(2, '0')}-01`);
+      const x1 = i < 9 ? X(`2026-${String(i + 2).padStart(2, '0')}-01`) : m.l + iw;
+      if (i) g += `<line x1="${x0}" x2="${x0}" y1="${m.t + ih}" y2="${m.t + ih + 5}" class="tick"/>`;
+      g += `<text x="${(x0 + x1) / 2}" y="${m.t + ih + 20}" text-anchor="middle" font-size="${fs}" class="tm">${AXIS[i]}</text>`;
+    }
+    const x8 = X('2026-01-08');
+    g += `<line x1="${x8}" x2="${x8}" y1="${m.t}" y2="${m.t + ih}" class="dash"/>`;
+    g += `<text x="${x8 + 4}" y="${m.t + ih - 6}" font-size="${fs - 1}" class="tm">8 ene</text>`;
+    const path = (arr: [string, number][]) => arr.map((p, i) => `${i ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join('');
+    g += `<path d="${path(R)}" class="lr"/>`;
+    g += `<path d="${path(P)}" class="lp"/>`;
+    for (const p of R) g += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3" class="cr"/>`;
+    for (const p of P) g += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3" class="cp"/>`;
+    const lp = P[P.length - 1];
+    const lr = R[R.length - 1];
+    g += `<text x="${X(lp[0]) - 6}" y="${Y(lp[1]) + 20}" text-anchor="end" font-size="${fs + 1}" font-weight="700" class="tp">${fmt(lp[1])} presos</text>`;
+    g += `<text x="${X(lr[0]) - 6}" y="${Y(lr[1]) - 10}" text-anchor="end" font-size="${fs + 1}" font-weight="700" class="tr">${fmt(lr[1])} excarcelaciones</text>`;
+    g += `<text x="${X(P[0][0]) + 8}" y="${Y(P[0][1]) - 8}" font-size="${fs}" font-weight="600" class="tp">${fmt(P[0][1])}</text>`;
+    g += `<line id="d-cur" x1="0" x2="0" y1="${m.t}" y2="${m.t + ih}" class="cur"/>`;
+    el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true">${g}</svg>`;
+    cursor(idx);
+  }
+
+  function cursor(i: number) {
+    idx = Math.max(0, Math.min(dates.length - 1, i));
+    const c = el.querySelector('#d-cur');
+    if (c) {
+      const x = String(X(dates[idx]));
+      c.setAttribute('x1', x);
+      c.setAttribute('x2', x);
+    }
+    readout(idx);
+  }
+  const nearest = (clientX: number) => {
+    const x = clientX - el.getBoundingClientRect().left;
+    let best = 0;
+    let bd = Infinity;
+    dates.forEach((s, i) => {
+      const d = Math.abs(X(s) - x);
+      if (d < bd) {
+        bd = d;
+        best = i;
+      }
+    });
+    return best;
+  };
+  el.addEventListener('pointermove', (e) => cursor(nearest(e.clientX)));
+  el.addEventListener('pointerdown', (e) => cursor(nearest(e.clientX)));
+  el.addEventListener('keydown', (e) => {
+    const k: Record<string, number> = { ArrowRight: idx + 1, ArrowLeft: idx - 1, Home: 0, End: dates.length - 1 };
+    if (e.key in k) {
+      cursor(k[e.key]);
+      e.preventDefault();
+    }
+  });
+  let t: number | undefined;
+  window.addEventListener('resize', () => {
+    clearTimeout(t);
+    t = window.setTimeout(draw, 120);
+  });
+  draw();
+</script>
+
+<style is:global>
+  .draft {
+    --d-sec: #c8102e;
+    --d-econ: #a85a00;
+    --d-yes: #1d7a4c;
+    --d-appoint: #1f3a93;
+    --d-hl: #ffd60a;
+    --d-hl-ink: #8f6a00;
+    --d-band: #f6f6f2;
+    --d-band-op: 0.22;
+    padding-bottom: 48px;
+  }
+  @media (prefers-color-scheme: dark) {
+    .draft {
+      --d-sec: #ff6b72;
+      --d-econ: #f2a93b;
+      --d-yes: #4fc28a;
+      --d-appoint: #9fb5ff;
+      --d-hl-ink: #f5c400;
+      --d-band: #13161c;
+      --d-band-op: 0.13;
+    }
+  }
+  .draft .d-in {
+    max-width: 960px;
+    margin-inline: auto;
+    padding-inline: var(--gutter);
+  }
+  .draft .d-banner {
+    background: var(--d-hl);
+    color: #111;
+    font: 500 0.88rem/1.5 var(--sans);
+    padding-block: 12px;
+  }
+  .draft .d-head {
+    padding-block: 48px 8px;
+  }
+  .draft .d-kicker {
+    margin: 0 0 8px;
+    font: 700 0.74rem/1.4 var(--sans);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--d-hl-ink);
+  }
+  .draft h1 {
+    font: 700 clamp(2.1rem, 6vw, 3.4rem)/1.05 var(--serif);
+    letter-spacing: -0.02em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .draft h2 {
+    font: 700 clamp(1.6rem, 4vw, 2.3rem)/1.12 var(--serif);
+    letter-spacing: -0.015em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .draft .d-h2s {
+    font-size: 1.3rem;
+  }
+  .draft .d-intro {
+    max-width: 720px;
+    margin: 0;
+    font: 400 clamp(1.08rem, 2.3vw, 1.25rem)/1.6 var(--serif);
+    color: var(--muted);
+  }
+  .draft .d-credit {
+    margin: 16px 0 0;
+    font: 600 0.88rem var(--sans);
+  }
+  .draft .d-sec {
+    padding-block: 40px;
+    border-top: 1px solid var(--line);
+    margin-top: 32px;
+  }
+  .draft .d-p {
+    max-width: 720px;
+    font: 400 1.04rem/1.65 var(--serif);
+    margin: 0 0 16px;
+  }
+  .draft .d-small {
+    max-width: 720px;
+    font: 400 0.84rem/1.55 var(--sans);
+    color: var(--muted);
+    margin: 12px 0 0;
+  }
+  .draft .d-note {
+    max-width: 720px;
+    margin: 18px 0 0;
+    font: 600 1rem/1.5 var(--sans);
+  }
+  .draft .d-def {
+    margin: 0 0 24px;
+    padding: 18px 22px;
+    border-left: 4px solid var(--d-hl);
+    background: var(--d-band);
+    font: 400 italic 1.12rem/1.6 var(--serif);
+  }
+  .draft .d-def p {
+    margin: 0;
+  }
+  .draft .d-def footer {
+    margin-top: 10px;
+    font: 600 normal 0.8rem var(--sans);
+    color: var(--muted);
+  }
+  .draft .d-comp {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+  }
+  .draft .d-comp li {
+    border: 1px solid var(--line);
+    border-top-width: 4px;
+    border-radius: 6px;
+    padding: 16px;
+    min-width: 0;
+  }
+  .draft .d-comp .k1 {
+    border-top-color: var(--d-appoint);
+  }
+  .draft .d-comp .k2 {
+    border-top-color: var(--d-sec);
+  }
+  .draft .d-comp .k3 {
+    border-top-color: var(--d-econ);
+  }
+  .draft .d-comp h3 {
+    font: 700 1.15rem/1.25 var(--serif);
+    margin: 8px 0 6px;
+  }
+  .draft .d-comp p {
+    margin: 0 0 8px;
+    font: 400 0.92rem/1.5 var(--sans);
+  }
+  .draft .d-comp .d-ev {
+    color: var(--muted);
+    font-size: 0.84rem;
+    margin: 0;
+  }
+  .draft .d-tag {
+    display: inline-grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--text);
+    color: var(--bg);
+    font: 700 0.8rem var(--sans);
+  }
+  .draft .d-tag.sm {
+    width: 22px;
+    height: 22px;
+    font-size: 0.72rem;
+    vertical-align: 2px;
+    margin-right: 6px;
+  }
+  .draft .d-toc {
+    list-style: none;
+    margin: 0 0 18px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .draft .d-toc li {
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    font: 600 0.86rem var(--sans);
+    color: var(--muted);
+  }
+  .draft .d-toc li.new {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+  .draft .d-toc li.upd {
+    border-color: var(--text);
+    color: var(--text);
+  }
+  .draft .d-toc em {
+    font: 700 normal 0.62rem var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-left: 6px;
+    background: var(--d-hl);
+    color: #111;
+    padding: 2px 6px;
+    border-radius: 999px;
+  }
+  .draft .d-plan {
+    margin: 0;
+    padding-left: 1.3em;
+    display: grid;
+    gap: 10px;
+    max-width: 760px;
+    font: 400 0.98rem/1.5 var(--sans);
+  }
+  .draft .d-state {
+    display: inline-block;
+    margin-left: 6px;
+    padding: 1px 8px;
+    border-radius: 999px;
+    font: 700 0.72rem/1.6 var(--sans);
+    border: 1.5px solid currentColor;
+    white-space: nowrap;
+  }
+  .draft .d-state.ok {
+    color: var(--d-yes);
+  }
+  .draft .d-state.wait {
+    color: var(--muted);
+    border-style: dashed;
+  }
+  .draft .d-figs {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 2px solid var(--text);
+    border-bottom: 1px solid var(--line);
+  }
+  .draft .d-fig {
+    padding: 18px 14px 18px 0;
+    min-width: 0;
+  }
+  .draft .d-fig + .d-fig {
+    padding-left: 14px;
+    border-left: 1px solid var(--line);
+  }
+  .draft .d-fig b {
+    display: block;
+    font: 700 clamp(2rem, 5vw, 2.8rem)/1 var(--serif);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .draft .d-fig.r b {
+    color: var(--d-sec);
+  }
+  .draft .d-fig.g b {
+    color: var(--d-yes);
+  }
+  .draft .d-fig.a b {
+    color: var(--d-econ);
+  }
+  .draft .d-fig span {
+    display: block;
+    margin-top: 8px;
+    font: 700 0.92rem/1.3 var(--sans);
+  }
+  .draft .d-fig small {
+    display: block;
+    margin-top: 2px;
+    font: 400 0.8rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .draft .d-chart {
+    margin-top: 28px;
+  }
+  .draft .d-readout {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 18px;
+    align-items: baseline;
+    min-height: 3em;
+    font: 500 0.9rem/1.4 var(--sans);
+  }
+  .draft .d-readout .d {
+    font-weight: 700;
+  }
+  .draft .d-readout .p {
+    color: var(--d-sec);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .draft .d-readout .x {
+    color: var(--d-yes);
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+  .draft .d-readout .m {
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+  .draft #d-chart {
+    width: 100%;
+    touch-action: pan-y;
+    cursor: crosshair;
+  }
+  .draft #d-chart:focus-visible {
+    outline: 2px solid var(--d-appoint);
+    outline-offset: 4px;
+  }
+  .draft #d-chart svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    font-family: var(--sans);
+  }
+  .draft #d-chart .band {
+    fill: var(--d-hl);
+    opacity: var(--d-band-op);
+  }
+  .draft #d-chart .tb {
+    fill: var(--d-hl-ink);
+  }
+  .draft #d-chart .grid {
+    stroke: var(--line);
+  }
+  .draft #d-chart .tick {
+    stroke: var(--muted);
+  }
+  .draft #d-chart .tm {
+    fill: var(--muted);
+  }
+  .draft #d-chart .dash {
+    stroke: var(--muted);
+    stroke-dasharray: 3 4;
+  }
+  .draft #d-chart .lp,
+  .draft #d-chart .lr {
+    fill: none;
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .draft #d-chart .lp {
+    stroke: var(--d-sec);
+  }
+  .draft #d-chart .lr {
+    stroke: var(--d-yes);
+  }
+  .draft #d-chart .cp,
+  .draft #d-chart .cr {
+    fill: var(--bg);
+    stroke-width: 2;
+  }
+  .draft #d-chart .cp {
+    stroke: var(--d-sec);
+  }
+  .draft #d-chart .cr {
+    stroke: var(--d-yes);
+  }
+  .draft #d-chart .tp {
+    fill: var(--d-sec);
+  }
+  .draft #d-chart .tr {
+    fill: var(--d-yes);
+  }
+  .draft #d-chart .cur {
+    stroke: var(--text);
+    opacity: 0.5;
+  }
+  .draft .d-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 18px;
+    margin: 10px 0 0;
+    font: 500 0.84rem var(--sans);
+    color: var(--muted);
+  }
+  .draft .d-legend i {
+    display: inline-block;
+    width: 18px;
+    height: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border-radius: 2px;
+  }
+  .draft .d-legend .lp {
+    background: var(--d-sec);
+  }
+  .draft .d-legend .lr {
+    background: var(--d-yes);
+  }
+  .draft .d-legend .la {
+    background: var(--d-hl);
+    height: 10px;
+    opacity: 0.55;
+  }
+  .draft .d-gap {
+    max-width: 760px;
+    margin: 22px 0 0;
+    padding: 16px 18px;
+    background: var(--d-band);
+    border-left: 4px solid var(--d-sec);
+    font: 400 1rem/1.6 var(--serif);
+  }
+  .draft .d-gap strong {
+    font-family: var(--sans);
+  }
+  .draft .d-gap span {
+    display: block;
+    margin-top: 6px;
+    font: 500 0.78rem/1.5 var(--sans);
+    color: var(--muted);
+  }
+  .draft .d-data {
+    margin-top: 14px;
+    font: 400 0.88rem var(--sans);
+  }
+  .draft .d-data summary {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .draft .d-scroll {
+    overflow-x: auto;
+  }
+  .draft .d-mini {
+    border-collapse: collapse;
+    min-width: 440px;
+    font-variant-numeric: tabular-nums;
+  }
+  .draft .d-mini th,
+  .draft .d-mini td {
+    text-align: left;
+    padding: 7px 18px 7px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .draft .d-mini th {
+    font-size: 0.74rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .draft .d-h3 {
+    font: 700 1.12rem/1.3 var(--sans);
+    margin: 30px 0 12px;
+  }
+  .draft .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 999px;
+    border: 1.5px solid currentColor;
+    font: 700 0.74rem/1.4 var(--sans);
+    white-space: nowrap;
+  }
+  .draft .chip::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+  .draft .c-no {
+    color: var(--d-sec);
+  }
+  .draft .c-holder {
+    color: var(--d-econ);
+  }
+  .draft .c-formal {
+    color: var(--d-appoint);
+  }
+  .draft .c-yes {
+    color: var(--d-yes);
+  }
+  .draft .c-tbd {
+    color: var(--muted);
+    border-style: dashed;
+  }
+  .draft .d-tally {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .draft .d-tally li {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .draft .d-tally b {
+    font: 700 1.1rem var(--sans);
+    font-variant-numeric: tabular-nums;
+  }
+  .draft .d-grid {
+    width: 100%;
+    border-collapse: collapse;
+    font: 400 0.92rem/1.5 var(--sans);
+  }
+  .draft .d-grid th {
+    text-align: left;
+    padding: 0 14px 10px 0;
+    border-bottom: 2px solid var(--text);
+    font: 700 0.72rem/1.3 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .draft .d-grid td {
+    padding: 13px 14px 13px 0;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  .draft .d-grid td:first-child {
+    font-weight: 700;
+    width: 22%;
+  }
+  .draft .d-grid td.st {
+    width: 1%;
+    white-space: nowrap;
+    padding-right: 0;
+  }
+  .draft .d-grid .sub {
+    display: block;
+    font-weight: 400;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .draft .d-acts {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 2px solid var(--d-sec);
+    display: grid;
+    gap: 14px;
+    max-width: 780px;
+  }
+  .draft .d-acts li {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr);
+    gap: 12px;
+    padding-left: 16px;
+    font: 400 0.96rem/1.5 var(--sans);
+  }
+  .draft .d-acts .w {
+    font-weight: 700;
+    color: var(--d-sec);
+    font-variant-numeric: tabular-nums;
+  }
+  .draft .d-end {
+    max-width: 760px;
+    margin: 20px 0 0;
+    padding: 14px 16px;
+    border: 1.5px solid var(--d-sec);
+    border-radius: 6px;
+    font: 500 0.95rem/1.5 var(--sans);
+  }
+  .draft .d-end b {
+    color: var(--d-sec);
+  }
+  .draft .d-crit,
+  .draft .d-ask {
+    max-width: 760px;
+    margin: 0 0 18px;
+    padding-left: 1.3em;
+    display: grid;
+    gap: 10px;
+    font: 400 1rem/1.55 var(--serif);
+  }
+  .draft .d-srclist {
+    margin: 0;
+    padding-left: 1.6em;
+    display: grid;
+    gap: 6px;
+    font: 400 0.86rem/1.5 var(--sans);
+    color: var(--muted);
+  }
+  .draft .d-srclist a {
+    color: var(--text);
+  }
+  .draft .dcite {
+    font: 600 0.72rem/0 var(--sans);
+    margin-left: 2px;
+    white-space: nowrap;
+  }
+  .draft .dcite button {
+    display: inline-block;
+    min-width: 1.6em;
+    padding: 18px 3px;
+    margin: -18px 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    color: var(--d-appoint);
+    cursor: pointer;
+  }
+  .draft .dcite button:hover {
+    text-decoration: underline;
+  }
+  .draft .d-pop {
+    width: min(440px, calc(100vw - 32px));
+    padding: 18px 18px 14px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--bg);
+    color: var(--text);
+    box-shadow: 0 18px 50px rgb(0 0 0 / 0.25);
+  }
+  .draft .d-pop::backdrop {
+    background: rgb(0 0 0 / 0.25);
+  }
+  .draft .d-pop .o {
+    margin: 0 0 6px;
+    font: 700 0.72rem/1.4 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .draft .d-pop .t {
+    margin: 0 0 10px;
+    font: 700 1.02rem/1.4 var(--serif);
+  }
+  .draft .d-pop .nt {
+    margin: 0 0 10px;
+    font: 400 0.82rem/1.45 var(--sans);
+    color: var(--muted);
+  }
+  .draft .d-pop .b {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .draft .d-pop a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    padding: 0 14px;
+    border-radius: 6px;
+    background: var(--text);
+    color: var(--bg);
+    font: 700 0.88rem var(--sans);
+    text-decoration: none;
+  }
+  .draft .d-pop button {
+    min-height: 44px;
+    padding: 0 12px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: none;
+    color: var(--text);
+    font: 600 0.86rem var(--sans);
+    cursor: pointer;
+  }
+  @media (max-width: 760px) {
+    .draft .d-comp {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .draft .d-figs {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .draft .d-fig:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+    .draft .d-fig:nth-child(n + 3) {
+      border-top: 1px solid var(--line);
+    }
+    .draft .d-grid thead {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+    .draft .d-grid,
+    .draft .d-grid tbody,
+    .draft .d-grid tr,
+    .draft .d-grid td {
+      display: block;
+      width: auto;
+    }
+    .draft .d-grid tr {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .draft .d-grid td {
+      border: 0;
+      padding: 3px 0;
+    }
+    .draft .d-grid td:first-child {
+      width: auto;
+      font-size: 1.02rem;
+    }
+    .draft .d-grid td.st {
+      width: auto;
+      padding-top: 8px;
+    }
+    .draft .d-grid td[data-k]::before {
+      content: attr(data-k);
+      display: block;
+      margin-top: 6px;
+      font: 700 0.68rem/1.3 var(--sans);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .draft .d-acts li {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2px;
+    }
+  }
+</style>

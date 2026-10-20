@@ -1,0 +1,23 @@
+---
+// Numbered citation that opens a source card (popover) with a direct link to the original document.
+// Without popover support it falls back to the source list at the end of the page.
+interface Props {
+  ids: number[];
+}
+const { ids } = Astro.props;
+---
+
+{
+  ids.length > 0 && (
+    <sup class="dcite">
+      {ids.map((n, i) => (
+        <>
+          {i > 0 && <span aria-hidden="true">,</span>}
+          <button type="button" popovertarget={`dsrc-pop-${n}`} data-fallback={`dsrc-${n}`} aria-label={`Fuente ${n}`}>
+            {n}
+          </button>
+        </>
+      ))}
+    </sup>
+  )
+}

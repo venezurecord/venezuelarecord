@@ -1,0 +1,12 @@
+---
+// Internal drafts for review (Spanish only). They exist ONLY in branch previews and local dev:
+// the production build (main) generates no paths here, so nothing can leak to venezuelarecord.com.
+import { IS_PRODUCTION } from '../../../lib/news';
+import CapacidadPersecutoria from '../../../views/drafts/CapacidadPersecutoria.astro';
+
+export function getStaticPaths() {
+  return IS_PRODUCTION ? [] : [{ params: { slug: 'capacidad-persecutoria' } }];
+}
+---
+
+<CapacidadPersecutoria />
