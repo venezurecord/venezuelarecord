@@ -5,6 +5,7 @@ import type { Lang } from '../../i18n/ui';
 import { CHANGED, DETENTIONS, UNCHANGED } from '../../data/investigations/who-commands-venezuela-2026';
 import { ANCHORS, it } from '../../data/investigations/ui';
 import Cite from './Cite.astro';
+import FpSeries from './FpSeries.astro';
 
 interface Props {
   lang: Lang;
@@ -20,6 +21,8 @@ const cells = Array.from({ length: DETENTIONS.total }, (_, i) => i < DETENTIONS.
     <h2 id="bal-title">{it(lang, 'balTitle')}</h2>
     <p class="inv-intro">{it(lang, 'balIntro')}</p>
   </header>
+
+  <FpSeries lang={lang} />
 
   <div class="bal-wrap">
     <label class="bal-slider">

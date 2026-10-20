@@ -20,6 +20,10 @@ const en = {
   linkCopied: 'Link copied',
   sourceN: 'Source {n}',
   sources: 'Sources',
+  openOriginal: 'Open the original document',
+  inSourceList: 'See in the source list',
+  closeCard: 'Close',
+  noLink: 'No public online copy',
 
   // sections
   sigKicker: 'The signature',
@@ -76,7 +80,7 @@ const en = {
   vaUncertain: 'No public evidence',
   balKicker: 'The balance',
   balTitle: 'What changed and what did not',
-  balIntro: 'Drag the slider to compare. Both columns are sourced.',
+  balIntro: 'First, Foro Penal’s 2026 figures. Then what changed and what did not, each with its source.',
   balSlider: 'Compare what changed with what did not',
   balChanged: 'What changed',
   balUnchanged: 'What did not',
@@ -126,6 +130,10 @@ const es: Dict = {
   copyLink: 'Copiar enlace',
   linkCopied: 'Enlace copiado',
   sourceN: 'Fuente {n}',
+  openOriginal: 'Abrir documento original',
+  inSourceList: 'Ver en la lista de fuentes',
+  closeCard: 'Cerrar',
+  noLink: 'Sin copia pública en línea',
   sources: 'Fuentes',
 
   sigKicker: 'La firma',
@@ -182,7 +190,7 @@ const es: Dict = {
   vaUncertain: 'Sin prueba pública',
   balKicker: 'El balance',
   balTitle: 'Lo que cambió y lo que no',
-  balIntro: 'Mueve el deslizador para comparar. Las dos columnas tienen fuente.',
+  balIntro: 'Primero, las cifras de Foro Penal de 2026. Después, lo que cambió y lo que no, cada punto con su fuente.',
   balSlider: 'Comparar lo que cambió con lo que no',
   balChanged: 'Sí cambió',
   balUnchanged: 'No cambió',
@@ -225,13 +233,13 @@ export const longDate = (lang: Lang, iso: string) =>
 
 /** Section anchors per language (shareable: #signatures / #firmas, #org-chart / #organigrama …) */
 export const ANCHORS = {
-  en: { sig: 'signatures', org: 'org-chart', tl: 'timeline-2026', gz: 'gazettes', pen: 'laws', va: 'venapp', bal: 'balance', src: 'sources' },
-  es: { sig: 'firmas', org: 'organigrama', tl: 'cronologia-2026', gz: 'gacetas', pen: 'leyes', va: 'venapp', bal: 'balance', src: 'fuentes' },
+  en: { sig: 'signatures', org: 'org-chart', cap: 'residual-capacity', tl: 'timeline-2026', gz: 'gazettes', pen: 'laws', va: 'venapp', bal: 'balance', src: 'sources' },
+  es: { sig: 'firmas', org: 'organigrama', cap: 'capacidad-residual', tl: 'cronologia-2026', gz: 'gacetas', pen: 'leyes', va: 'venapp', bal: 'balance', src: 'fuentes' },
 } as const;
 
 export const TOC_LABELS = {
-  en: { sig: 'The signature', org: 'Org chart', tl: '2026', gz: 'Gazettes', pen: 'Laws', va: 'VenApp', bal: 'Balance', src: 'Sources' },
-  es: { sig: 'La firma', org: 'Organigrama', tl: '2026', gz: 'Gacetas', pen: 'Leyes', va: 'VenApp', bal: 'Balance', src: 'Fuentes' },
+  en: { sig: 'The signature', org: 'Org chart', cap: 'Capacity', tl: '2026', gz: 'Gazettes', pen: 'Laws', va: 'VenApp', bal: 'Balance', src: 'Sources' },
+  es: { sig: 'La firma', org: 'Organigrama', cap: 'Capacidad', tl: '2026', gz: 'Gacetas', pen: 'Leyes', va: 'VenApp', bal: 'Balance', src: 'Fuentes' },
 } as const;
 
 /** Month labels for every axis in the piece (same capitalization everywhere). */

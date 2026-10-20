@@ -1,0 +1,668 @@
+---
+// Residual State capacity to persecute (idea: Minerva Mendoza Paipa). Three components kept apart, shown as
+// three tabs (all panels stacked without JS): available capacity, documented exercise, risk of repetition.
+// Phone first: cards instead of tables, a status strip, big tabs and a "next" button at the end of each panel.
+import type { Lang } from '../../i18n/ui';
+import {
+  CAP_ACTIONS,
+  CAP_BODIES,
+  CAP_CRITERIA,
+  CAP_GUARANTEES,
+  CAP_NORMS,
+  CAP_PROFILES,
+  CAP_STATUS,
+  CAP_UI,
+  GUAR_STATUS,
+  type CapRow,
+  type CapStatus,
+  type Guar,
+} from '../../data/investigations/who-commands-venezuela-2026.capacity';
+import { ANCHORS } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+const U = CAP_UI[lang];
+const ORDER: CapStatus[] = ['same', 'tbd', 'formal', 'holder', 'gone'];
+const GORDER: Guar[] = ['not', 'unver', 'part', 'done'];
+const strip = (rows: CapRow[]) => ORDER.flatMap((k) => rows.filter((r) => r.status === k).map(() => k));
+const count = <T extends string>(list: T[], k: T) => list.filter((x) => x === k).length;
+const bodyStrip = strip(CAP_BODIES);
+const guarStrip = GORDER.flatMap((k) => CAP_GUARANTEES.filter((g) => g.status === k).map(() => k));
+const panels = ['cap-p1', 'cap-p2', 'cap-p3'];
+---
+
+<section id={A.cap} class="cap" aria-labelledby="cap-title" data-cap>
+  <header class="inv-head">
+    <p class="inv-kicker"><span class="cap-new">{U.kicker}</span></p>
+    <h2 id="cap-title">{U.title}</h2>
+    <p class="inv-intro">{U.intro}</p>
+  </header>
+
+  <div class="cap-wrap">
+    <p class="cap-def">{U.def}</p>
+
+    <div class="cap-tabs" role="tablist" aria-label={U.tabsLabel} hidden data-tabs>
+      {
+        U.tabs.map((t, i) => (
+          <button type="button" role="tab" id={`${panels[i]}-tab`} aria-controls={panels[i]} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class={`k${i + 1}`}>
+            <span class="n">{i + 1}</span>
+            <span class="lg">{t}</span>
+            <span class="sm">{U.tabsShort[i]}</span>
+          </button>
+        ))
+      }
+    </div>
+
+    <!-- 1 · Available capacity -->
+    <div class="cap-panel k1" id="cap-p1" role="tabpanel" aria-labelledby="cap-p1-h">
+      <h3 class="cap-ph" id="cap-p1-h"><span class="n">1</span>{U.tabs[0]}</h3>
+      <p class="cap-pi">{U.p1Intro}</p>
+
+      <h4 class="cap-sub">{U.norms}</h4>
+      <ul class="cap-rows">
+        {
+          CAP_NORMS.map((r) => (
+            <li class={`cap-row s-${r.status}`}>
+              <div class="rh">
+                <p class="nm">
+                  {r.name[lang]}
+                  {r.kind && <span class="kd">{r.kind[lang]}</span>}
+                </p>
+                <span class={`chip s-${r.status}`}>{CAP_STATUS[r.status][lang]}</span>
+              </div>
+              <dl>
+                <div class="was"><dt>{U.jan}</dt><dd>{r.jan[lang]}</dd></div>
+                <div class="now"><dt>{U.oct}</dt><dd>{r.oct[lang]}<Cite lang={lang} ids={r.src} anchor={A.src} /></dd></div>
+              </dl>
+            </li>
+          ))
+        }
+      </ul>
+
+      <h4 class="cap-sub">{U.bodies}</h4>
+      <div class="cap-strip" aria-hidden="true">
+        {bodyStrip.map((k) => <span class={`s-${k}`} />)}
+      </div>
+      <ul class="cap-tally">
+        {
+          ORDER.filter((k) => count(bodyStrip, k) > 0).map((k) => (
+            <li>
+              <b>{count(bodyStrip, k)}</b> <span class="of">{U.of.replace('{total}', String(bodyStrip.length))}</span>
+              <span class={`chip s-${k}`}>{CAP_STATUS[k][lang]}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <ul class="cap-rows two">
+        {
+          CAP_BODIES.map((r) => (
+            <li class={`cap-row s-${r.status}`}>
+              <div class="rh">
+                <p class="nm">
+                  {r.name[lang]}
+                  {r.kind && <span class="kd">{r.kind[lang]}</span>}
+                </p>
+                <span class={`chip s-${r.status}`}>{CAP_STATUS[r.status][lang]}</span>
+              </div>
+              <dl>
+                <div class="was"><dt>{U.jan}</dt><dd>{r.jan[lang]}</dd></div>
+                <div class="now"><dt>{U.oct}</dt><dd>{r.oct[lang]}<Cite lang={lang} ids={r.src} anchor={A.src} /></dd></div>
+              </dl>
+            </li>
+          ))
+        }
+      </ul>
+      <button type="button" class="cap-next" data-next="1" hidden>{U.tabs[1]} <span aria-hidden="true">→</span></button>
+    </div>
+
+    <!-- 2 · Documented exercise -->
+    <div class="cap-panel k2" id="cap-p2" role="tabpanel" aria-labelledby="cap-p2-h">
+      <h3 class="cap-ph" id="cap-p2-h"><span class="n">2</span>{U.tabs[1]}</h3>
+      <p class="cap-pi">{U.p2Intro}</p>
+      <ol class="cap-acts">
+        {
+          CAP_ACTIONS.map((a) => (
+            <li>
+              <span class="w">{a.when[lang]}</span>
+              <p>
+                {a.text[lang]}
+                <Cite lang={lang} ids={a.src} anchor={A.src} />
+              </p>
+            </li>
+          ))
+        }
+      </ol>
+      <p class="cap-more"><a href={`#${A.bal}`}>{lang === 'es' ? 'Ver la serie completa de Foro Penal en el Balance ↓' : 'See the full Foro Penal series in the Balance ↓'}</a></p>
+      <button type="button" class="cap-next" data-next="2" hidden>{U.tabs[2]} <span aria-hidden="true">→</span></button>
+    </div>
+
+    <!-- 3 · Risk of repetition -->
+    <div class="cap-panel k3" id="cap-p3" role="tabpanel" aria-labelledby="cap-p3-h">
+      <h3 class="cap-ph" id="cap-p3-h"><span class="n">3</span>{U.tabs[2]}</h3>
+      <p class="cap-pi">{U.p3Intro}</p>
+
+      <h4 class="cap-sub">{U.guarTitle}</h4>
+      <p class="cap-small">
+        {U.guarIntro}
+        <Cite lang={lang} ids={[44, 45]} anchor={A.src} />
+      </p>
+      <div class="cap-strip" aria-hidden="true">
+        {guarStrip.map((k) => <span class={`g-${k}`} />)}
+      </div>
+      <ul class="cap-tally">
+        {
+          GORDER.map((k) => (
+            <li>
+              <b>{count(guarStrip, k)}</b> <span class="of">{U.of.replace('{total}', String(guarStrip.length))}</span>
+              <span class={`chip g-${k}`}>{GUAR_STATUS[k][lang]}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <ul class="cap-rows two">
+        {
+          CAP_GUARANTEES.map((g) => (
+            <li class={`cap-row g-${g.status}`}>
+              <div class="rh">
+                <p class="nm">{g.ask[lang]}</p>
+                <span class={`chip g-${g.status}`}>{GUAR_STATUS[g.status][lang]}</span>
+              </div>
+              <dl>
+                <div class="now"><dt>{U.did}</dt><dd>{g.did[lang]}<Cite lang={lang} ids={g.src} anchor={A.src} /></dd></div>
+              </dl>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="cap-end">
+        {U.endNote}
+        <Cite lang={lang} ids={[15, 49, 50]} anchor={A.src} />
+      </p>
+
+      <h4 class="cap-sub">{U.critTitle}</h4>
+      <p class="cap-small">{U.critIntro}</p>
+      <ol class="cap-crit">
+        {
+          CAP_CRITERIA.map((c, i) => (
+            <li>
+              <span class="cn">{i + 1}</span>
+              <div>
+                <p class="ct">{c.name[lang]}</p>
+                <p class="cx">{c.test[lang]}</p>
+                <p class="ce">
+                  <b>{U.example}:</b> {c.example[lang]}
+                  <Cite lang={lang} ids={c.src} anchor={A.src} />
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+
+      <h4 class="cap-sub">{U.profilesTitle}</h4>
+      <ul class="cap-prof">
+        {CAP_PROFILES.map((p) => <li>{p[lang]}</li>)}
+      </ul>
+      <p class="cap-small">{U.profilesNote}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cap]').forEach((root) => {
+    const bar = root.querySelector<HTMLElement>('[data-tabs]')!;
+    const tabs = [...bar.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls')!)!);
+    root.classList.add('tabbed');
+    bar.hidden = false;
+    root.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((b) => (b.hidden = false));
+
+    const show = (i: number, focus = false, scroll = false) => {
+      tabs.forEach((t, j) => {
+        const on = i === j;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        panels[j].hidden = !on;
+      });
+      if (focus) tabs[i].focus();
+      if (scroll) bar.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => show(i));
+      t.addEventListener('keydown', (e) => {
+        const k: Record<string, number> = { ArrowRight: (i + 1) % tabs.length, ArrowLeft: (i - 1 + tabs.length) % tabs.length, Home: 0, End: tabs.length - 1 };
+        if (e.key in k) {
+          e.preventDefault();
+          show(k[e.key], true);
+        }
+      });
+    });
+    root.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((b) => b.addEventListener('click', () => show(Number(b.dataset.next), false, true)));
+    show(0);
+  });
+</script>
+
+<style>
+  .cap {
+    padding-block: 72px 24px;
+    border-top: 1px solid var(--line);
+  }
+  .cap-new {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: var(--inv-hl);
+    color: #111;
+  }
+  .cap-wrap {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+  .cap-def {
+    max-width: var(--reading);
+    margin: 0 0 28px;
+    padding: 16px 18px;
+    border-left: 4px solid var(--inv-hl);
+    background: var(--inv-band);
+    font: italic 1.05rem/1.6 var(--serif);
+  }
+
+  /* Tabs: three equal, finger-sized segments on phones; full labels from 700px. */
+  .cap-tabs {
+    position: sticky;
+    top: calc(var(--inv-top) + var(--inv-toc-h));
+    z-index: 4;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0 0 24px;
+    padding: 8px 0;
+    background: var(--bg);
+    scroll-margin-top: calc(var(--inv-top) + var(--inv-toc-h));
+  }
+  .cap-tabs[hidden] {
+    display: none;
+  }
+  .cap-tabs button {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 60px;
+    padding: 8px 6px;
+    border: 1px solid var(--line);
+    border-bottom-width: 3px;
+    border-radius: 10px;
+    background: var(--bg);
+    color: var(--muted);
+    font: 700 0.86rem/1.15 var(--sans);
+    cursor: pointer;
+  }
+  .cap-tabs .lg {
+    display: none;
+  }
+  @media (min-width: 700px) {
+    .cap-tabs button {
+      flex-direction: row;
+      gap: 10px;
+      min-height: 52px;
+      font-size: 0.95rem;
+    }
+    .cap-tabs .lg {
+      display: inline;
+    }
+    .cap-tabs .sm {
+      display: none;
+    }
+  }
+  .cap-tabs .n,
+  .cap-ph .n {
+    display: inline-grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    font: 700 0.78rem var(--sans);
+    flex: none;
+  }
+  .cap-tabs button[aria-selected='true'] {
+    color: var(--text);
+    border-color: var(--text);
+    background: var(--surface);
+  }
+  .cap-tabs .k1[aria-selected='true'] {
+    border-bottom-color: var(--inv-appoint);
+  }
+  .cap-tabs .k2[aria-selected='true'] {
+    border-bottom-color: var(--inv-sec);
+  }
+  .cap-tabs .k3[aria-selected='true'] {
+    border-bottom-color: var(--inv-econ);
+  }
+  .cap-tabs button:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+  }
+
+  .cap-panel + .cap-panel {
+    margin-top: 48px;
+  }
+  .tabbed .cap-panel + .cap-panel {
+    margin-top: 0;
+  }
+  .cap-ph {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: clamp(1.4rem, 3.4vw, 1.8rem);
+    margin: 0 0 8px;
+  }
+  .k1 .cap-ph .n {
+    color: var(--inv-appoint);
+  }
+  .k2 .cap-ph .n {
+    color: var(--inv-sec);
+  }
+  .k3 .cap-ph .n {
+    color: var(--inv-econ);
+  }
+  .cap-pi {
+    max-width: var(--reading);
+    margin: 0 0 20px;
+    font: 1.05rem/1.6 var(--serif);
+    color: var(--muted);
+  }
+  .cap-sub {
+    font: 700 1.05rem/1.3 var(--sans);
+    margin: 30px 0 12px;
+  }
+  .cap-small {
+    max-width: var(--reading);
+    margin: -4px 0 14px;
+    font: 0.9rem/1.55 var(--sans);
+    color: var(--muted);
+  }
+
+  /* Status colours */
+  .s-same,
+  .g-not {
+    --st: var(--inv-sec);
+  }
+  .s-holder,
+  .g-part {
+    --st: var(--inv-econ);
+  }
+  .s-formal {
+    --st: var(--inv-appoint);
+  }
+  .s-gone,
+  .g-done {
+    --st: var(--inv-yes);
+  }
+  .s-tbd,
+  .g-unver {
+    --st: var(--muted);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border: 1.5px solid var(--st);
+    border-radius: 999px;
+    color: var(--st);
+    font: 700 0.74rem/1.4 var(--sans);
+    white-space: nowrap;
+    flex: none;
+  }
+  .chip::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--st);
+  }
+  .chip.s-tbd,
+  .chip.g-unver {
+    border-style: dashed;
+  }
+  .cap-strip {
+    display: flex;
+    gap: 3px;
+    height: 14px;
+    margin-bottom: 10px;
+  }
+  .cap-strip span {
+    flex: 1;
+    border-radius: 3px;
+    background: var(--st);
+  }
+  .cap-strip .s-tbd,
+  .cap-strip .g-unver {
+    background: repeating-linear-gradient(45deg, var(--muted) 0 3px, transparent 3px 6px);
+    opacity: 0.7;
+  }
+  .cap-tally {
+    list-style: none;
+    margin: 0 0 16px;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 16px;
+  }
+  .cap-tally li {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font: 0.84rem var(--sans);
+  }
+  .cap-tally b {
+    font: 700 1.15rem var(--sans);
+    font-variant-numeric: tabular-nums;
+  }
+  .cap-tally .of {
+    color: var(--muted);
+  }
+
+  /* Cards */
+  .cap-rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  @media (min-width: 900px) {
+    .cap-rows.two {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+  .cap-row {
+    min-width: 0;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--st);
+    border-radius: 8px;
+    background: var(--bg);
+  }
+  .rh {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 6px 12px;
+  }
+  .nm {
+    margin: 0;
+    font: 700 1rem/1.35 var(--sans);
+    min-width: 0;
+    flex: 1 1 12rem;
+  }
+  .kd {
+    display: block;
+    font-weight: 500;
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .cap-row dl {
+    margin: 10px 0 0;
+    display: grid;
+    gap: 6px;
+  }
+  .cap-row dt {
+    font: 700 0.68rem/1.3 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .cap-row dd {
+    margin: 2px 0 0;
+    font: 0.94rem/1.5 var(--sans);
+  }
+  .cap-row .was dd {
+    color: var(--muted);
+  }
+  .cap-row .now dd {
+    font-weight: 500;
+  }
+
+  /* Documented exercise: a vertical timeline */
+  .cap-acts {
+    list-style: none;
+    margin: 0;
+    padding: 0 0 0 14px;
+    border-left: 2px solid var(--inv-sec);
+    display: grid;
+    gap: 18px;
+    max-width: var(--reading);
+  }
+  .cap-acts li {
+    position: relative;
+  }
+  .cap-acts li::before {
+    content: '';
+    position: absolute;
+    left: -21px;
+    top: 6px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--bg);
+    border: 3px solid var(--inv-sec);
+  }
+  .cap-acts .w {
+    display: inline-block;
+    margin-bottom: 4px;
+    font: 700 0.8rem/1.3 var(--sans);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--inv-sec-strong);
+  }
+  .cap-acts p {
+    margin: 0;
+    font: 1.02rem/1.55 var(--serif);
+  }
+  .cap-more {
+    margin: 20px 0 0;
+    font: 600 0.92rem var(--sans);
+  }
+  .cap-more a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--accent);
+  }
+
+  .cap-end {
+    max-width: var(--reading);
+    margin: 18px 0 0;
+    padding: 14px 16px;
+    border: 1.5px solid var(--inv-sec);
+    border-radius: 8px;
+    font: 500 0.95rem/1.55 var(--sans);
+  }
+
+  /* Criteria */
+  .cap-crit {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+    max-width: 860px;
+  }
+  .cap-crit li {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 12px;
+    padding: 14px 16px;
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .cn {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--inv-econ);
+    color: var(--bg);
+    font: 700 0.95rem var(--sans);
+  }
+  .ct {
+    margin: 4px 0 2px;
+    font: 700 1.02rem/1.3 var(--sans);
+  }
+  .cx {
+    margin: 0 0 8px;
+    font: 0.94rem/1.5 var(--sans);
+  }
+  .ce {
+    margin: 0;
+    font: 0.88rem/1.5 var(--sans);
+    color: var(--muted);
+  }
+  .ce b {
+    color: var(--text);
+  }
+  .cap-prof {
+    margin: 0 0 12px;
+    padding-left: 20px;
+    display: grid;
+    gap: 8px;
+    max-width: var(--reading);
+    font: 1rem/1.5 var(--serif);
+  }
+
+  .cap-next {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 52px;
+    margin-top: 28px;
+    border: 0;
+    border-radius: 10px;
+    background: var(--text);
+    color: var(--bg);
+    font: 700 1rem var(--sans);
+    cursor: pointer;
+  }
+  @media (min-width: 700px) {
+    .cap-next {
+      width: auto;
+      padding: 0 22px;
+    }
+  }
+  .cap-next[hidden] {
+    display: none;
+  }
+</style>

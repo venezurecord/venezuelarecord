@@ -11,6 +11,7 @@ import Gazettes from '../../components/investigation/Gazettes.astro';
 import Penalties from '../../components/investigation/Penalties.astro';
 import VenApp from '../../components/investigation/VenApp.astro';
 import Balance from '../../components/investigation/Balance.astro';
+import Capacity from '../../components/investigation/Capacity.astro';
 import Method from '../../components/investigation/Method.astro';
 import { getImage } from 'astro:assets';
 import { localePath, type Lang } from '../../i18n/ui';
@@ -65,6 +66,7 @@ const jsonLd = {
 const toc = [
   { id: A.sig, label: T.sig },
   { id: A.org, label: T.org },
+  { id: A.cap, label: T.cap },
   { id: A.tl, label: T.tl },
   { id: A.gz, label: T.gz },
   { id: A.pen, label: T.pen },
@@ -111,6 +113,7 @@ const toc = [
 
     <Signatures lang={lang} />
     <OrgChart lang={lang} />
+    <Capacity lang={lang} />
     <TwoLanes lang={lang} />
     <Gazettes lang={lang} />
     <Penalties lang={lang} />

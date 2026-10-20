@@ -1,0 +1,473 @@
+---
+// Balance, Foro Penal block: four figures that must not be mixed, the Jan–Oct series (prisoners vs cumulative
+// releases, amnesty window shaded) and a table where every figure links to the Foro Penal page that reports it.
+import type { Lang } from '../../i18n/ui';
+import { FP_FIGURES, FP_PRISONERS, FP_RELEASES, FPBAL_UI } from '../../data/investigations/who-commands-venezuela-2026.capacity';
+import { ANCHORS, MONTHS } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+const U = FPBAL_UI[lang];
+const fmt = (n: number) => (lang === 'es' ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : n.toLocaleString('en-US'));
+const short = {
+  en: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct'],
+  es: ['ene', 'feb', 'mar', 'abr', 'may', 'jun', 'jul', 'ago', 'sept', 'oct'],
+}[lang];
+const label = (d: string) => {
+  const [, m, day] = d.split('-');
+  return lang === 'es' ? `${+day} ${short[+m - 1]} 2026` : `${+day} ${short[+m - 1]} 2026`;
+};
+const dates = [...new Set([...FP_PRISONERS, ...FP_RELEASES].map((p) => p[0]))].sort();
+const data = JSON.stringify({
+  P: FP_PRISONERS.map(([d, v]) => [d, v]),
+  R: FP_RELEASES.map(([d, v]) => [d, v]),
+  axis: MONTHS[lang],
+  short,
+  lang,
+  t: { prisoners: U.prisoners, releases: U.releases, cut: U.cut, amnesty: U.amnesty, endP: U.endP, endR: U.endR },
+});
+---
+
+<div class="fps">
+  <h3 class="fps-h">{U.head}</h3>
+  <div class="fps-figs">
+    {
+      FP_FIGURES.map((f) => (
+        <div class={`fps-fig ${f.tone}`}>
+          <b>{fmt(f.n)}</b>
+          <span class="l">{f.label[lang]}</span>
+          <span class="s">
+            {f.sub[lang]}
+            <Cite lang={lang} ids={f.src} anchor={A.src} />
+          </span>
+        </div>
+      ))
+    }
+  </div>
+  <p class="fps-note">
+    {U.note}
+    <Cite lang={lang} ids={[43]} anchor={A.src} />
+  </p>
+
+  <figure class="fps-chart" data-fps={data}>
+    <div class="fps-read" aria-live="polite"></div>
+    <div class="fps-svg" tabindex="0" role="img" aria-label={U.chartLabel}></div>
+    <figcaption class="fps-legend">
+      <span><i class="p"></i>{U.legendP}</span>
+      <span><i class="r"></i>{U.legendR}</span>
+      <span><i class="a"></i>{U.legendA}</span>
+    </figcaption>
+  </figure>
+
+  <p class="fps-gap">
+    <strong>{U.gapTitle}</strong>{' '}
+    {U.gap}
+    <span>{U.gapCalc}</span>
+  </p>
+
+  <details class="fps-data">
+    <summary>{U.table}</summary>
+    <div class="fps-scroll">
+      <table>
+        <thead>
+          <tr><th scope="col">{U.thDate}</th><th scope="col">{U.prisoners}</th><th scope="col">{U.releases}</th></tr>
+        </thead>
+        <tbody>
+          {
+            dates.map((d) => {
+              const p = FP_PRISONERS.find((x) => x[0] === d);
+              const r = FP_RELEASES.find((x) => x[0] === d);
+              return (
+                <tr>
+                  <td>{label(d)}</td>
+                  <td>{p && <a href={p[2]} rel="noopener" target="_blank">{fmt(p[1])}</a>}</td>
+                  <td>{r && <a href={r[2]} rel="noopener" target="_blank">{fmt(r[1])}</a>}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+    </div>
+  </details>
+</div>
+
+<script>
+  type Pt = [string, number];
+  document.querySelectorAll<HTMLElement>('[data-fps]').forEach((fig) => {
+    const D = JSON.parse(fig.dataset.fps!) as {
+      P: Pt[];
+      R: Pt[];
+      axis: string[];
+      short: string[];
+      lang: 'en' | 'es';
+      t: Record<string, string>;
+    };
+    const el = fig.querySelector<HTMLElement>('.fps-svg')!;
+    const out = fig.querySelector<HTMLElement>('.fps-read')!;
+    const fmt = (n: number) => (D.lang === 'es' ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : n.toLocaleString('en-US'));
+    const day = (s: string) => (Date.parse(`${s}T12:00:00Z`) - Date.parse('2026-01-01T12:00:00Z')) / 864e5;
+    const END = day('2026-10-31');
+    const lab = (s: string) => {
+      const [, m, d] = s.split('-');
+      return D.lang === 'es' ? `${+d} ${D.short[+m - 1]}` : `${+d} ${D.short[+m - 1]}`;
+    };
+    const dates = [...new Set([...D.P, ...D.R].map((p) => p[0]))].sort();
+    const last = (arr: Pt[], s: string) => {
+      let r: Pt | null = null;
+      for (const p of arr) if (p[0] <= s) r = p;
+      return r;
+    };
+    let idx = dates.length - 1;
+    let X: (s: string) => number = () => 0;
+
+    const read = () => {
+      const s = dates[idx];
+      const p = last(D.P, s);
+      const r = last(D.R, s);
+      const note = (q: Pt | null) => (q && q[0] !== s ? ` <span class="m">(${D.t.cut} ${lab(q[0])})</span>` : '');
+      out.innerHTML =
+        `<span class="d">${lab(s)} 2026</span>` +
+        `<span>${D.t.prisoners}: <b class="p">${p ? fmt(p[1]) : '—'}</b>${note(p)}</span>` +
+        `<span>${D.t.releases}: <b class="r">${r ? fmt(r[1]) : '—'}</b>${note(r)}</span>`;
+    };
+    const cursor = (i: number) => {
+      idx = Math.max(0, Math.min(dates.length - 1, i));
+      const c = el.querySelector('.cur');
+      if (c) {
+        const x = String(X(dates[idx]));
+        c.setAttribute('x1', x);
+        c.setAttribute('x2', x);
+      }
+      read();
+    };
+    const draw = () => {
+      const W = Math.max(280, el.clientWidth);
+      const narrow = W < 560;
+      const H = narrow ? 290 : 380;
+      const m = { l: narrow ? 38 : 48, r: narrow ? 10 : 20, t: 24, b: 30 };
+      const iw = W - m.l - m.r;
+      const ih = H - m.t - m.b;
+      X = (s) => m.l + (day(s) / END) * iw;
+      const Y = (v: number) => m.t + ih - (v / 1200) * ih;
+      const fs = narrow ? 11 : 12;
+      let g = '';
+      const a0 = X('2026-02-19');
+      const a1 = X('2026-04-23');
+      g += `<rect x="${a0}" y="${m.t}" width="${a1 - a0}" height="${ih}" class="band"/>`;
+      g += `<text x="${a0 + 5}" y="${m.t + 14}" font-size="${fs}" font-weight="700" class="tb">${D.t.amnesty}</text>`;
+      for (const v of [0, 300, 600, 900, 1200]) {
+        g += `<line x1="${m.l}" x2="${m.l + iw}" y1="${Y(v)}" y2="${Y(v)}" class="grid"/>`;
+        g += `<text x="${m.l - 7}" y="${Y(v) + 4}" text-anchor="end" font-size="${fs}" class="tm">${fmt(v)}</text>`;
+      }
+      for (let i = 0; i < 10; i++) {
+        const x0 = X(`2026-${String(i + 1).padStart(2, '0')}-01`);
+        const x1 = i < 9 ? X(`2026-${String(i + 2).padStart(2, '0')}-01`) : m.l + iw;
+        if (i) g += `<line x1="${x0}" x2="${x0}" y1="${m.t + ih}" y2="${m.t + ih + 5}" class="tick"/>`;
+        g += `<text x="${(x0 + x1) / 2}" y="${m.t + ih + 20}" text-anchor="middle" font-size="${fs}" class="tm">${D.axis[i]}</text>`;
+      }
+      const path = (arr: Pt[]) => arr.map((p, i) => `${i ? 'L' : 'M'}${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join('');
+      g += `<path d="${path(D.R)}" class="lr"/><path d="${path(D.P)}" class="lp"/>`;
+      for (const p of D.R) g += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3" class="cr"/>`;
+      for (const p of D.P) g += `<circle cx="${X(p[0])}" cy="${Y(p[1])}" r="3" class="cp"/>`;
+      const lp = D.P[D.P.length - 1];
+      const lr = D.R[D.R.length - 1];
+      g += `<text x="${X(lp[0]) - 6}" y="${Y(lp[1]) + 20}" text-anchor="end" font-size="${fs + 1}" font-weight="700" class="tp">${D.t.endP.replace('{n}', fmt(lp[1]))}</text>`;
+      g += `<text x="${X(lr[0]) - 6}" y="${Y(lr[1]) - 10}" text-anchor="end" font-size="${fs + 1}" font-weight="700" class="tr">${D.t.endR.replace('{n}', fmt(lr[1]))}</text>`;
+      g += `<text x="${X(D.P[0][0]) + 8}" y="${Y(D.P[0][1]) - 8}" font-size="${fs}" font-weight="700" class="tp">${fmt(D.P[0][1])}</text>`;
+      g += `<line x1="0" x2="0" y1="${m.t}" y2="${m.t + ih}" class="cur"/>`;
+      el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" width="${W}" height="${H}" aria-hidden="true">${g}</svg>`;
+      cursor(idx);
+    };
+    const nearest = (clientX: number) => {
+      const x = clientX - el.getBoundingClientRect().left;
+      let best = 0;
+      let bd = Infinity;
+      dates.forEach((s, i) => {
+        const d = Math.abs(X(s) - x);
+        if (d < bd) {
+          bd = d;
+          best = i;
+        }
+      });
+      return best;
+    };
+    el.addEventListener('pointermove', (e) => cursor(nearest(e.clientX)));
+    el.addEventListener('pointerdown', (e) => cursor(nearest(e.clientX)));
+    el.addEventListener('keydown', (e) => {
+      const k: Record<string, number> = { ArrowRight: idx + 1, ArrowLeft: idx - 1, Home: 0, End: dates.length - 1 };
+      if (e.key in k) {
+        cursor(k[e.key]);
+        e.preventDefault();
+      }
+    });
+    let w = el.clientWidth;
+    new ResizeObserver(() => {
+      if (Math.abs(el.clientWidth - w) > 4) {
+        w = el.clientWidth;
+        draw();
+      }
+    }).observe(el);
+    draw();
+  });
+</script>
+
+<style>
+  .fps {
+    max-width: var(--container);
+    margin: 0 auto 48px;
+    padding-inline: var(--gutter);
+  }
+  .fps-h {
+    font-size: clamp(1.3rem, 3vw, 1.6rem);
+    margin: 0 0 14px;
+  }
+  .fps-figs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: 2px solid var(--text);
+  }
+  .fps-fig {
+    min-width: 0;
+    padding: 16px 12px 16px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .fps-fig:nth-child(even) {
+    padding-left: 14px;
+    border-left: 1px solid var(--line);
+  }
+  @media (min-width: 900px) {
+    .fps-figs {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+    .fps-fig + .fps-fig {
+      padding-left: 16px;
+      border-left: 1px solid var(--line);
+    }
+  }
+  .fps-fig b {
+    display: block;
+    font: 700 clamp(2rem, 7vw, 2.9rem)/1 var(--serif);
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .fps-fig.sec b {
+    color: var(--inv-sec);
+  }
+  .fps-fig.yes b {
+    color: var(--inv-yes);
+  }
+  .fps-fig.econ b {
+    color: var(--inv-econ);
+  }
+  .fps-fig .l {
+    display: block;
+    margin-top: 8px;
+    font: 700 0.95rem/1.3 var(--sans);
+  }
+  .fps-fig .s {
+    display: block;
+    margin-top: 2px;
+    font: 0.84rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .fps-note {
+    max-width: var(--reading);
+    margin: 12px 0 0;
+    font: 0.86rem/1.55 var(--sans);
+    color: var(--muted);
+  }
+  .fps-chart {
+    margin: 28px 0 0;
+  }
+  .fps-read {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 18px;
+    align-items: baseline;
+    min-height: 3.2em;
+    font: 500 0.92rem/1.45 var(--sans);
+  }
+  .fps-read :global(.d) {
+    font-weight: 700;
+    flex-basis: 100%;
+  }
+  @media (min-width: 600px) {
+    .fps-read :global(.d) {
+      flex-basis: auto;
+    }
+  }
+  .fps-read :global(.p) {
+    color: var(--inv-sec);
+    font-variant-numeric: tabular-nums;
+  }
+  .fps-read :global(.r) {
+    color: var(--inv-yes);
+    font-variant-numeric: tabular-nums;
+  }
+  .fps-read :global(.m) {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .fps-svg {
+    width: 100%;
+    min-height: 290px;
+    touch-action: pan-y;
+    cursor: crosshair;
+    border-radius: 6px;
+  }
+  .fps-svg:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 4px;
+  }
+  .fps-svg :global(svg) {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    font-family: var(--sans);
+  }
+  .fps-svg :global(.band) {
+    fill: var(--inv-hl);
+    opacity: 0.22;
+  }
+  .fps-svg :global(.tb) {
+    fill: var(--inv-hl-ink);
+  }
+  .fps-svg :global(.grid) {
+    stroke: var(--line);
+  }
+  .fps-svg :global(.tick) {
+    stroke: var(--muted);
+  }
+  .fps-svg :global(.tm) {
+    fill: var(--muted);
+  }
+  .fps-svg :global(.lp),
+  .fps-svg :global(.lr) {
+    fill: none;
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .fps-svg :global(.lp) {
+    stroke: var(--inv-sec);
+  }
+  .fps-svg :global(.lr) {
+    stroke: var(--inv-yes);
+  }
+  .fps-svg :global(.cp),
+  .fps-svg :global(.cr) {
+    fill: var(--bg);
+    stroke-width: 2;
+  }
+  .fps-svg :global(.cp) {
+    stroke: var(--inv-sec);
+  }
+  .fps-svg :global(.cr) {
+    stroke: var(--inv-yes);
+  }
+  .fps-svg :global(.tp) {
+    fill: var(--inv-sec);
+  }
+  .fps-svg :global(.tr) {
+    fill: var(--inv-yes);
+  }
+  .fps-svg :global(.cur) {
+    stroke: var(--text);
+    opacity: 0.45;
+  }
+  @media (prefers-color-scheme: dark) {
+    .fps-svg :global(.band) {
+      opacity: 0.13;
+    }
+  }
+  .fps-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-top: 10px;
+    font: 500 0.84rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .fps-legend i {
+    display: inline-block;
+    width: 18px;
+    height: 3px;
+    margin-right: 6px;
+    vertical-align: middle;
+    border-radius: 2px;
+  }
+  .fps-legend .p {
+    background: var(--inv-sec);
+  }
+  .fps-legend .r {
+    background: var(--inv-yes);
+  }
+  .fps-legend .a {
+    height: 10px;
+    background: var(--inv-hl);
+    opacity: 0.55;
+  }
+  .fps-gap {
+    max-width: var(--reading);
+    margin: 22px 0 0;
+    padding: 16px 18px;
+    border-left: 4px solid var(--inv-sec);
+    background: var(--inv-band);
+    font: 1.02rem/1.6 var(--serif);
+  }
+  .fps-gap strong {
+    font-family: var(--sans);
+  }
+  .fps-gap span {
+    display: block;
+    margin-top: 8px;
+    font: 500 0.8rem/1.5 var(--sans);
+    color: var(--muted);
+  }
+  .fps-data {
+    margin-top: 12px;
+    font: 0.9rem var(--sans);
+  }
+  .fps-data summary {
+    display: flex;
+    align-items: center;
+    min-height: 48px;
+    cursor: pointer;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .fps-scroll {
+    overflow-x: auto;
+  }
+  .fps-data table {
+    border-collapse: collapse;
+    min-width: 100%;
+    font-variant-numeric: tabular-nums;
+  }
+  .fps-data th,
+  .fps-data td {
+    padding: 9px 16px 9px 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .fps-data th {
+    font: 700 0.72rem/1.3 var(--sans);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .fps-data td a {
+    display: inline-block;
+    min-width: 44px;
+    padding: 4px 0;
+    font-weight: 700;
+    color: var(--accent);
+  }
+</style>

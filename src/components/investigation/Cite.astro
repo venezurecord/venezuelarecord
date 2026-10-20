@@ -1,5 +1,6 @@
 ---
-// Numbered source references: [1, 12] → superscript links to the source list.
+// Numbered source references: [1, 12] → superscript links. With JS and the Popover API they open a
+// source card (Method.astro) with a direct link to the original document; otherwise they jump to the list.
 import type { Lang } from '../../i18n/ui';
 import { it } from '../../data/investigations/ui';
 
@@ -17,7 +18,7 @@ const { lang, ids, anchor } = Astro.props;
       {ids.map((n, i) => (
         <>
           {i > 0 && <span aria-hidden="true">,</span>}
-          <a href={`#${anchor}-${n}`} aria-label={it(lang, 'sourceN', { n })}>
+          <a href={`#${anchor}-${n}`} data-pop={`${anchor}-pop-${n}`} aria-label={it(lang, 'sourceN', { n })}>
             {n}
           </a>
         </>
