@@ -1,5 +1,5 @@
 ---
-// Residual State capacity to persecute (idea: Minerva Mendoza Paipa). Three components kept apart, shown as
+// Part two, core section: residual State capacity to persecute (idea: Minerva Mendoza Paipa). Three components, shown as
 // three tabs (all panels stacked without JS): available capacity, documented exercise, risk of repetition.
 // Phone first: cards instead of tables, a status strip, big tabs and a "next" button at the end of each panel.
 import type { Lang } from '../../i18n/ui';
@@ -16,15 +16,15 @@ import {
   type CapRow,
   type CapStatus,
   type Guar,
-} from '../../data/investigations/who-commands-venezuela-2026.capacity';
-import { ANCHORS } from '../../data/investigations/ui';
+  R_ANCHORS,
+} from '../../data/investigations/residual-capacity-2026';
 import Cite from './Cite.astro';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
-const A = ANCHORS[lang];
+const A = R_ANCHORS[lang];
 const U = CAP_UI[lang];
 const ORDER: CapStatus[] = ['same', 'tbd', 'formal', 'holder', 'gone'];
 const GORDER: Guar[] = ['not', 'unver', 'part', 'done'];
@@ -35,9 +35,9 @@ const guarStrip = GORDER.flatMap((k) => CAP_GUARANTEES.filter((g) => g.status ==
 const panels = ['cap-p1', 'cap-p2', 'cap-p3'];
 ---
 
-<section id={A.cap} class="cap" aria-labelledby="cap-title" data-cap>
+<section id={A.comp} class="cap" aria-labelledby="cap-title" data-cap>
   <header class="inv-head">
-    <p class="inv-kicker"><span class="cap-new">{U.kicker}</span></p>
+    <p class="inv-kicker">{U.kicker}</p>
     <h2 id="cap-title">{U.title}</h2>
     <p class="inv-intro">{U.intro}</p>
   </header>
@@ -136,7 +136,7 @@ const panels = ['cap-p1', 'cap-p2', 'cap-p3'];
           ))
         }
       </ol>
-      <p class="cap-more"><a href={`#${A.bal}`}>{lang === 'es' ? 'Ver la serie completa de Foro Penal en el Balance ↓' : 'See the full Foro Penal series in the Balance ↓'}</a></p>
+      <p class="cap-more"><a href={`#${A.fig}`}>{lang === 'es' ? 'Ver la serie completa de Foro Penal ↑' : 'See the full Foro Penal series ↑'}</a></p>
       <button type="button" class="cap-next" data-next="2" hidden>{U.tabs[2]} <span aria-hidden="true">→</span></button>
     </div>
 
@@ -148,7 +148,7 @@ const panels = ['cap-p1', 'cap-p2', 'cap-p3'];
       <h4 class="cap-sub">{U.guarTitle}</h4>
       <p class="cap-small">
         {U.guarIntro}
-        <Cite lang={lang} ids={[44, 45]} anchor={A.src} />
+        <Cite lang={lang} ids={[3, 4]} anchor={A.src} />
       </p>
       <div class="cap-strip" aria-hidden="true">
         {guarStrip.map((k) => <span class={`g-${k}`} />)}
@@ -180,7 +180,7 @@ const panels = ['cap-p1', 'cap-p2', 'cap-p3'];
       </ul>
       <p class="cap-end">
         {U.endNote}
-        <Cite lang={lang} ids={[15, 49, 50]} anchor={A.src} />
+        <Cite lang={lang} ids={[21, 8, 9]} anchor={A.src} />
       </p>
 
       <h4 class="cap-sub">{U.critTitle}</h4>
@@ -242,7 +242,18 @@ const panels = ['cap-p1', 'cap-p2', 'cap-p3'];
       });
     });
     root.querySelectorAll<HTMLButtonElement>('[data-next]').forEach((b) => b.addEventListener('click', () => show(Number(b.dataset.next), false, true)));
-    show(0);
+    // Links to a panel (section index, shared URLs #cap-p2) open its tab first.
+    const panelIndex = (hash: string) => panels.findIndex((p) => `#${p.id}` === hash);
+    document.addEventListener('click', (ev) => {
+      const a = (ev.target as HTMLElement).closest<HTMLAnchorElement>('a[href^="#cap-p"]');
+      const i = a ? panelIndex(a.hash) : -1;
+      if (i < 0) return;
+      ev.preventDefault();
+      history.replaceState(null, '', a!.hash);
+      show(i, false, true);
+    });
+    const start = panelIndex(location.hash);
+    show(start < 0 ? 0 : start, false, start >= 0);
   });
 </script>
 

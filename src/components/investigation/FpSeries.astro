@@ -1,16 +1,18 @@
 ---
-// Balance, Foro Penal block: four figures that must not be mixed, the Jan–Oct series (prisoners vs cumulative
+// Part two, Foro Penal block: four figures that must not be mixed, the Jan–Oct series (prisoners vs cumulative
 // releases, amnesty window shaded) and a table where every figure links to the Foro Penal page that reports it.
 import type { Lang } from '../../i18n/ui';
-import { FP_FIGURES, FP_PRISONERS, FP_RELEASES, FPBAL_UI } from '../../data/investigations/who-commands-venezuela-2026.capacity';
-import { ANCHORS, MONTHS } from '../../data/investigations/ui';
+import { FP_FIGURES, FP_PRISONERS, FP_RELEASES, FPBAL_UI, R_ANCHORS } from '../../data/investigations/residual-capacity-2026';
+import { MONTHS } from '../../data/investigations/ui';
 import Cite from './Cite.astro';
 
 interface Props {
   lang: Lang;
+  /** Show the block's own heading (off when the page section already has one). */
+  heading?: boolean;
 }
-const { lang } = Astro.props;
-const A = ANCHORS[lang];
+const { lang, heading = true } = Astro.props;
+const A = R_ANCHORS[lang];
 const U = FPBAL_UI[lang];
 const fmt = (n: number) => (lang === 'es' ? String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '.') : n.toLocaleString('en-US'));
 const short = {
@@ -33,7 +35,7 @@ const data = JSON.stringify({
 ---
 
 <div class="fps">
-  <h3 class="fps-h">{U.head}</h3>
+  {heading && <h3 class="fps-h">{U.head}</h3>}
   <div class="fps-figs">
     {
       FP_FIGURES.map((f) => (
@@ -50,7 +52,7 @@ const data = JSON.stringify({
   </div>
   <p class="fps-note">
     {U.note}
-    <Cite lang={lang} ids={[43]} anchor={A.src} />
+    <Cite lang={lang} ids={[2]} anchor={A.src} />
   </p>
 
   <figure class="fps-chart" data-fps={data}>

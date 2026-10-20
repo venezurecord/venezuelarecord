@@ -27,6 +27,24 @@ const { lang, ids, anchor } = Astro.props;
   )
 }
 
+<script>
+  // Citation numbers open the source card when the Popover API exists (the link to the list stays as fallback).
+  if ('popover' in HTMLElement.prototype) {
+    document.addEventListener('click', (ev) => {
+      const a = (ev.target as HTMLElement).closest<HTMLAnchorElement>('a[data-pop]');
+      if (!a) return;
+      const pop = document.getElementById(a.dataset.pop!);
+      if (!pop) return;
+      ev.preventDefault();
+      pop.showPopover();
+    });
+    // "See in the source list" closes the card before jumping.
+    document.querySelectorAll<HTMLAnchorElement>('a[data-pop-close]').forEach((a) =>
+      a.addEventListener('click', () => a.closest<HTMLElement>('[popover]')?.hidePopover()),
+    );
+  }
+</script>
+
 <style>
   .cite {
     font-family: var(--sans);

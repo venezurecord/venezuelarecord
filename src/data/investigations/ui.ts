@@ -80,7 +80,7 @@ const en = {
   vaUncertain: 'No public evidence',
   balKicker: 'The balance',
   balTitle: 'What changed and what did not',
-  balIntro: 'First, Foro Penal’s 2026 figures. Then what changed and what did not, each with its source.',
+  balIntro: 'Drag the slider to compare. Both columns are sourced.',
   balSlider: 'Compare what changed with what did not',
   balChanged: 'What changed',
   balUnchanged: 'What did not',
@@ -190,7 +190,7 @@ const es: Dict = {
   vaUncertain: 'Sin prueba pública',
   balKicker: 'El balance',
   balTitle: 'Lo que cambió y lo que no',
-  balIntro: 'Primero, las cifras de Foro Penal de 2026. Después, lo que cambió y lo que no, cada punto con su fuente.',
+  balIntro: 'Mueve el deslizador para comparar. Las dos columnas tienen fuente.',
   balSlider: 'Comparar lo que cambió con lo que no',
   balChanged: 'Sí cambió',
   balUnchanged: 'No cambió',
@@ -233,13 +233,13 @@ export const longDate = (lang: Lang, iso: string) =>
 
 /** Section anchors per language (shareable: #signatures / #firmas, #org-chart / #organigrama …) */
 export const ANCHORS = {
-  en: { sig: 'signatures', org: 'org-chart', cap: 'residual-capacity', tl: 'timeline-2026', gz: 'gazettes', pen: 'laws', va: 'venapp', bal: 'balance', src: 'sources' },
-  es: { sig: 'firmas', org: 'organigrama', cap: 'capacidad-residual', tl: 'cronologia-2026', gz: 'gacetas', pen: 'leyes', va: 'venapp', bal: 'balance', src: 'fuentes' },
+  en: { sig: 'signatures', org: 'org-chart', tl: 'timeline-2026', gz: 'gazettes', pen: 'laws', va: 'venapp', bal: 'balance', src: 'sources' },
+  es: { sig: 'firmas', org: 'organigrama', tl: 'cronologia-2026', gz: 'gacetas', pen: 'leyes', va: 'venapp', bal: 'balance', src: 'fuentes' },
 } as const;
 
 export const TOC_LABELS = {
-  en: { sig: 'The signature', org: 'Org chart', cap: 'Capacity', tl: '2026', gz: 'Gazettes', pen: 'Laws', va: 'VenApp', bal: 'Balance', src: 'Sources' },
-  es: { sig: 'La firma', org: 'Organigrama', cap: 'Capacidad', tl: '2026', gz: 'Gacetas', pen: 'Leyes', va: 'VenApp', bal: 'Balance', src: 'Fuentes' },
+  en: { sig: 'The signature', org: 'Org chart', tl: '2026', gz: 'Gazettes', pen: 'Laws', va: 'VenApp', bal: 'Balance', src: 'Sources' },
+  es: { sig: 'La firma', org: 'Organigrama', tl: '2026', gz: 'Gacetas', pen: 'Leyes', va: 'VenApp', bal: 'Balance', src: 'Fuentes' },
 } as const;
 
 /** Month labels for every axis in the piece (same capitalization everywhere). */

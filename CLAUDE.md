@@ -163,6 +163,16 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
   `src/data/investigations/<slug>.signatures.json`. Se generaron con PyMuPDF desde los PDF de las gacetas (no se guardan
   los PDF en el repo).
 - Imagen social (1200×630, en/es) y portada sin texto: `node scripts/investigation-social.mjs`.
+- **Segunda investigación (idea: Minerva Mendoza Paipa):** «La capacidad de perseguir sigue ahí» / «The Capacity to
+  Persecute Is Still There» en `/investigations/residual-capacity-2026/`. Datos y fuentes propias (1–35, comparte
+  algunas con la primera por id) en `src/data/investigations/residual-capacity-2026.ts`; vista
+  `ResidualCapacityPage.astro`; componentes `FpSeries` (serie de Foro Penal, cada cifra enlaza a su balance con fecha,
+  nunca a «Represión en cifras», que cambia) y `Capacity` (tres componentes separados en pestañas: capacidad disponible,
+  ejercicio documentado, riesgo de repetición). Imagen social: `node scripts/investigation-social-2.mjs`.
+  La primera entrega termina con la tarjeta `NextPart`.
+- Compartido entre investigaciones: `src/styles/investigation.css` (tokens y cabeceras), `InvToc` (índice fijo),
+  `PieceMethod` (método + fuentes de piezas nuevas) y las **fichas de fuente**: cada número de cita (`Cite`) abre una
+  ficha con «Abrir documento original» (hoja inferior en el teléfono); sin JS baja a la lista.
 
 ## Panel admin / PWA
 El sitio **no tiene panel de administración**: se publica desde la web de GitHub (issues + PR). Por eso la

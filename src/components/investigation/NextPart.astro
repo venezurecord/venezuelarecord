@@ -1,0 +1,85 @@
+---
+// Part one → part two: a dark card at the end of the first investigation.
+import { Image } from 'astro:assets';
+import type { Lang } from '../../i18n/ui';
+import { investigationUrl } from '../../data/investigations';
+import { META, R_UI } from '../../data/investigations/residual-capacity-2026';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const href = investigationUrl(lang, META.slug);
+const U = R_UI[lang];
+---
+
+<aside class="np" aria-label={U.nextKicker}>
+  <a class="np-card" href={href}>
+    <Image class="np-img" src={META.cover!} alt="" widths={[400, 720]} sizes="(min-width: 700px) 320px, 100vw" loading="lazy" decoding="async" />
+    <span class="np-body">
+      <span class="np-k">{U.nextKicker}</span>
+      <span class="np-t">{META.title[lang]}</span>
+      <span class="np-s">{META.subtitle[lang]}</span>
+      <span class="np-cta">{U.nextCta} <span aria-hidden="true">→</span></span>
+    </span>
+  </a>
+</aside>
+
+<style>
+  .np {
+    max-width: var(--container);
+    margin: 0 auto;
+    padding: 24px var(--gutter) 8px;
+  }
+  .np-card {
+    display: grid;
+    overflow: hidden;
+    border-radius: 12px;
+    background: #0b0f17;
+    color: #f3f0e8;
+    text-decoration: none;
+  }
+  @media (min-width: 700px) {
+    .np-card {
+      grid-template-columns: 320px minmax(0, 1fr);
+      align-items: center;
+    }
+  }
+  .np-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+  }
+  .np-body {
+    display: grid;
+    gap: 6px;
+    padding: 18px 20px 20px;
+  }
+  .np-k {
+    font: 700 0.72rem/1.3 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #ffcc00;
+  }
+  .np-t {
+    font: 700 clamp(1.4rem, 4vw, 1.9rem)/1.15 var(--serif);
+  }
+  .np-s {
+    font: 1rem/1.5 var(--serif);
+    color: #c9c5bc;
+  }
+  .np-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 44px;
+    margin-top: 4px;
+    font: 700 0.95rem var(--sans);
+    color: #ffcc00;
+  }
+  .np-card:hover .np-cta {
+    text-decoration: underline;
+  }
+</style>

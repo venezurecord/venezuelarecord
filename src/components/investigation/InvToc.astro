@@ -1,0 +1,75 @@
+---
+// Sticky section index of an investigation: highlights the section in view and copies a link to it.
+import type { Lang } from '../../i18n/ui';
+import { it } from '../../data/investigations/ui';
+
+interface Props {
+  lang: Lang;
+  items: { id: string; label: string }[];
+}
+const { lang, items } = Astro.props;
+const toc = items;
+---
+
+<nav class="inv-toc" aria-label={it(lang, 'toc')} data-toc>
+  <div class="inv-toc-inner">
+    <ul>
+      {
+        toc.map((x) => (
+          <li>
+            <a href={`#${x.id}`} data-toc-link={x.id}>
+              {x.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <button type="button" class="inv-copy" data-copy-link hidden data-done={it(lang, 'linkCopied')}>
+      <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path d="M10 14a5 5 0 0 0 7.07 0l3-3a5 5 0 0 0-7.07-7.07l-1 1M14 10a5 5 0 0 0-7.07 0l-3 3a5 5 0 0 0 7.07 7.07l1-1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      <span>{it(lang, 'copyLink')}</span>
+    </button>
+  </div>
+  <span class="inv-progress" aria-hidden="true"></span>
+</nav>
+
+<script>
+  // Section index: highlight the section in view; copy a link to the current section.
+  document.querySelectorAll<HTMLElement>('[data-toc]').forEach((toc) => {
+    const links = [...toc.querySelectorAll<HTMLAnchorElement>('[data-toc-link]')];
+    const targets = links.map((l) => document.getElementById(l.dataset.tocLink!)).filter(Boolean) as HTMLElement[];
+    const list = toc.querySelector('ul')!;
+    let current = '';
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          const prev = current;
+          for (const e of entries) if (e.isIntersecting) current = e.target.id;
+          if (current === prev) return;
+          links.forEach((l) => {
+            const on = l.dataset.tocLink === current;
+            l.toggleAttribute('aria-current', on);
+            // Scroll only the chip row, never the page (scrollIntoView would interrupt a finger fling on phones).
+            if (on) list.scrollTo({ left: l.offsetLeft - (list.clientWidth - l.offsetWidth) / 2, behavior: 'smooth' });
+          });
+        },
+        { rootMargin: '-30% 0px -60% 0px' },
+      );
+      targets.forEach((t) => io.observe(t));
+    }
+    const copy = toc.querySelector<HTMLButtonElement>('[data-copy-link]')!;
+    if (navigator.clipboard) {
+      copy.hidden = false;
+      const label = copy.querySelector('span')!;
+      const original = label.textContent;
+      copy.addEventListener('click', async () => {
+        const u = new URL(location.href);
+        u.hash = current;
+        try {
+          await navigator.clipboard.writeText(u.href);
+          label.textContent = copy.dataset.done!;
+          setTimeout(() => (label.textContent = original), 2200);
+        } catch {}
+      });
+    }
+  });
+</script>
