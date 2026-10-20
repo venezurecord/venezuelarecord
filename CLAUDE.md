@@ -168,10 +168,13 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
   algunas con la primera por id) en `src/data/investigations/residual-capacity-2026.ts`; vista
   `ResidualCapacityPage.astro`; componentes `FpSeries` (serie de Foro Penal, cada cifra enlaza a su balance con fecha,
   nunca a «Represión en cifras», que cambia) y `Capacity` (tres componentes separados en pestañas: capacidad disponible,
-  ejercicio documentado, riesgo de repetición). Portada, franja de la cabecera e imágenes sociales: foto «Atardecer y
-  Helicoide» (Enzo861, Wikimedia Commons, **CC BY-SA 3.0**, original en `brand/investigations/residual-capacity-2026/`)
-  con tratamiento de color: `python scripts/investigation-cover-2.py` y luego `node scripts/investigation-social-2.mjs`.
-  El crédito (`coverCredit`) es obligatorio junto a la imagen: tarjeta, cabecera y tarjeta `NextPart`.
+  ejercicio documentado, riesgo de repetición). Portada, cabecera e imágenes sociales: **ilustración generada con IA en Google Flow**
+  (puerta de celda abierta; la sombra de los barrotes sigue en el suelo), elegida por Roger el 2026-10-20; original 2K en
+  `brand/investigations/residual-capacity-2026/celda-abierta-flow.jpg`. En la página el título va **sobre** la imagen (HTML,
+  abajo en el teléfono, sobre la pared oscura de la izquierda en escritorio). `python scripts/investigation-cover-2.py` y
+  luego `node scripts/investigation-social-2.mjs` (las sociales llevan título y cifras). Toda imagen hecha con IA se rotula
+  siempre como tal (`coverCredit`, sin enlace): tarjeta, cabecera, tarjeta `NextPart` e imagen social.
+  Las imágenes de IA se generan en Google Flow (proyecto en la cuenta de Roger, Chrome): sin personas, texto ni banderas.
   La primera entrega termina con la tarjeta `NextPart`.
 - Compartido entre investigaciones: `src/styles/investigation.css` (tokens y cabeceras), `InvToc` (índice fijo),
   `PieceMethod` (método + fuentes de piezas nuevas) y las **fichas de fuente**: cada número de cita (`Cite`) abre una

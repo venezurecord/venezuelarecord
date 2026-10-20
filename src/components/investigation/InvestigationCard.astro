@@ -27,7 +27,7 @@ const H = `h${headingLevel}` as 'h2' | 'h3';
     <p class="ic-sum">{inv.summary[lang]}</p>
     <p class="ic-credit" set:html={it(lang, 'ideaCredit', { name: inv.ideaBy })} />
     <p class="ic-meta"><time datetime={inv.updated}>{it(lang, 'updated', { date: longDate(lang, inv.updated) })}</time></p>
-    {inv.coverCredit && <p class="ic-photo"><a href={inv.coverCredit.url} rel="noopener license" target="_blank">{inv.coverCredit.text[lang]}</a></p>}
+    {inv.coverCredit && <p class="ic-photo">{inv.coverCredit.url ? <a href={inv.coverCredit.url} rel="noopener license" target="_blank">{inv.coverCredit.text[lang]}</a> : inv.coverCredit.text[lang]}</p>}
     <a class="ic-cta" href={href}>{it(lang, 'readInvestigation')} <span aria-hidden="true">→</span></a>
   </div>
 </article>

@@ -27,7 +27,7 @@ export interface InvestigationMeta {
   ideaBy: string;
   cover?: ImageMetadata;
   /** Credit for a cover that uses third-party material (license requires it next to the image). */
-  coverCredit?: { text: L; url: string };
+  coverCredit?: { text: L; url?: string };
   /** Optional full-width photo band in the page hero. */
   hero?: ImageMetadata;
   social: Record<Lang, ImageMetadata>;

@@ -23,7 +23,7 @@ const U = R_UI[lang];
       <span class="np-cta">{U.nextCta} <span aria-hidden="true">→</span></span>
     </span>
   </a>
-  {META.coverCredit && <p class="np-photo"><a href={META.coverCredit.url} rel="noopener license" target="_blank">{META.coverCredit.text[lang]}</a></p>}
+  {META.coverCredit && <p class="np-photo">{META.coverCredit.url ? <a href={META.coverCredit.url} rel="noopener license" target="_blank">{META.coverCredit.text[lang]}</a> : META.coverCredit.text[lang]}</p>}
 </aside>
 
 <style>
