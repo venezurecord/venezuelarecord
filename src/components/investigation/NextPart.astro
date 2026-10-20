@@ -23,6 +23,7 @@ const U = R_UI[lang];
       <span class="np-cta">{U.nextCta} <span aria-hidden="true">→</span></span>
     </span>
   </a>
+  {META.coverCredit && <p class="np-photo"><a href={META.coverCredit.url} rel="noopener license" target="_blank">{META.coverCredit.text[lang]}</a></p>}
 </aside>
 
 <style>
@@ -78,6 +79,14 @@ const U = R_UI[lang];
     margin-top: 4px;
     font: 700 0.95rem var(--sans);
     color: #ffcc00;
+  }
+  .np-photo {
+    margin: 6px 0 0;
+    font: 0.72rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .np-photo a {
+    color: inherit;
   }
   .np-card:hover .np-cta {
     text-decoration: underline;

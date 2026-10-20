@@ -10,7 +10,7 @@ import Capacity from '../../components/investigation/Capacity.astro';
 import PieceMethod from '../../components/investigation/PieceMethod.astro';
 import Cite from '../../components/investigation/Cite.astro';
 import '../../styles/investigation.css';
-import { getImage } from 'astro:assets';
+import { getImage, Image } from 'astro:assets';
 import { localePath, type Lang } from '../../i18n/ui';
 import { SITE } from '../../lib/constants';
 import { META, R_ANCHORS, R_UI, SOURCES } from '../../data/investigations/residual-capacity-2026';
@@ -87,6 +87,20 @@ const jsonLd = {
         <p class="rc-kicker">{U.kicker}</p>
         <h1>{title}</h1>
         <p class="rc-sub">{META.subtitle[lang]}</p>
+      </div>
+      {
+        META.hero && (
+          <figure class="rc-photo">
+            <Image src={META.hero} alt={lang === 'es' ? 'Silueta de El Helicoide, sede del SEBIN en Caracas, contra el cielo del atardecer.' : 'Silhouette of El Helicoide, SEBIN headquarters in Caracas, against the dusk sky.'} widths={[640, 960, 1440, 2400]} sizes="100vw" loading="eager" fetchpriority="high" decoding="async" />
+            {META.coverCredit && (
+              <figcaption>
+                <a href={META.coverCredit.url} rel="noopener license" target="_blank">{META.coverCredit.text[lang]}</a>
+              </figcaption>
+            )}
+          </figure>
+        )
+      }
+      <div class="rc-in">
         <div class="rc-figs">
           <p class="rc-fig a"><b>{fmt(1104)}</b><span>{U.heroA}</span></p>
           <p class="rc-fig b"><b>{fmt(11468)}</b><span>{U.heroB}</span></p>
@@ -158,15 +172,13 @@ const jsonLd = {
   }
   .rc-sub {
     max-width: 680px;
-    margin: 0 0 28px;
+    margin: 0 0 24px;
     font: 400 clamp(1.08rem, 2.6vw, 1.3rem)/1.5 var(--serif);
     color: #c9c5bc;
   }
   .rc-figs {
     display: grid;
     gap: 18px;
-    padding-top: 22px;
-    border-top: 1px solid #2a2e36;
   }
   @media (min-width: 700px) {
     .rc-figs {
@@ -242,6 +254,35 @@ const jsonLd = {
   .rc-prev.bottom {
     margin: 0 0 20px;
     background: #0b0f17;
+  }
+  .rc-photo {
+    position: relative;
+    margin: 0 0 24px;
+  }
+  .rc-photo :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    object-position: 62% 55%;
+  }
+  @media (min-width: 700px) {
+    .rc-photo :global(img) {
+      aspect-ratio: 1200 / 630;
+      max-height: min(70vh, 640px);
+      object-position: 62% 78%;
+    }
+  }
+  .rc-photo figcaption {
+    max-width: 880px;
+    margin: 8px auto 0;
+    padding-inline: var(--gutter);
+    font: 0.74rem/1.4 var(--sans);
+    color: #8b93a1;
+  }
+  .rc-photo figcaption a {
+    color: inherit;
   }
   .rc-sec {
     padding-block: 64px 8px;

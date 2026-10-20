@@ -6,7 +6,8 @@ import type { InvestigationMeta, L, Source } from './types';
 import { SOURCES as PART1 } from './who-commands-venezuela-2026';
 import ogEn from '../../assets/investigations/residual-capacity-2026/social-en.png';
 import ogEs from '../../assets/investigations/residual-capacity-2026/social-es.png';
-import cover from '../../assets/investigations/residual-capacity-2026/cover.png';
+import cover from '../../assets/investigations/residual-capacity-2026/cover.jpg';
+import hero from '../../assets/investigations/residual-capacity-2026/hero.jpg';
 
 export const META: InvestigationMeta = {
   slug: 'residual-capacity-2026',
@@ -23,6 +24,14 @@ export const META: InvestigationMeta = {
   updated: '2026-10-20',
   ideaBy: 'Minerva Mendoza Paipa',
   cover,
+  hero,
+  coverCredit: {
+    text: {
+      en: 'Photo: El Helicoide, SEBIN headquarters in Caracas, at dusk. Enzo861 / Wikimedia Commons, CC BY-SA 3.0; colour treatment by Venezuela Record.',
+      es: 'Foto: El Helicoide, sede del SEBIN en Caracas, al atardecer. Enzo861 / Wikimedia Commons, CC BY-SA 3.0; tratamiento de color de Venezuela Record.',
+    },
+    url: 'https://commons.wikimedia.org/wiki/File:Atardecer_y_Helicoide.JPG',
+  },
   social: { en: ogEn, es: ogEs },
 };
 
