@@ -139,7 +139,10 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
 6. Control de calidad ✅ · 7. Dominio `.com` ✅ (2026-10-09) ·
 8. Foto de portada para todas las noticias ✅ (2026-10-09: 26 fotos libres de Commons / gobierno de EE. UU. / Provea;
    nivel B solo con licencia libre y `imageLicense`). · 9. Primera investigación publicada ✅ (2026-10-16,
-   PR #6: `/investigations/who-commands-venezuela-2026/`).
+   PR #6: `/investigations/who-commands-venezuela-2026/`). · 10. Segunda investigación publicada ✅ (2026-10-20, por
+   decisión de Roger: `/investigations/residual-capacity-2026/`). El inicio muestra la más reciente en grande
+   (`InvestigationCard`) y las anteriores en tarjeta compacta (`InvestigationMini`). Lo que Minerva mande después
+   (tabla, matriz) se agrega como actualización: cambiar `updated` en el META.
 - Ojo en producción: Cloudflare (Scrape Shield → Email Address Obfuscation) inyecta `email-decode.min.js` en el .com
   (no en las vistas previas); falla con enlaces `<a>` dentro de SVG, así que en los SVG se usan `<g role="button">`.
 

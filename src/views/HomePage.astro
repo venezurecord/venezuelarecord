@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroGrid from '../components/HeroGrid.astro';
 import CategorySection from '../components/CategorySection.astro';
 import InvestigationCard from '../components/investigation/InvestigationCard.astro';
+import InvestigationMini from '../components/investigation/InvestigationMini.astro';
 import { INVESTIGATIONS } from '../data/investigations';
 import { it } from '../data/investigations/ui';
 import { CATEGORIES, SITE } from '../lib/constants';
@@ -54,10 +55,11 @@ const jsonLd = {
       INVESTIGATIONS[0] && (
         <section class="home-inv" aria-labelledby="home-inv-h">
           <div class="section-head">
-            <h2 id="home-inv-h">{it(lang, 'homeKicker')}</h2>
+            <h2 id="home-inv-h">{it(lang, INVESTIGATIONS.length > 1 ? 'indexTitle' : 'homeKicker')}</h2>
             <a href={localePath(lang, '/investigations/')}>{t(lang, 'home.viewAll')} »</a>
           </div>
           <InvestigationCard lang={lang} inv={INVESTIGATIONS[0]} headingLevel={3} />
+          {INVESTIGATIONS.slice(1, 3).map((inv) => <InvestigationMini lang={lang} inv={inv} />)}
         </section>
       )
     }
