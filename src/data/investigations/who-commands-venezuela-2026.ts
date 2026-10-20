@@ -1,7 +1,7 @@
 // "The Oil Changed. The Power Didn't." — data and texts shared by /investigations/who-commands-venezuela-2026/
 // (English) and /es/investigations/who-commands-venezuela-2026/ (Spanish).
 // Facts are attributed; every org-chart line and timeline entry cites a numbered source (SOURCES below).
-// Author: Venezuela Record. Original idea: Minerva Mendoza.
+// Author: Venezuela Record. Original idea: Minerva Mendoza Paipa.
 import type { ImageMetadata } from 'astro';
 import type { InvestigationMeta, L, Source } from './types';
 
@@ -44,7 +44,7 @@ export const META: InvestigationMeta = {
   },
   published: '2026-10-16',
   updated: '2026-10-16',
-  ideaBy: 'Minerva Mendoza',
+  ideaBy: 'Minerva Mendoza Paipa',
   cover,
   social: { en: ogEn, es: ogEs },
 };

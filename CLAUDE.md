@@ -33,7 +33,7 @@ Repo: `github.com/venezurecord/venezuelarecord`.
   es la más reciente con imagen ([src/views/HomePage.astro](src/views/HomePage.astro)).
 - **2026-10-13 — Investigaciones (Roger):** piezas originales en /investigations/, crédito de idea a la persona que la
   propuso, autor = Venezuela Record, sin nombres del equipo. Primera pieza: "Cambió el petróleo, no el poder" /
-  "The Oil Changed. The Power Didn't." (idea original: Minerva Mendoza). No lleva bloque de republicación ni `sourceTier`.
+  "The Oil Changed. The Power Didn't." (idea original: Minerva Mendoza Paipa). No lleva bloque de republicación ni `sourceTier`.
 - **2026-10-16 — Agente semanal (Roger):** todos los viernes a las 9:00 a. m. (hora del Pacífico) una tarea programada de
   la app de Claude (`venezuelarecord-noticias-semanales`, guardada en la carpeta `scheduled-tasks` del perfil de Claude)
   busca las noticias de la semana (nivel A: todas las de VP y VenAmérica que cumplan el alcance; nivel B: 3–6 hechos
