@@ -44,7 +44,7 @@ export const META: InvestigationMeta = {
     es: 'Desde enero, Venezuela abrió su petróleo, recibió de nuevo al FMI y firmó un acuerdo petrolero con EE. UU. Las mismas personas que firmaron las leyes usadas contra quien disiente siguen nombrando a los jefes de la inteligencia y la contrainteligencia. Las gacetas lo muestran.',
   },
   published: '2026-10-16',
-  updated: '2026-10-16',
+  updated: '2026-10-22',
   ideaBy: 'Minerva Mendoza Paipa',
   cover,
   hero,
@@ -114,8 +114,8 @@ export const un = (p: string): L => ({ en: `UN, para. ${p}`, es: `ONU, párr. ${
 
 export const OPENING = {
   dek: {
-    en: 'Nicolás Maduro was removed on 3 January 2026. Since then the oil laws have changed, the IMF and the World Bank have returned and an oil agreement has been signed with the United States. Meanwhile, the same people who signed the laws of persecution appoint the heads of intelligence and counterintelligence.',
-    es: 'Maduro salió el 3 de enero de 2026. Desde entonces cambiaron las leyes del petróleo, volvieron el FMI y el Banco Mundial y se firmó un acuerdo petrolero con EE. UU. Mientras tanto, las mismas personas que firmaron las leyes de persecución nombran a los jefes de la inteligencia y la contrainteligencia.',
+    en: 'The departure of Nicolás Maduro opened a new stage of economic and political reorganization in Venezuela. The oil legislation was reformed and the agreements with the United States moved forward. The official gazettes, however, reveal another dimension of the change: Delcy Rodríguez, who had previously countersigned rules on security and state control, took over the presidential power to appoint the heads of military counterintelligence. The decrees of January and March 2026 show who kept the authority to run the institutions historically linked to political repression.',
+    es: 'La salida de Nicolás Maduro abrió una nueva etapa de reorganización económica y política en Venezuela. Se reformó la legislación petrolera y avanzaron los acuerdos con Estados Unidos. Sin embargo, las gacetas oficiales revelan otra dimensión del cambio: Delcy Rodríguez, quien anteriormente refrendó normas relacionadas con la seguridad y el control estatal, asumió la facultad presidencial de designar a las autoridades de contrainteligencia militar. Los decretos de enero y marzo de 2026 permiten advertir quién conservó la autoridad para dirigir las instituciones históricamente vinculadas con la represión política.',
   } as L,
   steps: [
     {
@@ -126,17 +126,18 @@ export const OPENING = {
       },
     },
     {
-      kicker: { en: 'The economy moved', es: 'La economía se movió' },
+      kicker: { en: 'The economy changed', es: 'La economía cambió' },
+      // One fact per line ("\n" = line break on the card).
       text: {
-        en: 'A new Hydrocarbons Law in January. The IMF and the World Bank back in April. A 25-year oil agreement with the United States in August.',
-        es: 'Nueva Ley de Hidrocarburos en enero. El FMI y el Banco Mundial de vuelta en abril. Un acuerdo petrolero de 25 años con EE. UU. en agosto.',
+        en: 'In January a new Hydrocarbons Law was passed.\nIn April ties with the IMF and the World Bank were restored.\nIn August a 25-year oil agreement was signed with the United States.\nThe economic turn was visible, fast and documented.',
+        es: 'En enero se aprobó una nueva Ley de Hidrocarburos.\nEn abril se retomaron los vínculos con el FMI y el Banco Mundial.\nEn agosto se firmó un acuerdo petrolero de 25 años con Estados Unidos.\nEl giro económico fue visible, rápido y documentado.',
       },
     },
     {
-      kicker: { en: 'The security apparatus did not', es: 'El aparato de seguridad, no' },
+      kicker: { en: 'The structure of control and security remains', es: 'Persiste la estructura de control y seguridad' },
       text: {
-        en: 'A new head of military counterintelligence appointed by decree one day after the oath, and another in March. SEBIN and the DGCIM with “the same structures and the same rules,” says the UN. The anti-hate law still in force. 344 political prisoners in September.',
-        es: 'Un nuevo jefe de la contrainteligencia militar nombrado por decreto un día después del juramento, y otro en marzo. SEBIN y DGCIM con “las mismas estructuras y las mismas reglas”, dice la ONU. La Ley contra el Odio, vigente. 344 presos políticos en septiembre.',
+        en: 'On 6 January and 18 March 2026, Delcy Rodríguez signed the decrees appointing the directors of military counterintelligence (DGCIM). The UN documented that SEBIN and the DGCIM kept operating under the same structures and rules. The anti-hate law remained in force and, as of 14 September, Foro Penal counted 344 political prisoners.',
+        es: 'El 6 de enero y el 18 de marzo de 2026, Delcy Rodríguez firmó los decretos de designación de los directores de la contrainteligencia militar (DGCIM). La ONU documentó que el SEBIN y la DGCIM continuaban operando bajo las mismas estructuras y reglas. La Ley contra el Odio permanecía vigente y, al 14 de septiembre, Foro Penal registraba 344 presos políticos.',
       },
     },
   ],
@@ -156,12 +157,18 @@ export const OPENING = {
     en: 'Illustrative graphic: the curves only show direction; each point is a dated fact.',
     es: 'Gráfico ilustrativo: las curvas solo indican dirección; cada punto es un hecho con fecha.',
   } as L,
+  quotesTitle: { en: 'The United Nations warning', es: 'La advertencia de Naciones Unidas' } as L,
+  /** Context line under the first quote. */
+  quotesNote: {
+    en: 'The Independent International Fact-Finding Mission on Venezuela examined this direction in the report it presented to the Human Rights Council in September 2026.',
+    es: 'La Misión Internacional Independiente de Determinación de los Hechos sobre Venezuela examinó esta orientación en el informe que presentó al Consejo de Derechos Humanos en septiembre de 2026.',
+  } as L,
   quotes: [
     {
       para: '16',
       en: 'prioritized economic and commercial interests over democratic reform or human rights considerations',
       es: 'priorizó los intereses económicos y comerciales por encima de la reforma democrática o de las consideraciones de derechos humanos',
-      about: { en: 'On the U.S. plan for Venezuela', es: 'Sobre el plan de EE. UU. para Venezuela' },
+      about: { en: 'On the direction of the U.S. plan for Venezuela in 2026', es: 'Sobre la orientación del plan estadounidense para Venezuela en 2026' },
     },
     {
       para: '46',

@@ -4,7 +4,7 @@
 // only); every point on them is a dated fact from the timeline. Without JS (or with
 // prefers-reduced-motion) the final state is shown: both lanes drawn, every point visible.
 import type { Lang } from '../../i18n/ui';
-import { META, OPENING } from '../../data/investigations/who-commands-venezuela-2026';
+import { META, OPENING, SOURCES } from '../../data/investigations/who-commands-venezuela-2026';
 import { it, longDate, MONTHS } from '../../data/investigations/ui';
 
 interface Props {
@@ -51,6 +51,8 @@ const tEconDy = [0, -14, -10];
 const tSecDy = [6, 0, 18, -20];
 const [first, econStep, secStep] = OPENING.steps;
 const updated = longDate(lang, META.updated);
+const unReport = SOURCES.find((s) => s.id === 1)?.url;
+const lines = (t: string) => t.split('\n');
 ---
 
 <section class="op" data-op data-step="0" aria-labelledby="inv-title">
@@ -169,7 +171,7 @@ const updated = longDate(lang, META.updated);
     <div class="op-step" data-i="2">
       <div class="op-card op-card-econ">
         <p class="op-card-kicker">{econStep.kicker[lang]}</p>
-        <p>{econStep.text[lang]}</p>
+        <p class="op-lines">{lines(econStep.text[lang]).map((l) => <span>{l}</span>)}</p>
       </div>
     </div>
 
@@ -184,7 +186,7 @@ const updated = longDate(lang, META.updated);
       OPENING.quotes.map((q, i) => (
         <div class="op-step" data-i={4 + i}>
           <figure class="op-card op-quotes">
-            {i === 0 && <h2 class="op-card-kicker">{it(lang, 'quotesTitle')}</h2>}
+            {i === 0 && <h2 class="op-card-kicker">{OPENING.quotesTitle[lang]}</h2>}
             <p class="op-q-about">{q.about[lang]}</p>
             <blockquote lang={lang}>
               <p>“{q[lang]}”</p>
@@ -194,8 +196,13 @@ const updated = longDate(lang, META.updated);
                 Original: “{q.en}”
               </p>
             )}
+            {i === 0 && <p class="op-q-note">{OPENING.quotesNote[lang]}</p>}
             <figcaption>
-              {it(lang, 'quoteSource', { p: q.para })}
+              {unReport ? (
+                <a href={unReport} rel="noopener" target="_blank">{it(lang, 'quoteSource', { p: q.para })}</a>
+              ) : (
+                it(lang, 'quoteSource', { p: q.para })
+              )}
               {lang === 'es' && <> {it(lang, 'translationNote')}</>}
             </figcaption>
           </figure>
@@ -569,6 +576,21 @@ const updated = longDate(lang, META.updated);
     margin-top: 8px !important;
     font: italic 0.95rem/1.45 var(--serif);
     color: var(--op-muted);
+  }
+  .op-lines span {
+    display: block;
+  }
+  .op-lines span + span {
+    margin-top: 6px;
+  }
+  .op-q-note {
+    margin-top: 12px !important;
+    font: 0.92rem/1.5 var(--sans) !important;
+    color: #d9d5cc;
+  }
+  .op-quotes figcaption a {
+    color: #9fb5ff;
+    pointer-events: auto;
   }
   .op-quotes figcaption {
     margin-top: 8px;
