@@ -1,4 +1,4 @@
-// "The Oil Changed. The Power Didn't." — data and texts shared by /investigations/who-commands-venezuela-2026/
+// "Venezuela 2026: The Post-Maduro Power Structure" (until 22 Oct 2026: "The Oil Changed. The Power Didn't.") — data and texts shared by /investigations/who-commands-venezuela-2026/
 // (English) and /es/investigations/who-commands-venezuela-2026/ (Spanish).
 // Facts are attributed; every org-chart line and timeline entry cites a numbered source (SOURCES below).
 // Author: Venezuela Record. Original idea: Minerva Mendoza Paipa.
@@ -34,7 +34,8 @@ import hero from '../../assets/investigations/who-commands-venezuela-2026/hero.j
 
 export const META: InvestigationMeta = {
   slug: 'who-commands-venezuela-2026',
-  title: { en: "The Oil Changed. The Power Didn't.", es: 'Cambió el petróleo, no el poder' },
+  // Title proposed by Minerva Mendoza Paipa, approved by Roger on 2026-10-22 (was "Cambió el petróleo, no el poder").
+  title: { en: 'Venezuela 2026: The Post-Maduro Power Structure', es: 'Venezuela 2026: La estructura del poder post-Maduro' },
   subtitle: {
     en: 'Who appoints whom in Venezuela in 2026, according to official gazettes, the laws and the UN',
     es: 'Quién designa a quién en la Venezuela de 2026, según las gacetas oficiales, las leyes y la ONU',
@@ -42,6 +43,11 @@ export const META: InvestigationMeta = {
   summary: {
     en: 'Since January, Venezuela opened its oil, welcomed back the IMF and signed an oil deal with the United States. The people who signed the laws used against dissent still appoint the heads of intelligence and counterintelligence. The gazettes show it.',
     es: 'Desde enero, Venezuela abrió su petróleo, recibió de nuevo al FMI y firmó un acuerdo petrolero con EE. UU. Las mismas personas que firmaron las leyes usadas contra quien disiente siguen nombrando a los jefes de la inteligencia y la contrainteligencia. Las gacetas lo muestran.',
+  },
+  /** Standfirst under the cover (Minerva Mendoza Paipa, 2026-10-22). */
+  intro: {
+    en: 'The reorganization of power in Venezuela during 2026 raises a question that goes beyond the change of authorities: which security and intelligence structures remain, who holds their command powers and which mechanisms of control and political persecution are still operating. What really changed in Venezuela? The official gazettes and the reports of international bodies show the institutional reality as of October 2026.',
+    es: 'La reorganización del poder en Venezuela durante 2026 plantea una cuestión que trasciende el cambio de autoridades: qué estructuras de seguridad e inteligencia permanecen, quién ejerce sus facultades de mando y qué mecanismos de control y persecución política continúan operando. ¿Qué fue lo que realmente cambió en Venezuela? Las gacetas oficiales y los informes de organismos internacionales permiten mostrar la realidad institucional a octubre de 2026.',
   },
   published: '2026-10-16',
   updated: '2026-10-22',

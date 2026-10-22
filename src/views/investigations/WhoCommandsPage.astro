@@ -1,5 +1,5 @@
 ---
-// Investigation: "The Oil Changed. The Power Didn't." / "Cambió el petróleo, no el poder".
+// Investigation: "Venezuela 2026: The Post-Maduro Power Structure" / "Venezuela 2026: La estructura del poder post-Maduro".
 // Author: Venezuela Record (organization). Original idea credited on the page and in the card.
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ShareBar from '../../components/ShareBar.astro';
@@ -95,7 +95,7 @@ const toc = [
         <InvCover lang={lang} image={META.hero} alt={META.heroAlt?.[lang] ?? ''} kicker={`${it(lang, 'kicker')} · ${it(lang, 'original')}`} title={title} subtitle={META.subtitle[lang]} credit={META.coverCredit} posPhone="95% 50%" posDesk="50% 50%" titleId="inv-title" />
       )
     }
-    <Opening lang={lang} titled={!META.hero} />
+    <Opening lang={lang} titled={!META.hero} intro={META.intro?.[lang]} />
 
     <InvToc lang={lang} items={toc} />
 

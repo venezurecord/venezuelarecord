@@ -32,8 +32,9 @@ Repo: `github.com/venezurecord/venezuelarecord`.
 - **2026-10-09 — Portada** (Roger): la noticia principal del inicio **siempre lleva foto** (nunca tarjeta de fuente):
   es la más reciente con imagen ([src/views/HomePage.astro](src/views/HomePage.astro)).
 - **2026-10-13 — Investigaciones (Roger):** piezas originales en /investigations/, crédito de idea a la persona que la
-  propuso, autor = Venezuela Record, sin nombres del equipo. Primera pieza: "Cambió el petróleo, no el poder" /
-  "The Oil Changed. The Power Didn't." (idea original: Minerva Mendoza Paipa). No lleva bloque de republicación ni `sourceTier`.
+  propuso, autor = Venezuela Record, sin nombres del equipo. Primera pieza: "Venezuela 2026: La estructura del poder post-Maduro" /
+  "Venezuela 2026: The Post-Maduro Power Structure" (idea original: Minerva Mendoza Paipa; título y entradilla propuestos
+  por ella y aprobados por Roger el 2026-10-22; antes se llamaba "Cambió el petróleo, no el poder"). No lleva bloque de republicación ni `sourceTier`.
 - **2026-10-16 — Agente semanal (Roger):** todos los viernes a las 9:00 a. m. (hora del Pacífico) una tarea programada de
   la app de Claude (`venezuelarecord-noticias-semanales`, guardada en la carpeta `scheduled-tasks` del perfil de Claude)
   busca las noticias de la semana (nivel A: todas las de VP y VenAmérica que cumplan el alcance; nivel B: 3–6 hechos

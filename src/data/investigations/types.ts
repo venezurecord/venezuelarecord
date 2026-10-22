@@ -25,6 +25,8 @@ export interface InvestigationMeta {
   updated: string;
   /** Who proposed the idea (credited, never as author) */
   ideaBy: string;
+  /** Optional standfirst shown right under the cover. */
+  intro?: L;
   cover?: ImageMetadata;
   /** Credit for a cover that uses third-party material (license requires it next to the image). */
   coverCredit?: { text: L; url?: string };

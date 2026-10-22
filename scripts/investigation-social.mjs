@@ -9,14 +9,14 @@ const OUT = 'src/assets/investigations/who-commands-venezuela-2026';
 const T = {
   en: {
     kicker: 'INVESTIGATION · VENEZUELA RECORD',
-    title: ['The Oil Changed.', "The Power Didn't."],
+    title: ['Venezuela 2026:', 'The Post-Maduro', 'Power Structure'],
     sub: 'Who appoints whom in Venezuela in 2026, according to official gazettes, the laws and the UN',
     credit: 'Original idea: Minerva Mendoza Paipa',
     photo: 'AI-generated illustration (Google Flow) for Venezuela Record',
   },
   es: {
     kicker: 'INVESTIGACIÓN · VENEZUELA RECORD',
-    title: ['Cambió el petróleo,', 'no el poder'],
+    title: ['Venezuela 2026:', 'La estructura del', 'poder post-Maduro'],
     sub: 'Quién designa a quién en la Venezuela de 2026, según las gacetas oficiales, las leyes y la ONU',
     credit: 'Idea original: Minerva Mendoza Paipa',
     photo: 'Ilustración generada con IA (Google Flow) para Venezuela Record',
@@ -48,9 +48,9 @@ for (const [lang, t] of Object.entries(T)) {
   <rect width="1200" height="630" fill="url(#b)"/>
   <rect y="0" width="400" height="8" fill="#ffcc00"/><rect x="400" y="0" width="400" height="8" fill="#00247d"/><rect x="800" y="0" width="400" height="8" fill="#cf142b"/>
   <text x="64" y="84" font-family="Arial, Helvetica, sans-serif" font-weight="700" font-size="20" letter-spacing="3" fill="#ffcc00">${esc(t.kicker)}</text>
-  ${t.title.map((l, i) => `<text x="60" y="${168 + i * 72}" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="60" fill="#f3f0e8">${esc(l)}</text>`).join('')}
-  ${sub.map((l, i) => `<text x="64" y="${300 + i * 32}" font-family="Georgia, 'Times New Roman', serif" font-size="23" fill="#ddd8ce">${esc(l)}</text>`).join('')}
-  <text x="64" y="${300 + sub.length * 32 + 22}" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#c3c8d1">${esc(t.credit)}</text>
+  ${t.title.map((l, i) => `<text x="60" y="${158 + i * 64}" font-family="Georgia, 'Times New Roman', serif" font-weight="700" font-size="56" fill="#f3f0e8">${esc(l)}</text>`).join('')}
+  ${sub.map((l, i) => `<text x="64" y="${352 + i * 31}" font-family="Georgia, 'Times New Roman', serif" font-size="22" fill="#ddd8ce">${esc(l)}</text>`).join('')}
+  <text x="64" y="${352 + sub.length * 31 + 20}" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#c3c8d1">${esc(t.credit)}</text>
   <text x="1180" y="614" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#c3c8d1">${esc(t.photo)}</text>
 </svg>`;
   await sharp(BG)
