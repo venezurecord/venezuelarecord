@@ -173,6 +173,16 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
   con portada, `Opening` no repite el título y empieza en el crédito y la doble línea. Toda imagen hecha con IA se
   rotula siempre como tal (`coverCredit`). Imágenes de IA: Google Flow (cuenta de Roger, Chrome), sin personas,
   texto ni banderas.
+- **Revisión de Minerva (2026-10-22), primera investigación:** títulos interpretativos en cada firma (`heading`) y cierre
+  `SIG_OUTRO`; organigrama «La arquitectura del poder post-Maduro» con pasos de varios párrafos (`
+
+`) e «idea clave»
+  (`key`, clase `.inv-key`); EE. UU. → Delcy es vínculo documentado por la ONU (no mando) y Jorge → TSJ es atribución
+  institucional; gacetas sin «Qué no prueba» y con título interpretativo; balance con etiquetas de estado (`BAL_STATUS`:
+  la reforma de la Ley contra el Odio va como «En trámite, no vigente») y ensayo `BAL_ESSAY`; método = su «arquitectura
+  metodológica» (`METHOD`); crédito «Idea original y arquitectura metodológica» (`META.ideaRole`, helper `ideaCredit`).
+  Sección nueva «Bóveda de Cristal» (`CrystalVault.astro`, datos `VAULT`): se presenta como columna con fuentes anónimas
+  (La Gran Aldea), citada por la EUAA; el esquema aclara que no está verificado técnicamente. Nada de fotos de los casos.
 - **Segunda investigación (idea: Minerva Mendoza Paipa):** «La capacidad de perseguir sigue ahí» / «The Capacity to
   Persecute Is Still There» en `/investigations/residual-capacity-2026/`. Datos y fuentes propias (1–35, comparte
   algunas con la primera por id) en `src/data/investigations/residual-capacity-2026.ts`; vista

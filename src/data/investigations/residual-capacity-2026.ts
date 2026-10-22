@@ -45,7 +45,7 @@ export const R_ANCHORS = {
 } as const;
 
 /** Part-one source id -> id in this piece, for the sources both pieces share. */
-const SHARED: [number, number][] = [[1, 14], [2, 15], [7, 16], [9, 17], [10, 18], [11, 19], [14, 20], [15, 21], [16, 22], [18, 23], [19, 24], [20, 25], [22, 26], [26, 27], [28, 28], [30, 29], [31, 30], [34, 31], [37, 32], [38, 33], [40, 34], [41, 35]];
+const SHARED: [number, number][] = [[1, 14], [2, 15], [7, 16], [9, 17], [10, 18], [11, 19], [14, 20], [15, 21], [16, 22], [18, 23], [19, 24], [20, 25], [22, 26], [26, 27], [28, 28], [30, 29], [31, 30], [34, 31], [37, 32], [38, 33], [40, 34], [41, 35], [47, 36]];
 
 export const SOURCES: Source[] = [
   { id: 1, outlet: 'Foro Penal', title: { en: 'The repression in figures (page updated continuously; figures as of 5 Oct 2026)', es: 'La represión en cifras (página que se actualiza; cifras al 5 oct 2026)' }, date: '5 Oct 2026', url: 'https://foropenal.com/represion-en-cifras' },
@@ -171,7 +171,7 @@ export const CAP_BODIES: CapRow[] = [
   { name: { en: 'CICPC', es: 'CICPC' }, kind: { en: 'criminal police', es: 'policía científica' }, jan: { en: 'Douglas Rico, in office since 2016', es: 'Douglas Rico, en el cargo desde 2016' }, oct: { en: 'Douglas Rico', es: 'Douglas Rico' }, status: 'same', src: [30] },
   { name: { en: 'Supreme Court (TSJ)', es: 'TSJ' }, jan: { en: '20 justices', es: '20 magistrados' }, oct: { en: '32 justices after the April–May expansion; the UN warns of a greater risk of political influence (para. 47)', es: '32 magistrados tras la ampliación de abril y mayo; la ONU advierte un mayor riesgo de influencia política (párr. 47)' }, status: 'formal', src: [20, 14] },
   { name: { en: 'Courts and Prosecutor’s Office', es: 'Tribunales y Fiscalía' }, jan: { en: 'Judges and prosecutors of the political cases', es: 'Jueces y fiscales de las causas políticas' }, oct: { en: 'Still in their posts, says Foro Penal', es: 'Siguen en sus cargos, según Foro Penal' }, status: 'same', src: [6, 13] },
-  { name: { en: 'VenApp', es: 'VenApp' }, kind: { en: 'operational tool', es: 'medio operativo' }, jan: { en: 'Active, with an anonymous reporting channel since 2024', es: 'Activa, con un canal de denuncias anónimas desde 2024' }, oct: { en: 'No verified information', es: 'Sin dato verificado' }, status: 'tbd', src: [26, 33] },
+  { name: { en: 'VenApp', es: 'VenApp' }, kind: { en: 'operational tool', es: 'medio operativo' }, jan: { en: 'Active, with an anonymous reporting channel since 2024', es: 'Activa, con un canal de denuncias anónimas desde 2024' }, oct: { en: 'Activated in June for emergencies after the earthquake; no public confirmation that the political-reporting channel is still active', es: 'Activada en junio para emergencias tras el sismo; sin confirmación pública de que siga activo el canal de denuncias políticas' }, status: 'tbd', src: [26, 33, 36] },
 ];
 
 /** Component 2 — documented exercise in 2026 (no names of affected people). */
@@ -346,7 +346,7 @@ export const R_UI = {
       'Available capacity does not by itself prove it will be used. Allegations are cited as what they are: attributed to whoever makes them. Foro Penal’s figures are its own verified counts; the government has not published the list of people granted amnesty.',
     unverified: [
       'Whether Alexis Rodríguez Cabello still heads SEBIN: the last public confirmation we found is from March 2026.',
-      'Whether VenApp is used for reporting in 2026: there is no public evidence.',
+      'Whether VenApp’s political-reporting functions are still active in 2026: only its official use for emergencies (June) is documented.',
       'Whether criminal records are actually being erased as article 14 of the Amnesty Law orders: there is no public way to check.',
     ],
   },
@@ -371,7 +371,7 @@ export const R_UI = {
       'Una capacidad disponible no prueba por sí sola que se vaya a usar. Las denuncias se citan como lo que son: atribuidas a quien las hace. Las cifras de Foro Penal son sus propios conteos verificados; el gobierno no ha publicado la lista de amnistiados.',
     unverified: [
       'Si Alexis Rodríguez Cabello sigue al frente del SEBIN: la última confirmación pública que encontramos es de marzo de 2026.',
-      'Si VenApp se usa para denunciar en 2026: no hay prueba pública.',
+      'Si siguen activas en 2026 las funciones de denuncia política de VenApp: solo está documentado su uso oficial para emergencias (junio).',
       'Si los antecedentes penales se están borrando como ordena el artículo 14 de la Ley de Amnistía: no hay forma pública de comprobarlo.',
     ],
   },

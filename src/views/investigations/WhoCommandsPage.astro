@@ -11,6 +11,7 @@ import TwoLanes from '../../components/investigation/TwoLanes.astro';
 import Gazettes from '../../components/investigation/Gazettes.astro';
 import Penalties from '../../components/investigation/Penalties.astro';
 import VenApp from '../../components/investigation/VenApp.astro';
+import CrystalVault from '../../components/investigation/CrystalVault.astro';
 import Balance from '../../components/investigation/Balance.astro';
 import Method from '../../components/investigation/Method.astro';
 import InvToc from '../../components/investigation/InvToc.astro';
@@ -52,7 +53,7 @@ const jsonLd = {
     url: new URL('/', Astro.site).href,
     logo: { '@type': 'ImageObject', url: new URL('/apple-touch-icon.png', Astro.site).href },
   },
-  contributor: { '@type': 'Person', name: META.ideaBy, description: lang === 'en' ? 'Original idea' : 'Idea original' },
+  contributor: { '@type': 'Person', name: META.ideaBy, description: META.ideaRole?.[lang] ?? (lang === 'en' ? 'Original idea' : 'Idea original') },
   isAccessibleForFree: true,
   about: [
     { '@type': 'Place', name: 'Venezuela' },
@@ -73,6 +74,7 @@ const toc = [
   { id: A.gz, label: T.gz },
   { id: A.pen, label: T.pen },
   { id: A.va, label: T.va },
+  { id: A.bv, label: T.bv },
   { id: A.bal, label: T.bal },
   { id: A.src, label: T.src },
 ];
@@ -105,6 +107,7 @@ const toc = [
     <Gazettes lang={lang} />
     <Penalties lang={lang} />
     <VenApp lang={lang} />
+    <CrystalVault lang={lang} />
     <Balance lang={lang} />
     <NextPart lang={lang} />
     <Method lang={lang} />

@@ -2,8 +2,8 @@
 // Method, warning, what could not be verified, corrections and the numbered source list.
 import type { Lang } from '../../i18n/ui';
 import { localePath, PAGES } from '../../i18n/ui';
-import { META, SOURCES } from '../../data/investigations/who-commands-venezuela-2026';
-import { ANCHORS, it, itList, longDate } from '../../data/investigations/ui';
+import { META, METHOD, SOURCES } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it, itList, longDate, ideaCredit } from '../../data/investigations/ui';
 
 interface Props {
   lang: Lang;
@@ -17,15 +17,23 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
   <div class="mt-inner">
     <p class="inv-kicker">{it(lang, 'methodKicker')}</p>
     <h2 id="mt-title">{it(lang, 'methodTitle')}</h2>
-    <p class="mt-body">{it(lang, 'methodBody')}</p>
-    <p class="mt-warn" role="note">{it(lang, 'methodWarning')}</p>
+    {
+      METHOD.map((b) => (
+        <>
+          {b.h && <h3 class="mt-h">{b.h[lang]}</h3>}
+          {b.p.map((p) => (
+            <p class="mt-body">{p[lang]}</p>
+          ))}
+        </>
+      ))
+    }
 
     <h3>{it(lang, 'methodUnverified')}</h3>
     <ul class="mt-unv">
       {itList(lang, 'methodUnverifiedItems').map((x) => <li>{x}</li>)}
     </ul>
 
-    <p class="mt-credit" set:html={it(lang, 'ideaCredit', { name: META.ideaBy })} />
+    <p class="mt-credit" set:html={ideaCredit(lang, META)} />
     <p class="mt-small">{it(lang, 'methodChecked', { date: longDate(lang, META.updated) })}</p>
     <p class="mt-small" set:html={it(lang, 'methodCorrections', { link: corrections })} />
 
@@ -102,6 +110,11 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
 </script>
 
 <style>
+  .mt-h {
+    margin: 26px 0 8px;
+    font-size: 1.15rem;
+  }
+
   .mt {
     padding-block: 72px 24px;
     border-top: 1px solid var(--line);

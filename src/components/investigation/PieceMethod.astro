@@ -4,7 +4,7 @@
 import type { Lang } from '../../i18n/ui';
 import { localePath, PAGES } from '../../i18n/ui';
 import type { InvestigationMeta, Source } from '../../data/investigations/types';
-import { it, longDate } from '../../data/investigations/ui';
+import { it, longDate, ideaCredit } from '../../data/investigations/ui';
 
 interface Props {
   lang: Lang;
@@ -34,7 +34,7 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
       {unverified.map((x) => <li>{x}</li>)}
     </ul>
 
-    <p class="mt-credit" set:html={it(lang, 'ideaCredit', { name: META.ideaBy })} />
+    <p class="mt-credit" set:html={ideaCredit(lang, META)} />
     <p class="mt-small">{it(lang, 'methodChecked', { date: longDate(lang, META.updated) })}</p>
     <p class="mt-small" set:html={it(lang, 'methodCorrections', { link: corrections })} />
 

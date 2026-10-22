@@ -160,7 +160,8 @@ const nameLines = (full: string) => {
   <header class="inv-head">
     <p class="inv-kicker">{it(lang, 'orgKicker')}</p>
     <h2 id="org-title">{it(lang, 'orgTitle')}</h2>
-    <p class="inv-intro">{it(lang, 'orgIntro')}</p>
+    <p class="inv-deck">{it(lang, 'orgDeck')}</p>
+    {it(lang, 'orgIntro').split('\n\n').map((p) => <p class="inv-intro">{p}</p>)}
   </header>
 
   <div class="org-controls">
@@ -192,7 +193,13 @@ const nameLines = (full: string) => {
           <article class="org-step" data-i={i} aria-labelledby={`org-step-${i}`}>
             <p class="org-step-n">{it(lang, 'step', { n: i + 1, total: STEPS.length })}</p>
             <h3 id={`org-step-${i}`}>{s.title[lang].replace(/^\d+ · /, '')}</h3>
-            <p>{s.text[lang]}</p>
+            {s.text[lang].split('\n\n').map((p) => <p>{p}</p>)}
+            {s.key && (
+              <p class="inv-key">
+                <span class="inv-key-k">{it(lang, 'keyIdea')}</span>
+                {s.key[lang]}
+              </p>
+            )}
             <ul class="rels">
               {stepEdges[i].map((e) => (
                 <li class={`rel t-${e.type}`}>
@@ -533,7 +540,10 @@ const nameLines = (full: string) => {
         STEPS.map((s, i) => (
           <div class="mbar-step" data-i={i}>
             <p class="mbar-t">{s.title[lang]}</p>
-            <p class="mbar-p">{s.text[lang]}</p>
+            <div class="mbar-p">
+              {s.text[lang].split('\n\n').map((p) => <p>{p}</p>)}
+              {s.key && <p class="mbar-key">{s.key[lang]}</p>}
+            </div>
           </div>
         ))
       }
@@ -1540,8 +1550,16 @@ const nameLines = (full: string) => {
     margin: 0;
     font: 0.9rem/1.45 var(--sans);
     color: var(--muted);
-    max-height: 6.2em;
+    max-height: 9.5em;
     overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+  .mbar-p p {
+    margin: 0 0 0.6em;
+  }
+  .mbar-p .mbar-key {
+    font-weight: 700;
+    color: var(--ink);
   }
   .mbar-nav {
     display: flex;

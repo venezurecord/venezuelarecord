@@ -2,7 +2,7 @@
 // What changed / what did not: two sourced columns compared with a slider (desktop), plus a
 // waffle of the 214 political detentions the UN documented (207 before February 2026).
 import type { Lang } from '../../i18n/ui';
-import { CHANGED, DETENTIONS, UNCHANGED } from '../../data/investigations/who-commands-venezuela-2026';
+import { BAL_ESSAY, BAL_STATUS, CHANGED, DETENTIONS, UNCHANGED } from '../../data/investigations/who-commands-venezuela-2026';
 import { ANCHORS, it } from '../../data/investigations/ui';
 import Cite from './Cite.astro';
 
@@ -18,7 +18,7 @@ const cells = Array.from({ length: DETENTIONS.total }, (_, i) => i < DETENTIONS.
   <header class="inv-head">
     <p class="inv-kicker">{it(lang, 'balKicker')}</p>
     <h2 id="bal-title">{it(lang, 'balTitle')}</h2>
-    <p class="inv-intro">{it(lang, 'balIntro')}</p>
+    {it(lang, 'balIntro').split('\n\n').map((p) => <p class="inv-intro">{p}</p>)}
   </header>
 
   <div class="bal-wrap">
@@ -31,17 +31,20 @@ const cells = Array.from({ length: DETENTIONS.total }, (_, i) => i < DETENTIONS.
 
     <div class="bal-cols">
       <div class="col yes">
+        <p class="col-k">{it(lang, 'balChangedKicker')}</p>
         <h3>{it(lang, 'balChanged')}</h3>
         <ul>
           {
             CHANGED.map((c) => (
               <li>
+                <span class={`st st-${c.status}`}>{BAL_STATUS[c.status][lang]}</span>
                 {c.text[lang]}
                 <Cite lang={lang} ids={c.src} anchor={A.src} />
               </li>
             ))
           }
         </ul>
+        <p class="col-note">{it(lang, 'balChangedNote')}</p>
         <figure class="waffle">
           <div class="cells" role="img" aria-label={it(lang, 'waffleCaption', { before: DETENTIONS.beforeFeb, total: DETENTIONS.total })}>
             {cells.map((b) => <span class={b ? 'b' : 'a'} />)}
@@ -57,6 +60,7 @@ const cells = Array.from({ length: DETENTIONS.total }, (_, i) => i < DETENTIONS.
         </figure>
       </div>
       <div class="col no">
+        <p class="col-k">{it(lang, 'balUnchangedKicker')}</p>
         <h3>{it(lang, 'balUnchanged')}</h3>
         <ul>
           {
@@ -68,8 +72,18 @@ const cells = Array.from({ length: DETENTIONS.total }, (_, i) => i < DETENTIONS.
             ))
           }
         </ul>
+        <p class="col-note">{it(lang, 'balUnchangedNote')}</p>
       </div>
     </div>
+  </div>
+
+  <div class="inv-essay">
+    <h3>{BAL_ESSAY.title[lang]}</h3>
+    {BAL_ESSAY.text[lang].split('\n\n').map((p) => <p>{p}</p>)}
+    <p class="inv-key">
+      <span class="inv-key-k">{it(lang, 'keyIdea')}</span>
+      {BAL_ESSAY.key[lang]}
+    </p>
   </div>
 </section>
 
@@ -86,6 +100,39 @@ const cells = Array.from({ length: DETENTIONS.total }, (_, i) => i < DETENTIONS.
 </script>
 
 <style>
+  .col-k {
+    margin: 0 0 2px;
+    font: 700 0.7rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .col-note {
+    margin: 12px 0 0;
+    font: italic 0.88rem/1.45 var(--serif);
+    color: var(--ink-muted);
+  }
+  .st {
+    display: inline-block;
+    margin-right: 6px;
+    padding: 1px 7px;
+    border-radius: 999px;
+    font: 700 0.68rem/1.5 var(--sans);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    vertical-align: 2px;
+    border: 1px solid currentColor;
+  }
+  .st-done {
+    color: var(--inv-yes);
+  }
+  .st-doc {
+    color: var(--inv-appoint);
+  }
+  .st-pending {
+    color: var(--inv-econ-strong);
+  }
+
   .bal {
     padding-block: 72px 32px;
   }

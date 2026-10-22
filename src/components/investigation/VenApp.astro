@@ -1,7 +1,8 @@
 ---
-// VenApp, 2022 → 2026: a step line; the last step is drawn hollow because there is no public evidence.
+// VenApp, 2022 → 2026: a step line. The 2026 step is a documented official use (emergencies), flagged as such;
+// the political-reporting functions are not confirmed for 2026. Texts: Minerva Mendoza Paipa (2026-10-22).
 import type { Lang } from '../../i18n/ui';
-import { VENAPP } from '../../data/investigations/who-commands-venezuela-2026';
+import { VA_TEXT, VENAPP } from '../../data/investigations/who-commands-venezuela-2026';
 import { ANCHORS, it } from '../../data/investigations/ui';
 import Cite from './Cite.astro';
 
@@ -16,16 +17,17 @@ const A = ANCHORS[lang];
   <header class="inv-head">
     <p class="inv-kicker">{it(lang, 'vaKicker')}</p>
     <h2 id="va-title">{it(lang, 'vaTitle')}</h2>
-    <p class="inv-intro">{it(lang, 'vaIntro')}</p>
+    {VA_TEXT.intro[lang].split('\n\n').map((p) => <p class="inv-intro">{p}</p>)}
   </header>
   <ol class="va-steps">
     {
       VENAPP.map((v) => (
-        <li class:list={{ unc: v.uncertain }}>
+        <li class:list={{ unc: v.uncertain, flagged: !!v.flag }}>
           <span class="va-dot" aria-hidden="true" />
           <p class="va-when">
             {v.when[lang]}
             {v.uncertain && <span class="va-flag">{it(lang, 'vaUncertain')}</span>}
+            {v.flag && <span class="va-flag doc">{v.flag[lang]}</span>}
           </p>
           <p class="va-text">
             {v.text[lang]}
@@ -35,6 +37,16 @@ const A = ANCHORS[lang];
       ))
     }
   </ol>
+  <div class="va-after">
+    <p class="va-cidh">
+      {VA_TEXT.cidh[lang]}
+      <Cite lang={lang} ids={[50]} anchor={A.src} />
+    </p>
+    <blockquote class="va-pull">
+      <p class="va-pull-k">{it(lang, 'vaPull')}</p>
+      <p>{VA_TEXT.pull[lang]}</p>
+    </blockquote>
+  </div>
 </section>
 
 <style>
@@ -63,10 +75,6 @@ const A = ANCHORS[lang];
   }
   .va-steps li:last-child::before {
     display: none;
-  }
-  .va-steps li:nth-last-child(2)::before {
-    border-left-style: dashed;
-    border-left-color: var(--muted);
   }
   .va-dot {
     position: absolute;
@@ -100,6 +108,41 @@ const A = ANCHORS[lang];
     color: var(--muted);
     vertical-align: 2px;
   }
+  .va-flag.doc {
+    border-style: solid;
+    border-color: var(--inv-appoint);
+    color: var(--inv-appoint);
+  }
+  .va-after {
+    max-width: 760px;
+    margin: 12px auto 0;
+    padding-inline: var(--gutter);
+  }
+  .va-cidh {
+    margin: 0 0 22px;
+    font: 1.04rem/1.6 var(--serif);
+  }
+  .va-pull {
+    margin: 0;
+    padding: 18px 0 18px 20px;
+    border-left: 4px solid var(--inv-sec);
+  }
+  .va-pull p {
+    margin: 0;
+    font: italic 600 clamp(1.15rem, 2.8vw, 1.4rem)/1.45 var(--serif);
+  }
+  .va-pull .va-pull-k {
+    margin-bottom: 6px;
+    font: 700 0.7rem/1.4 var(--sans);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--inv-sec-strong);
+  }
+  @media (prefers-color-scheme: dark) {
+    .va-pull .va-pull-k {
+      color: var(--inv-sec);
+    }
+  }
   .va-text {
     margin: 0;
     font-family: var(--serif);
@@ -126,11 +169,6 @@ const A = ANCHORS[lang];
       bottom: auto;
       border-left: 0;
       border-top: 3px solid var(--text);
-    }
-    .va-steps li:nth-last-child(2)::before {
-      border-left: 0;
-      border-top-style: dashed;
-      border-top-color: var(--muted);
     }
   }
 </style>

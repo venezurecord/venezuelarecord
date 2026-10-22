@@ -3,7 +3,7 @@
 // post(s) when each document scrolls into view. No JS / reduced motion: highlights already drawn.
 import { Image } from 'astro:assets';
 import type { Lang } from '../../i18n/ui';
-import { SIGNATURES } from '../../data/investigations/who-commands-venezuela-2026';
+import { SIGNATURES, SIG_OUTRO } from '../../data/investigations/who-commands-venezuela-2026';
 import { ANCHORS, it } from '../../data/investigations/ui';
 import Cite from './Cite.astro';
 
@@ -66,6 +66,7 @@ const A = ANCHORS[lang];
                 </li>
               ))}
             </ol>
+            <p class="sig-heading">{s.heading[lang]}</p>
             <p class="sig-note">
               {s.note[lang]}
               <Cite lang={lang} ids={s.src} anchor={A.src} />
@@ -98,6 +99,11 @@ const A = ANCHORS[lang];
         </article>
       ))
     }
+  </div>
+
+  <div class="inv-essay sig-outro">
+    <h3>{SIG_OUTRO.title[lang]}</h3>
+    {SIG_OUTRO.text[lang].split('\n\n').map((p) => <p>{p}</p>)}
   </div>
 </section>
 
@@ -304,6 +310,11 @@ const A = ANCHORS[lang];
     background: var(--inv-hl);
     color: #1d1600;
     font-size: 0.75rem;
+  }
+  .sig-heading {
+    margin: 0 0 6px;
+    font: 700 1.12rem/1.3 var(--serif);
+    color: var(--ink);
   }
   .sig-note {
     font-family: var(--serif);

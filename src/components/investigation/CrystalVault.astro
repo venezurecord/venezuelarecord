@@ -1,0 +1,136 @@
+---
+// "Crystal Vault" (Bóveda de Cristal): the alleged integration of State databases described by La Gran Aldea
+// (26 Dec 2025), cited by the EUAA (Jul 2026), plus the DFRLab report. Proposed by Minerva Mendoza Paipa (2026-10-22).
+// The diagram is ours and is labelled as a description, not a verified system.
+import type { Lang } from '../../i18n/ui';
+import { VAULT } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+const paras = VAULT.body[lang].split('\n\n');
+---
+
+<section id={A.bv} class="bv" aria-labelledby="bv-title">
+  <header class="inv-head">
+    <p class="inv-kicker">{it(lang, 'bvKicker')}</p>
+    <h2 id="bv-title">{it(lang, 'bvTitle')}</h2>
+    <p class="inv-intro">{VAULT.intro[lang]}</p>
+  </header>
+
+  <figure class="bv-fig">
+    <ul class="bv-nodes">
+      {
+        VAULT.nodes.map((n) => (
+          <li>
+            <strong>{n.name[lang]}</strong>
+            <span>{n.what[lang]}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="bv-arrow" aria-hidden="true">↓</p>
+    <p class="bv-hub">{VAULT.hub[lang]}</p>
+    <p class="bv-arrow" aria-hidden="true">↓</p>
+    <p class="bv-result">{VAULT.result[lang]}</p>
+    <figcaption>
+      {VAULT.caption[lang]}
+      <Cite lang={lang} ids={[51]} anchor={A.src} />
+    </figcaption>
+  </figure>
+
+  <div class="bv-body">
+    {
+      paras.map((p, i) => (
+        <p>
+          {p}
+          {VAULT.bodySrc[i]?.length ? <Cite lang={lang} ids={VAULT.bodySrc[i]} anchor={A.src} /> : null}
+        </p>
+      ))
+    }
+    <p class="inv-key">
+      <span class="inv-key-k">{it(lang, 'bvConcept')}</span>
+      {VAULT.concept[lang]}
+    </p>
+  </div>
+</section>
+
+<style>
+  .bv {
+    padding-block: 72px 32px;
+  }
+  .bv-fig {
+    max-width: 760px;
+    margin: 0 auto 28px;
+    padding: 20px var(--gutter);
+    text-align: center;
+  }
+  .bv-nodes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  @media (min-width: 640px) {
+    .bv-nodes {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+  .bv-nodes li {
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: var(--inv-band);
+  }
+  .bv-nodes strong {
+    display: block;
+    font: 700 1rem/1.3 var(--sans);
+  }
+  .bv-nodes span {
+    display: block;
+    margin-top: 2px;
+    font: 0.86rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .bv-arrow {
+    margin: 6px 0;
+    font: 700 1.3rem/1 var(--sans);
+    color: var(--muted);
+  }
+  .bv-hub {
+    display: inline-block;
+    margin: 0;
+    padding: 10px 16px;
+    border: 2px dashed var(--inv-un);
+    border-radius: 999px;
+    font: 700 0.95rem/1.35 var(--sans);
+    color: var(--inv-un);
+  }
+  .bv-result {
+    margin: 0;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--inv-sec) 12%, transparent);
+    border: 1px solid color-mix(in srgb, var(--inv-sec) 45%, transparent);
+    font: 600 0.98rem/1.45 var(--serif);
+  }
+  .bv-fig figcaption {
+    margin-top: 10px;
+    font: 0.8rem/1.4 var(--sans);
+    color: var(--muted);
+  }
+  .bv-body {
+    max-width: 760px;
+    margin: 0 auto;
+    padding-inline: var(--gutter);
+  }
+  .bv-body p:not(.inv-key) {
+    margin: 0 0 1em;
+    font: 1.08rem/1.65 var(--serif);
+  }
+</style>

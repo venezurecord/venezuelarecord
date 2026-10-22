@@ -5,7 +5,7 @@
 // prefers-reduced-motion) the final state is shown: both lanes drawn, every point visible.
 import type { Lang } from '../../i18n/ui';
 import { META, OPENING, SOURCES } from '../../data/investigations/who-commands-venezuela-2026';
-import { it, longDate, MONTHS } from '../../data/investigations/ui';
+import { it, longDate, MONTHS, ideaCredit } from '../../data/investigations/ui';
 
 interface Props {
   lang: Lang;
@@ -157,7 +157,7 @@ const lines = (t: string) => t.split('\n');
           )
         }
         {intro && <p class="op-intro">{intro}</p>}
-        <p class="op-credit" set:html={it(lang, 'ideaCredit', { name: META.ideaBy })} />
+        <p class="op-credit" set:html={ideaCredit(lang, META)} />
         <p class="op-date"><time datetime={META.updated}>{it(lang, 'updated', { date: updated })}</time></p>
         <div class="op-rule" aria-hidden="true"></div>
         <p class="op-cue">{first.text[lang]} <span aria-hidden="true">↓</span></p>

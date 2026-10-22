@@ -25,6 +25,8 @@ export interface InvestigationMeta {
   updated: string;
   /** Who proposed the idea (credited, never as author) */
   ideaBy: string;
+  /** How the idea credit reads (default: "Original idea"). */
+  ideaRole?: L;
   /** Optional standfirst shown right under the cover. */
   intro?: L;
   cover?: ImageMetadata;

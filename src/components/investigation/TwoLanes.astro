@@ -44,7 +44,7 @@ const laneName = (l: Lane) => (l === 'econ' ? it(lang, 'laneEcon') : l === 'sec'
   <header class="inv-head">
     <p class="inv-kicker">{it(lang, 'tlKicker')}</p>
     <h2 id="tl-title">{it(lang, 'tlTitle')}</h2>
-    <p class="inv-intro">{it(lang, 'tlIntro')}</p>
+    {it(lang, 'tlIntro').split('\n\n').map((p) => <p class="inv-intro">{p}</p>)}
   </header>
 
   <div class="tl-wrap">
@@ -123,6 +123,10 @@ const laneName = (l: Lane) => (l === 'econ' ? it(lang, 'laneEcon') : l === 'sec'
         ))
       }
     </ol>
+    <p class="inv-key tl-key">
+      <span class="inv-key-k">{it(lang, 'keyIdea')}</span>
+      {it(lang, 'tlKey')}
+    </p>
   </div>
 </section>
 

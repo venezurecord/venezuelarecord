@@ -16,7 +16,7 @@ import { localePath, type Lang } from '../../i18n/ui';
 import { SITE } from '../../lib/constants';
 import { META, R_ANCHORS, R_UI, SOURCES } from '../../data/investigations/residual-capacity-2026';
 import { META as PART1 } from '../../data/investigations/who-commands-venezuela-2026';
-import { it, longDate } from '../../data/investigations/ui';
+import { it, longDate, ideaCredit } from '../../data/investigations/ui';
 import { investigationUrl } from '../../data/investigations';
 
 interface Props {
@@ -101,7 +101,7 @@ const jsonLd = {
           <p class="rc-fig b"><b>{fmt(11468)}</b><span>{U.heroB}</span></p>
         </div>
         <p class="rc-src">{U.heroSrc}<Cite lang={lang} ids={[1]} anchor={A.src} /></p>
-        <p class="rc-credit" set:html={it(lang, 'ideaCredit', { name: META.ideaBy })} />
+        <p class="rc-credit" set:html={ideaCredit(lang, META)} />
         <p class="rc-meta">
           <time datetime={META.published}>{longDate(lang, META.published)}</time> · {U.readTime}
         </p>

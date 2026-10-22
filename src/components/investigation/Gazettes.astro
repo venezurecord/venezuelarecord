@@ -21,7 +21,7 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
   <header class="inv-head">
     <p class="inv-kicker">{it(lang, 'gzKicker')}</p>
     <h2 id="gz-title">{it(lang, 'gzTitle')}</h2>
-    <p class="inv-intro">{it(lang, 'gzIntro')}</p>
+    {it(lang, 'gzIntro').split('\n\n').map((p) => <p class="inv-intro">{p}</p>)}
   </header>
 
   <p class="swipe-hint" aria-hidden="true">{it(lang, 'gzSwipe')} <span>→</span></p>
@@ -37,7 +37,8 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
             <span>{g.date[lang]}</span>
             <span>{g.number[lang]}</span>
           </p>
-          <h3>{g.act[lang]}</h3>
+          <h3>{g.heading[lang]}</h3>
+          <p class="gz-act">{g.act[lang]}</p>
           <blockquote class="gz-text" lang="es">
             <p set:html={marked(g.article.es)} />
           </blockquote>
@@ -52,15 +53,6 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
                 {it(lang, 'gzProves')}
               </p>
               <p>{g.proves[lang]}</p>
-            </div>
-            <div class="no">
-              <p class="gz-v-h">
-                <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
-                  <path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" />
-                </svg>
-                {it(lang, 'gzNot')}
-              </p>
-              <p>{g.doesNot[lang]}</p>
             </div>
           </div>
           <p class="gz-src">
@@ -204,8 +196,14 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
     font: 700 0.8rem/1.3 var(--serif);
   }
   .gz-card h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
+    line-height: 1.25;
+    margin: 0 0 4px;
+  }
+  .gz-act {
     margin: 0 0 10px;
+    font: 700 0.86rem/1.35 var(--sans);
+    color: var(--ink-muted);
   }
   .gz-text {
     margin: 0;
@@ -255,11 +253,6 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
     padding-top: 12px;
     border-top: 1px solid color-mix(in srgb, var(--ink) 20%, transparent);
   }
-  @container (min-width: 420px) {
-    .gz-verdict {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
   .gz-verdict p {
     margin: 0;
     font: 0.88rem/1.45 var(--sans);
@@ -276,14 +269,6 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
   }
   .yes .gz-v-h {
     color: var(--inv-yes);
-  }
-  .no .gz-v-h {
-    color: var(--inv-sec-strong);
-  }
-  @media (prefers-color-scheme: dark) {
-    .no .gz-v-h {
-      color: var(--inv-sec);
-    }
   }
   .gz-src {
     margin: 12px 0 0;
