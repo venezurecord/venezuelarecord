@@ -18,7 +18,7 @@ const A = ANCHORS[lang];
   <header class="inv-head">
     <p class="inv-kicker">{it(lang, 'sigKicker')}</p>
     <h2 id="sig-title">{it(lang, 'sigTitle')}</h2>
-    <p class="inv-intro">{it(lang, 'sigIntro')}</p>
+    {it(lang, 'sigIntro').split('\n\n').map((p) => <p class="inv-intro">{p}</p>)}
   </header>
 
   <nav class="sig-ledger" aria-label={it(lang, 'sigLedger')}>

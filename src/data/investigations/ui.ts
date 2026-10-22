@@ -26,9 +26,10 @@ const en = {
 
   // sections
   sigKicker: 'The signature',
-  sigTitle: 'The same signature, two posts',
+  sigTitle: 'The same signature, a new position of command',
+  // Title and intro by Minerva Mendoza Paipa (2026-10-22); "\n\n" separates paragraphs.
   sigIntro:
-    'Organic laws in Venezuela are countersigned by the whole cabinet. What stands out is that one name appears twice on the same law, because she held two posts at once — and that, since January 2026, it appears alone.',
+    'The official gazettes make it possible to reconstruct a path of institutional power. Between 2015 and 2024, Delcy Rodríguez countersigned, from different posts in the Executive, rules that regulate counterintelligence bodies, structures of territorial organization and security mechanisms. In January 2026 her signature appears in a different position: as acting president, directly exercising the power to appoint the director of military counterintelligence. In March she exercises that power again. Her powers changed; the continuity of her role in these decisions is documented.\n\nInstitutional continuity does not always mean that the same people keep the same posts. It can also show when an official acquires new powers within structures they already knew and whose regulation they had helped shape.',
   sigHighlightNote: 'Yellow highlighting added by Venezuela Record.',
   sigAlone: 'Signed alone, no countersignatures',
   sigPosts: 'Posts in this signature',
@@ -135,9 +136,9 @@ const es: Dict = {
   sources: 'Fuentes',
 
   sigKicker: 'La firma',
-  sigTitle: 'La misma firma, dos cargos',
+  sigTitle: 'La misma firma, una nueva posición de mando',
   sigIntro:
-    'En Venezuela, las leyes orgánicas las refrenda todo el gabinete. Lo singular es que un mismo nombre aparezca dos veces en la misma ley, porque ocupaba dos cargos a la vez, y que desde enero de 2026 aparezca solo.',
+    'Las gacetas oficiales permiten reconstruir una trayectoria de poder institucional. Entre 2015 y 2024, Delcy Rodríguez refrendó, desde diferentes cargos del Ejecutivo, normas que regulan organismos de contrainteligencia, estructuras de organización territorial y mecanismos de seguridad. En enero de 2026, su firma aparece en una posición distinta: como presidenta encargada, ejerciendo directamente la facultad de designar al director de la contrainteligencia militar. En marzo vuelve a ejercer esa atribución. Cambiaron sus competencias; la continuidad de su participación en estas decisiones quedó documentada.\n\nLa continuidad institucional no siempre significa que las mismas personas conservan los mismos cargos. También puede manifestarse cuando una autoridad adquiere nuevas facultades dentro de estructuras que ya conocía y en cuya regulación había participado.',
   sigHighlightNote: 'El resaltado amarillo es de Venezuela Record.',
   sigAlone: 'Firma sola, sin refrendos',
   sigPosts: 'Cargos con los que firma',

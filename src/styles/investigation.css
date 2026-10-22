@@ -65,6 +65,9 @@ html:not(.js) .inv {
   color: var(--muted);
   text-wrap: pretty;
 }
+.inv-intro + .inv-intro {
+  margin-top: 1em;
+}
 .inv-toc {
   position: sticky;
   top: var(--inv-top);
