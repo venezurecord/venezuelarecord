@@ -344,11 +344,6 @@ export const R_UI = {
       'This piece relies on Foro Penal’s weekly balances and documents, the text of the Amnesty Law published in the Official Gazette, the 2026 report of the UN Fact-Finding Mission and verified press reports. Every figure carries its cut date and links to the page that reports it. A status in the matrix only changes with a verifiable official act: a gazette, a decree or a ruling. The risk of repetition is an inference based on explicit criteria, never a prediction about a specific person, so we speak of groups and not of personal cases.',
     methodWarning:
       'Available capacity does not by itself prove it will be used. Allegations are cited as what they are: attributed to whoever makes them. Foro Penal’s figures are its own verified counts; the government has not published the list of people granted amnesty.',
-    unverified: [
-      'Whether Alexis Rodríguez Cabello still heads SEBIN: the last public confirmation we found is from March 2026.',
-      'Whether VenApp’s political-reporting functions are still active in 2026: only its official use for emergencies (June) is documented.',
-      'Whether criminal records are actually being erased as article 14 of the Amnesty Law orders: there is no public way to check.',
-    ],
   },
   es: {
     kicker: 'Investigación · Segunda entrega',
@@ -369,10 +364,5 @@ export const R_UI = {
       'Esta pieza usa los balances semanales y documentos de Foro Penal, el texto de la Ley de Amnistía publicado en Gaceta Oficial, el informe de 2026 de la Misión de la ONU y prensa verificada. Cada cifra lleva su fecha de corte y enlaza a la página que la reporta. Un estado de la matriz solo cambia con un acto oficial verificable: gaceta, decreto o sentencia. El riesgo de repetición es una inferencia basada en criterios explícitos, nunca una predicción sobre una persona concreta; por eso hablamos de grupos y no de casos personales.',
     methodWarning:
       'Una capacidad disponible no prueba por sí sola que se vaya a usar. Las denuncias se citan como lo que son: atribuidas a quien las hace. Las cifras de Foro Penal son sus propios conteos verificados; el gobierno no ha publicado la lista de amnistiados.',
-    unverified: [
-      'Si Alexis Rodríguez Cabello sigue al frente del SEBIN: la última confirmación pública que encontramos es de marzo de 2026.',
-      'Si siguen activas en 2026 las funciones de denuncia política de VenApp: solo está documentado su uso oficial para emergencias (junio).',
-      'Si los antecedentes penales se están borrando como ordena el artículo 14 de la Ley de Amnistía: no hay forma pública de comprobarlo.',
-    ],
   },
 } as const;

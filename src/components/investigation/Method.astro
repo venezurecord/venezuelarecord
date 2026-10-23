@@ -3,7 +3,7 @@
 import type { Lang } from '../../i18n/ui';
 import { localePath, PAGES } from '../../i18n/ui';
 import { META, METHOD, SOURCES } from '../../data/investigations/who-commands-venezuela-2026';
-import { ANCHORS, it, itList, longDate, ideaCredit } from '../../data/investigations/ui';
+import { ANCHORS, it, longDate, ideaCredit } from '../../data/investigations/ui';
 
 interface Props {
   lang: Lang;
@@ -35,11 +35,6 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
         ))
       }
     </details>
-
-    <h3>{it(lang, 'methodUnverified')}</h3>
-    <ul class="mt-unv">
-      {itList(lang, 'methodUnverifiedItems').map((x) => <li>{x}</li>)}
-    </ul>
 
     <p class="mt-credit" set:html={ideaCredit(lang, META)} />
     <p class="mt-small">{it(lang, 'methodChecked', { date: longDate(lang, META.updated) })}</p>
@@ -152,12 +147,6 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
     border-left: 4px solid var(--inv-hl-ink);
     background: var(--surface);
     font: 600 1rem/1.55 var(--sans);
-  }
-  .mt-unv {
-    padding-left: 20px;
-    display: grid;
-    gap: 6px;
-    font: 0.95rem/1.5 var(--sans);
   }
   .mt-credit {
     margin-top: 28px;

@@ -13,9 +13,8 @@ interface Props {
   anchor: string;
   body: string;
   warning: string;
-  unverified: string[];
 }
-const { lang, meta, sources, anchor, body, warning, unverified } = Astro.props;
+const { lang, meta, sources, anchor, body, warning } = Astro.props;
 const A = { src: anchor };
 const SOURCES = sources;
 const META = meta;
@@ -28,11 +27,6 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
     <h2 id="mt-title">{it(lang, 'methodTitle')}</h2>
     <p class="mt-body">{body}</p>
     <p class="mt-warn" role="note">{warning}</p>
-
-    <h3>{it(lang, 'methodUnverified')}</h3>
-    <ul class="mt-unv">
-      {unverified.map((x) => <li>{x}</li>)}
-    </ul>
 
     <p class="mt-credit" set:html={ideaCredit(lang, META)} />
     <p class="mt-small">{it(lang, 'methodChecked', { date: longDate(lang, META.updated) })}</p>
@@ -140,12 +134,6 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
     border-left: 4px solid var(--inv-hl-ink);
     background: var(--surface);
     font: 600 1rem/1.55 var(--sans);
-  }
-  .mt-unv {
-    padding-left: 20px;
-    display: grid;
-    gap: 6px;
-    font: 0.95rem/1.5 var(--sans);
   }
   .mt-credit {
     margin-top: 28px;

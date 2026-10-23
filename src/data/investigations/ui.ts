@@ -105,14 +105,6 @@ const en = {
   methodTitle: 'How we did it',
   keyIdea: 'Key idea',
   methodMore: 'Read the full method',
-  methodUnverified: 'What we could not verify',
-  methodUnverifiedItems: [
-    'Whether Alexis Rodríguez Cabello still heads SEBIN: the last public confirmation we found is from March 2026.',
-    'Which force detained Javier Oropeza on 17 September 2026: El Pitazo and the opposition say the PNB; Infobae and NTN24 say SEBIN.',
-    'Whether VenApp’s political-reporting functions are still active in 2026: its official use for emergencies (June) is documented, but not those functions.',
-    'Under what conditions Yorman Acevedo was released on 26 September 2026: they were not disclosed.',
-    'The full deployment of the “Crystal Vault” described by La Gran Aldea: it requires technical verification.',
-  ],
   methodCorrections: 'Found an error? Write to us through our {link}. We reply within 7 days.',
   correctionsPage: 'corrections page',
   methodChecked: 'Sources and posts last checked on {date}.',
@@ -228,14 +220,6 @@ const es: Dict = {
   methodTitle: 'Cómo se hizo',
   keyIdea: 'Idea clave',
   methodMore: 'Leer el método completo',
-  methodUnverified: 'Lo que no pudimos verificar',
-  methodUnverifiedItems: [
-    'Si Alexis Rodríguez Cabello sigue al frente del SEBIN: la última confirmación pública que encontramos es de marzo de 2026.',
-    'Qué cuerpo detuvo a Javier Oropeza el 17 de septiembre de 2026: El Pitazo y la oposición dicen la PNB; Infobae y NTN24, el SEBIN.',
-    'Si siguen activas en 2026 las funciones de denuncia política de VenApp: está documentado su uso oficial para emergencias (junio), no esas funciones.',
-    'En qué condiciones fue excarcelado Yorman Acevedo el 26 de septiembre de 2026: no se informaron.',
-    'La implantación íntegra de la «Bóveda de Cristal» descrita por La Gran Aldea: requiere verificación técnica.',
-  ],
   methodCorrections: '¿Encontraste un error? Escríbenos desde nuestra {link}. Respondemos en un máximo de 7 días.',
   correctionsPage: 'página de correcciones',
   methodChecked: 'Fuentes y cargos verificados por última vez el {date}.',
@@ -252,11 +236,10 @@ const dict = { en, es } as Record<Lang, Dict>;
 export const ideaCredit = (lang: Lang, meta: { ideaBy: string; ideaRole?: Record<Lang, string> }) =>
   it(lang, 'ideaCredit', { name: meta.ideaBy, role: meta.ideaRole?.[lang] ?? it(lang, 'ideaRoleDefault') });
 
-export function it(lang: Lang, key: Exclude<Key, 'methodUnverifiedItems'>, vars: Record<string, string | number> = {}): string {
+export function it(lang: Lang, key: Key, vars: Record<string, string | number> = {}): string {
   return (dict[lang][key] as string).replace(/\{(\w+)\}/g, (_, k) => String(vars[k] ?? `{${k}}`));
 }
 
-export const itList = (lang: Lang, key: 'methodUnverifiedItems') => dict[lang][key];
 
 /** "13 October 2026" / "13 de octubre de 2026" */
 export const longDate = (lang: Lang, iso: string) =>
