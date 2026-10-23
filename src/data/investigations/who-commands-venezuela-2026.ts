@@ -699,6 +699,8 @@ export interface GuidedStep {
   text: L;
   /** Key idea, shown as a highlighted line (Minerva Mendoza Paipa). */
   key?: L;
+  /** Extra panel drawn under the text (from Minerva Mendoza Paipa's sketches). */
+  panel?: 'decrees' | 'command';
   nodes: string[];
 }
 
@@ -721,26 +723,28 @@ export const STEPS: GuidedStep[] = [
         en: 'The appointments reveal who exercises authority. The permanence of the structures makes it possible to examine what institutional capacity the State keeps.',
         es: 'Los nombramientos revelan quién ejerce la autoridad. La permanencia de las estructuras permite examinar qué capacidad institucional conserva el Estado.',
       },
+    panel: 'decrees',
     nodes: ['delcy', 'gonzalez', 'dgcim', 'cabello', 'sebin'],
   },
   {
     title: { en: '3 · From central command to territorial control', es: '3 · Del mando central al control territorial' },
     text: {
-        en: 'The organization of State power takes on a territorial dimension through the agencies in charge of security, intelligence and defense.\n\nThe Interior Ministry has powers over the national police forces and governs the police service. The Defense Ministry holds the military chain of command, while the law ties the Bolivarian Militia to communal councils and communes in security and defense activities.\n\nTo this formal organization the United Nations adds documented de facto links between colectivos, State authorities and security agencies. The territorial dimension of power helps explain how decisions taken by the central authorities can turn into concrete actions against the population.',
-        es: 'La organización del poder estatal adquiere una dimensión territorial a través de los organismos encargados de la seguridad, la inteligencia y la defensa.\n\nEl Ministerio de Interior ejerce competencias sobre los cuerpos policiales nacionales y funciones rectoras del servicio de policía. El Ministerio de Defensa integra la estructura de mando militar, mientras la legislación vincula a la Milicia Bolivariana con consejos comunales y comunas en actividades de seguridad y defensa.\n\nA esta organización formal se suman vínculos de hecho documentados por Naciones Unidas entre colectivos, autoridades estatales y organismos de seguridad. La dimensión territorial del poder permite comprender cómo las decisiones adoptadas por las autoridades centrales pueden traducirse en actuaciones concretas sobre la población.',
-      },
+      en: 'The organization of State power takes on a territorial dimension through the agencies in charge of security, intelligence and defense.\n\nThe Interior Ministry has powers over the national police forces and governs the police service. The Defense Ministry holds the military chain of command, while the law ties the Bolivarian Militia to communal councils and communes in security and defense activities.\n\nTo this formal organization the United Nations adds documented de facto links between colectivos, State authorities and security agencies. The coexistence of legal powers and informal ties calls for examining how those relationships work, who takes part in the actions and what responsibility belongs to each institution.\n\nThe territorial dimension of power helps explain how decisions taken by the central authorities can turn into concrete actions against the population. Determining when those actions amount to political persecution requires identifying the facts, those responsible, the people affected and the documented motivations.',
+      es: 'La organización del poder estatal adquiere una dimensión territorial a través de los organismos encargados de la seguridad, la inteligencia y la defensa.\n\nEl Ministerio de Interior ejerce competencias sobre los cuerpos policiales nacionales y funciones rectoras del servicio de policía. El Ministerio de Defensa integra la estructura de mando militar, mientras la legislación vincula a la Milicia Bolivariana con consejos comunales y comunas en actividades de seguridad y defensa.\n\nA esta organización formal se suman vínculos de hecho documentados por Naciones Unidas entre colectivos, autoridades estatales y organismos de seguridad. La coexistencia de competencias legales y vínculos informales exige examinar cómo funcionan esas relaciones, quién interviene en las actuaciones y qué responsabilidad corresponde a cada institución.\n\nLa dimensión territorial del poder permite comprender cómo las decisiones adoptadas por las autoridades centrales pueden traducirse en actuaciones concretas sobre la población. Determinar cuándo esas actuaciones constituyen persecución política exige identificar los hechos, sus responsables, las personas afectadas y las motivaciones documentadas.',
+    },
     key: {
         en: 'Institutional command establishes who holds authority. Documented actions show how it is exercised.',
         es: 'El mando institucional establece quién tiene autoridad. Las actuaciones documentadas permiten establecer cómo se ejerce.',
       },
+    panel: 'command',
     nodes: ['cabello', 'gonzalez', 'cicpc', 'pnb', 'gob', 'polest', 'fanb', 'consejos', 'colectivos', 'venapp'],
   },
   {
     title: { en: '4 · Political opinion under persecution', es: '4 · La opinión política bajo persecución' },
     text: {
-        en: 'Political persecution takes a concrete shape when we look at what happens to people who criticize the government or whom the authorities identify as opponents.\n\nIn January 2026, SEBIN detained Yorman Acevedo over a TikTok comment about Maduro’s capture; he was accused of “incitement to hatred.” He was released on 26 September; the conditions were not disclosed. In September, Javier Oropeza, a former mayor and opposition leader, was detained in Barquisimeto 48 hours after returning from more than two years in exile, even though the day before he had obtained the dismissal of his case under the Amnesty Law. He was released some six hours later, with precautionary measures according to the opposition.\n\nThese cases, after Maduro’s departure, make it possible to examine the continuity of State actions against people for their expression or political activity. The permanence of the security structures thus matters beyond the org charts: their actions can directly affect freedom of expression, political participation and the safety of those who question power.',
-        es: 'La persecución política adquiere una dimensión concreta cuando examinamos qué ocurre con quienes expresan críticas al gobierno o son identificados por las autoridades como opositores.\n\nEn enero de 2026, el SEBIN detuvo a Yorman Acevedo por un comentario en TikTok sobre la captura de Maduro; lo acusaron de “instigación al odio”. Fue excarcelado el 26 de septiembre; no se informaron las condiciones. En septiembre, Javier Oropeza, exalcalde y dirigente opositor, fue detenido en Barquisimeto 48 horas después de regresar de más de dos años de exilio, pese a que el día anterior había obtenido el sobreseimiento de su causa con la Ley de Amnistía. Lo excarcelaron unas seis horas después, con medidas cautelares según la oposición.\n\nEstos casos, posteriores a la salida de Maduro, permiten examinar la continuidad de actuaciones estatales contra personas por su expresión o actividad política. La permanencia de las estructuras de seguridad adquiere así una relevancia que trasciende los organigramas: sus actuaciones pueden afectar directamente la libertad de expresión, la participación política y la seguridad de quienes cuestionan al poder.',
-      },
+      en: 'Political persecution takes a concrete shape when we look at what happens to people who criticize the government or whom the authorities identify as opponents. The question is not limited to whether detentions occur: it covers the reasons behind them, the agencies involved and their consequences for the exercise of political rights.\n\nIn January 2026, SEBIN detained Yorman Acevedo over a TikTok comment about Maduro’s capture; he was accused of “incitement to hatred.” He was released on 26 September; the conditions were not disclosed.\n\nIn September, Javier Oropeza, a former mayor and opposition leader, was detained 48 hours after returning to Venezuela from more than two years in exile, even though the day before he had obtained the dismissal of his case under the Amnesty Law. He was released some six hours later, with precautionary measures according to the opposition.\n\nThese cases make it possible to examine State actions, after Maduro’s departure, against people identified by their expression or political record. The United Nations also documented, as a notable new pattern, short-term arbitrary detentions and measures of intimidation against people perceived as opponents (para. 61).\n\nThe permanence of the security structures thus matters beyond the org charts: their actions can directly affect freedom of expression, political participation and the safety of those who question power.',
+      es: 'La persecución política adquiere una dimensión concreta cuando examinamos qué ocurre con quienes expresan críticas al gobierno o son identificados por las autoridades como opositores. La cuestión no se limita a la existencia de detenciones: comprende las razones que las motivan, los organismos que intervienen y las consecuencias que producen sobre el ejercicio de los derechos políticos.\n\nEn enero de 2026, el SEBIN detuvo a Yorman Acevedo por un comentario en TikTok sobre la captura de Maduro; lo acusaron de “instigación al odio”. Fue excarcelado el 26 de septiembre; no se informaron las condiciones.\n\nEn septiembre, Javier Oropeza, exalcalde y dirigente opositor, fue detenido 48 horas después de regresar a Venezuela tras más de dos años de exilio, pese a que el día anterior había obtenido el sobreseimiento de su causa con la Ley de Amnistía. Fue excarcelado unas seis horas después, con medidas cautelares según la oposición.\n\nEstos casos permiten examinar actuaciones estatales posteriores a la salida de Maduro frente a personas identificadas por su expresión o trayectoria política. Naciones Unidas también documentó, como un patrón nuevo, la utilización de detenciones arbitrarias breves y medidas de intimidación contra personas percibidas como opositoras (párr. 61).\n\nLa permanencia de las estructuras de seguridad adquiere así una relevancia que trasciende los organigramas: sus actuaciones pueden afectar directamente la libertad de expresión, la participación política y la seguridad de quienes cuestionan al poder.',
+    },
     key: {
         en: 'Persecution for political opinion does not require holding an opposition post. It can also reach anyone who voices public criticism or is identified as opposed to those in power.',
         es: 'La persecución por opinión política no requiere que una persona ocupe un cargo opositor. También puede afectar a quien expresa una crítica pública o es identificado como contrario al poder.',
@@ -1125,4 +1129,42 @@ export const VAULT = {
   hub: { en: '“A single centralized node”, according to La Gran Aldea', es: '«Un solo nodo centralizado», según La Gran Aldea' },
   result: { en: 'Cross-referencing and identification: the described possibility of relating identity, movements and financial operations, and of restricting services', es: 'Cruce e identificación de información: la posibilidad descrita de relacionar identidad, movimientos y operaciones, y de restringir servicios' },
   caption: { en: 'Diagram by Venezuela Record based on the description in La Gran Aldea. Its full deployment has not been technically verified.', es: 'Esquema de Venezuela Record a partir de la descripción de La Gran Aldea. Su implantación íntegra no ha sido verificada técnicamente.' },
+};
+
+/** Step 2 panel: the three key decrees (Minerva Mendoza Paipa's sketch). */
+export const STEP_DECREES: { n: string; date: L; text: L; src: number[] }[] = [
+  { n: '5.203', date: { en: '6 January 2026', es: '6 de enero de 2026' }, text: { en: 'Appoints Gustavo González López director of the DGCIM.', es: 'Designa a Gustavo González López director de la DGCIM.' }, src: [26, 3] },
+  { n: '5.277', date: { en: '18 March 2026', es: '18 de marzo de 2026' }, text: { en: 'Appoints Gustavo González López Minister of Defense.', es: 'Designa a Gustavo González López ministro de Defensa.' }, src: [56] },
+  { n: '5.284', date: { en: '18 March 2026', es: '18 de marzo de 2026' }, text: { en: 'Appoints Germán Edoardo Gómez Lárez director of the DGCIM.', es: 'Designa a Germán Edoardo Gómez Lárez director de la DGCIM.' }, src: [37, 6] },
+];
+
+/** Step 3 panel: the two chains of command and the territory (Minerva Mendoza Paipa's sketch). */
+export const STEP_COMMAND = {
+  cols: [
+    {
+      tone: 'int',
+      head: { en: 'Interior Ministry', es: 'Ministerio del Interior' },
+      who: 'Diosdado Cabello',
+      items: [
+        { name: { en: 'National Police (PNB)', es: 'Policía Nacional (PNB)' }, how: { en: 'Reports to Interior (legal command)', es: 'Adscrita a Interior (mando legal)' }, src: [10] },
+        { name: { en: 'CICPC (criminal police)', es: 'CICPC (policía científica)' }, how: { en: 'Reports to Interior (legal command)', es: 'Adscrito a Interior (mando legal)' }, src: [10] },
+        { name: { en: 'State police forces', es: 'Policías estadales' }, how: { en: 'Interior governs the police service (coordination)', es: 'Interior es el órgano rector del servicio de policía (coordinación)' }, src: [39] },
+      ],
+    },
+    {
+      tone: 'def',
+      head: { en: 'Defense Ministry', es: 'Ministerio de Defensa' },
+      who: 'Gustavo González López',
+      items: [
+        { name: { en: 'Armed Forces (FANB)', es: 'Fuerza Armada (FANB)' }, how: { en: 'Institutional command', es: 'Mando institucional' }, src: [7] },
+        { name: { en: 'National Guard', es: 'Guardia Nacional' }, how: { en: 'FANB component; not reformed, says the UN (para. 46)', es: 'Componente de la FANB; sin reforma, según la ONU (párr. 46)' }, src: [1] },
+        { name: { en: 'Bolivarian Militia', es: 'Milicia Bolivariana' }, how: { en: 'Security and defense with communal councils and communes, by law', es: 'Seguridad y defensa con consejos comunales y comunas, prevista por ley' }, src: [32, 35] },
+      ],
+    },
+  ],
+  ground: [
+    { tone: 'un', name: { en: 'Colectivos', es: 'Colectivos' }, how: { en: 'De facto links with police and intelligence documented by the UN (paras. 93–96)', es: 'Vínculos de hecho con policías e inteligencia documentados por la ONU (párrs. 93–96)' }, src: [1] },
+    { tone: 'law', name: { en: 'Communal councils and communes', es: 'Consejos comunales y comunas' }, how: { en: 'Security and defense tasks set by law, jointly with the Militia', es: 'Tareas de seguridad y defensa previstas por ley, junto con la Milicia' }, src: [32, 35] },
+  ],
+  result: { en: 'Documented actions against people perceived as opponents (step 4)', es: 'Actuaciones documentadas contra personas percibidas como opositoras (paso 4)' },
 };

@@ -181,6 +181,11 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
   institucional; gacetas sin «Qué no prueba» y con título interpretativo; balance con etiquetas de estado (`BAL_STATUS`:
   la reforma de la Ley contra el Odio va como «En trámite, no vigente») y ensayo `BAL_ESSAY`; método = su «arquitectura
   metodológica» (`METHOD`); crédito «Idea original y arquitectura metodológica» (`META.ideaRole`, helper `ideaCredit`).
+  **Teléfono (2026-10-22, Roger):** la apertura usa una franja horizontal fija arriba (`op-band`) y las tarjetas corren
+  debajo sin taparla; firmas y gacetas son cuadros que se amplían al tocarlos (`src/scripts/tiles.ts`, uno abierto a la
+  vez) en vez de carrusel; la barra inferior del organigrama muestra el inicio del paso y «Leer el paso completo».
+  Pasos 2 y 3 llevan paneles de los bocetos de Minerva (`StepPanel.astro`: decretos clave; Interior/Defensa). Escritorio
+  sin cambios.
   Sección nueva «Bóveda de Cristal» (`CrystalVault.astro`, datos `VAULT`): se presenta como columna con fuentes anónimas
   (La Gran Aldea), citada por la EUAA; el esquema aclara que no está verificado técnicamente. Nada de fotos de los casos.
 - **Segunda investigación (idea: Minerva Mendoza Paipa):** «La capacidad de perseguir sigue ahí» / «The Capacity to

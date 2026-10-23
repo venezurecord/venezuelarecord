@@ -34,23 +34,22 @@ const wSec = (m: number) => W.y + 5 + 78 * ease(m, 0.22);
 const wEconD = path(range.map((m) => [wx(m), wEcon(m)]));
 const wSecD = path(range.map((m) => [wx(m), wSec(m)]));
 
-// Tall stage (phones): time runs top → bottom; economy bends left, security goes right and stays straight.
-// Compact viewBox so the text stays at least 14 px on a phone.
-const T = { y0: 104, y1: 556, x: 200 };
-const ty = (m: number) => T.y0 + ((T.y1 - T.y0) * m) / 10;
-const tEcon = (m: number) => T.x - 4 - 100 * ease(m, 1.6) - 14 * Math.sin(m * 1.8) * ease(m, 0.8);
-const tSec = (m: number) => T.x + 4 + 112 * ease(m, 0.22);
-const tEconD = path(range.map((m) => [tEcon(m), ty(m)]));
-const tSecD = path(range.map((m) => [tSec(m), ty(m)]));
+// Band stage (phones and portrait screens): time runs left → right in a short strip pinned at the top, so the text
+// can scroll below it. Compact viewBox so labels stay about 11–12 px on a phone.
+const B = { x0: 30, x1: 326, y: 128 };
+const bx = (m: number) => B.x0 + ((B.x1 - B.x0) * m) / 10;
+const bEcon = (m: number) => B.y - 4 - 74 * ease(m, 1.9) - 8 * Math.sin(m * 1.75) * ease(m, 0.8);
+const bSec = (m: number) => B.y + 4 + 26 * ease(m, 0.22);
+const bEconD = path(range.map((m) => [bx(m), bEcon(m)]));
+const bSecD = path(range.map((m) => [bx(m), bSec(m)]));
 
 const shortDate = (s: string) => s.split(' · ')[0];
 const econ = OPENING.econLabels.map((l, i) => ({ i, m: monthPos(l.date), label: l.label[lang] }));
 const sec = OPENING.secLabels.map((l, i) => ({ i, m: monthPos(l.date), label: l.label[lang] }));
 // Wide labels: alternate rows so neighbours never collide.
 const wSecDy = (i: number, m: number) => (m < 1 ? 26 : i % 2 ? 56 : 32);
-// Tall labels (date only): nudge the two pairs that fall at similar heights.
-const tEconDy = [0, -14, -10];
-const tSecDy = [6, 0, 18, -20];
+// Band labels (date only): security labels alternate rows so neighbours never collide.
+const bSecDy = [20, 20, 36, 20];
 const [first, econStep, secStep] = OPENING.steps;
 const updated = longDate(lang, META.updated);
 const unReport = SOURCES.find((s) => s.id === 1)?.url;
@@ -103,39 +102,38 @@ const lines = (t: string) => t.split('\n');
       }
     </svg>
 
-    <svg class="op-svg op-tall" viewBox="0 0 400 600" preserveAspectRatio="xMidYMin meet" focusable="false" aria-hidden="true">
+    <svg class="op-svg op-band" viewBox="0 0 340 232" preserveAspectRatio="xMidYMid meet" focusable="false" aria-hidden="true">
       <g class="op-base">
-        <line y1="-400" y2={T.y0 + 3} x1={T.x - 4} x2={T.x - 4}></line>
-        <line y1="-400" y2={T.y0 + 3} x1={T.x + 4} x2={T.x + 4}></line>
+        <line x1="0" x2={B.x0 + 2} y1={B.y - 4} y2={B.y - 4}></line>
+        <line x1="0" x2={B.x0 + 2} y1={B.y + 4} y2={B.y + 4}></line>
       </g>
       <g class="op-split">
-        <line x1="64" x2="384" y1={T.y0} y2={T.y0}></line>
-        <text x={T.x - 16} y={T.y0 - 10} text-anchor="end">{lang === 'en' ? '3 Jan 2026' : '3 ene 2026'}</text>
+        <line x1={B.x0} x2={B.x0} y1="30" y2="198"></line>
+        <text x={B.x0 + 6} y="24">{lang === 'en' ? '3 Jan 2026' : '3 ene 2026'}</text>
       </g>
-      <path class="op-lane op-econ" d={tEconD} pathLength="1"></path>
-      <path class="op-lane op-sec" d={tSecD} pathLength="1"></path>
+      <path class="op-lane op-econ" d={bEconD} pathLength="1"></path>
+      <path class="op-lane op-sec" d={bSecD} pathLength="1"></path>
+      <text class="op-lane-name op-econ-name" x={B.x1} y={f(bEcon(10) + 22)} text-anchor="end">{it(lang, 'laneEcon')}</text>
+      <text class="op-lane-name op-sec-name" x={B.x1} y={f(bSec(10) - 10)} text-anchor="end">{lang === 'en' ? 'Security' : 'Seguridad'}</text>
       <g class="op-axis">
-        {months.map((m, i) => <text x="4" y={f(ty(i + 0.5) + 6)}>{m}</text>)}
+        <line x1={B.x0} x2={B.x1} y1="200" y2="200"></line>
+        {months.map((m, i) => <text x={f(bx(i + 0.5))} y="220" text-anchor="middle">{m}</text>)}
       </g>
-      <text class="op-lane-name op-econ-name" x={f(tEcon(10))} y="592" text-anchor="middle">{it(lang, 'laneEcon')}</text>
-      <text class="op-lane-name op-sec-name" x={f(tSec(10))} y="592" text-anchor="middle">{lang === 'en' ? 'Security' : 'Seguridad'}</text>
       {
         econ.map((e) => (
           <g class="op-pt op-pt-econ" style={`--i:${e.i}`}>
-            <circle cx={f(tEcon(e.m))} cy={f(ty(e.m))} r="7"></circle>
-            <text x={f(tEcon(e.m) + 14)} y={f(ty(e.m) + 7 + tEconDy[e.i])}>{shortDate(e.label)}</text>
+            <circle cx={f(bx(e.m))} cy={f(bEcon(e.m))} r="5"></circle>
+            <text x={f(bx(e.m))} y={f(bEcon(e.m) - 11)} text-anchor="middle">
+              {shortDate(e.label)}
+            </text>
           </g>
         ))
       }
       {
         sec.map((e) => (
           <g class="op-pt op-pt-sec" style={`--i:${e.i}`}>
-            <circle cx={f(tSec(e.m))} cy={f(ty(e.m))} r="7"></circle>
-            <text
-              x={f(tSec(e.m) + (e.i === 0 ? 14 : -14))}
-              y={f(ty(e.m) + 7 + tSecDy[e.i])}
-              text-anchor={e.i === 0 ? 'start' : 'end'}
-            >
+            <circle cx={f(bx(e.m))} cy={f(bSec(e.m))} r="5"></circle>
+            <text x={f(bx(e.m) + (e.m < 1 ? 8 : 0))} y={f(bSec(e.m) + bSecDy[e.i])} text-anchor={e.m < 1 ? 'start' : 'middle'}>
               {shortDate(e.label)}
             </text>
           </g>
@@ -228,12 +226,15 @@ const lines = (t: string) => t.split('\n');
     // directly (on load, scroll and resize) instead of trusting IntersectionObserver's first report,
     // which on some phones fired for the wrong step before layout settled and left the page there.
     const steps = [...op.querySelectorAll<HTMLElement>('.op-step')];
+    const stage = op.querySelector<HTMLElement>('.op-stage')!;
     let queued = false;
     const update = () => {
       queued = false;
       const box = op.getBoundingClientRect();
       if (box.bottom < 0 || box.top > innerHeight) return;
-      const mid = innerHeight / 2;
+      // Phones: the graphic is a short band pinned at the top; read the step that enters the text area below it.
+      const sb = stage.getBoundingClientRect().bottom;
+      const mid = sb < innerHeight * 0.6 ? sb + (innerHeight - sb) * 0.4 : innerHeight / 2;
       let current = steps[0].dataset.i!;
       for (const s of steps) if (s.getBoundingClientRect().top <= mid) current = s.dataset.i!;
       if (op.dataset.step !== current) op.dataset.step = current;
@@ -294,15 +295,15 @@ const lines = (t: string) => t.split('\n');
   .op-wide {
     display: none;
   }
-  .op-tall {
-    inset: 72px 0 auto;
-    height: calc(58% - 28px);
+  .op-band {
+    inset: 24px 0 0;
+    height: calc(100% - 28px);
   }
   @media (min-width: 900px) and (min-aspect-ratio: 1/1) {
     .op-wide {
       display: block;
     }
-    .op-tall {
+    .op-band {
       display: none;
     }
   }
@@ -326,9 +327,11 @@ const lines = (t: string) => t.split('\n');
     fill: var(--op-muted);
     font: 600 15px var(--sans);
   }
-  .op-tall .op-split text,
-  .op-tall .op-axis text {
-    font-size: 19px;
+  .op-band .op-split text {
+    font-size: 11px;
+  }
+  .op-band .op-axis text {
+    font-size: 11px;
   }
   .op-axis line {
     stroke: rgba(255, 255, 255, 0.18);
@@ -341,8 +344,8 @@ const lines = (t: string) => t.split('\n');
     stroke-dasharray: 1;
     stroke-dashoffset: 0;
   }
-  .op-tall .op-lane {
-    stroke-width: 5;
+  .op-band .op-lane {
+    stroke-width: 3;
   }
   .op-econ {
     stroke: var(--op-econ);
@@ -355,8 +358,8 @@ const lines = (t: string) => t.split('\n');
     letter-spacing: 0.1em;
     text-transform: uppercase;
   }
-  .op-tall .op-lane-name {
-    font-size: 18px;
+  .op-band .op-lane-name {
+    font-size: 11px;
   }
   .op-econ-name {
     fill: var(--op-econ);
@@ -372,9 +375,13 @@ const lines = (t: string) => t.split('\n');
     stroke-width: 5px;
     stroke-linejoin: round;
   }
-  .op-tall .op-pt text {
-    font-size: 20px;
+  .op-band .op-pt text {
+    font-size: 11.5px;
     font-weight: 700;
+    stroke-width: 4px;
+  }
+  .op-band .op-pt circle {
+    stroke-width: 2.5;
   }
   .op-pt-econ circle {
     fill: var(--op-bg);
@@ -396,6 +403,11 @@ const lines = (t: string) => t.split('\n');
     }
     :global(html.js) .op[data-step='0'] :is(.op-svg, .op-note) {
       opacity: 0;
+    }
+    @media not ((min-width: 900px) and (min-aspect-ratio: 1/1)) {
+      :global(html.js) .op[data-step='0'] :is(.op-band, .op-note) {
+        opacity: 1;
+      }
     }
     :global(html.js) .op .op-lane {
       transition:
@@ -619,11 +631,36 @@ const lines = (t: string) => t.split('\n');
     }
   }
 
-  /* Phones / portrait: graphic in the upper part of the screen, cards anchored at the bottom */
+  /* Phones / portrait: the graphic is a short band pinned under the site header; the cards scroll below it and slide
+     under the band, so the text never covers the lanes. */
   @media not ((min-width: 900px) and (min-aspect-ratio: 1/1)) {
+    .op {
+      --op-band: clamp(220px, 34svh, 300px);
+    }
+    .op-stage {
+      z-index: 2;
+      height: var(--op-band);
+      background: var(--op-bg);
+      box-shadow: 0 10px 18px rgba(11, 15, 23, 0.9);
+    }
+    .op-note {
+      top: 6px;
+      font-size: 0.7rem;
+    }
+    .op-steps {
+      margin-top: 0;
+    }
     .op-step:not(.op-hero) {
-      align-items: flex-end;
-      padding-bottom: max(14px, 2svh);
+      min-height: calc(100svh - var(--inv-top) - var(--op-band) - 8px);
+      align-items: flex-start;
+      padding-block: 20px 28px;
+    }
+    .op-hero.op-hero-short {
+      background: none;
+      padding-bottom: 28px;
+    }
+    .op-rule {
+      display: none;
     }
     .op-card {
       width: 100%;

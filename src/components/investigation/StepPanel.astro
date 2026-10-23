@@ -1,0 +1,179 @@
+---
+// Extra panels of the guided org-chart steps, drawn in HTML so they read well on a phone:
+// step 2 = the three key decrees; step 3 = the two chains of command and the territory.
+import type { Lang } from '../../i18n/ui';
+import { STEP_COMMAND, STEP_DECREES } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+
+interface Props {
+  lang: Lang;
+  panel: 'decrees' | 'command';
+}
+const { lang, panel } = Astro.props;
+const A = ANCHORS[lang];
+---
+
+{
+  panel === 'decrees' && (
+    <div class="sp sp-decrees">
+      <p class="sp-k">{it(lang, 'keyDecrees')}</p>
+      <ol>
+        {STEP_DECREES.map((d, i) => (
+          <li>
+            <span class="sp-n" aria-hidden="true">{i + 1}</span>
+            <span>
+              <strong>{it(lang, 'decree')} {d.n}</strong> · {d.date[lang]}
+              <br />
+              {d.text[lang]}
+              <Cite lang={lang} ids={d.src} anchor={A.src} />
+            </span>
+          </li>
+        ))}
+      </ol>
+    </div>
+  )
+}
+{
+  panel === 'command' && (
+    <div class="sp sp-command">
+      <div class="sp-cols">
+        {STEP_COMMAND.cols.map((c) => (
+          <div class:list={['sp-col', c.tone]}>
+            <p class="sp-head">{c.head[lang]}</p>
+            <p class="sp-who">{c.who}</p>
+            <ul>
+              {c.items.map((x) => (
+                <li>
+                  <strong>{x.name[lang]}</strong>
+                  <span>
+                    {x.how[lang]}
+                    <Cite lang={lang} ids={x.src} anchor={A.src} />
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <ul class="sp-ground">
+        {STEP_COMMAND.ground.map((g) => (
+          <li class={g.tone}>
+            <strong>{g.name[lang]}</strong>
+            <span>
+              {g.how[lang]}
+              <Cite lang={lang} ids={g.src} anchor={A.src} />
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p class="sp-result">{STEP_COMMAND.result[lang]}</p>
+    </div>
+  )
+}
+
+<style>
+  .sp {
+    margin: 14px 0 4px;
+    font: 0.86rem/1.4 var(--sans);
+    color: var(--text);
+  }
+  .sp-k {
+    margin: 0 0 8px !important;
+    font: 700 0.7rem/1.4 var(--sans) !important;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--inv-hl-ink);
+  }
+  .sp-decrees ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .sp-decrees li {
+    display: flex;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    background: var(--surface);
+  }
+  .sp-n {
+    flex: 0 0 24px;
+    display: grid;
+    place-items: center;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--inv-hl-ink);
+    color: var(--bg);
+    font: 700 0.8rem/1 var(--sans);
+  }
+  .sp-cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .sp-col {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+  }
+  .sp-col.int {
+    background: color-mix(in srgb, var(--inv-appoint) 9%, transparent);
+  }
+  .sp-col.def {
+    background: color-mix(in srgb, var(--inv-sec) 9%, transparent);
+  }
+  .sp-head {
+    margin: 0 !important;
+    font: 700 0.84rem/1.25 var(--sans) !important;
+  }
+  .sp-who {
+    margin: 0 0 8px !important;
+    font: 0.78rem/1.3 var(--sans) !important;
+    color: var(--muted);
+  }
+  .sp-col ul,
+  .sp-ground {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 8px;
+  }
+  .sp-col li,
+  .sp-ground li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .sp-col li span,
+  .sp-ground li span {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+  .sp-ground {
+    margin-top: 8px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .sp-ground li {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px dashed var(--inv-un);
+  }
+  .sp-ground li.law {
+    border-style: solid;
+    border-color: var(--line);
+  }
+  .sp-result {
+    margin: 8px 0 0 !important;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--inv-sec) 14%, transparent);
+    border: 1px solid color-mix(in srgb, var(--inv-sec) 45%, transparent);
+    font: 700 0.84rem/1.35 var(--sans) !important;
+    text-align: center;
+  }
+</style>

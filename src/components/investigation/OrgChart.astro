@@ -16,6 +16,7 @@ import {
 } from '../../data/investigations/who-commands-venezuela-2026';
 import { ANCHORS, it } from '../../data/investigations/ui';
 import Cite from './Cite.astro';
+import StepPanel from './StepPanel.astro';
 
 interface Props {
   lang: Lang;
@@ -194,6 +195,7 @@ const nameLines = (full: string) => {
             <p class="org-step-n">{it(lang, 'step', { n: i + 1, total: STEPS.length })}</p>
             <h3 id={`org-step-${i}`}>{s.title[lang].replace(/^\d+ · /, '')}</h3>
             {s.text[lang].split('\n\n').map((p) => <p>{p}</p>)}
+            {s.panel && <StepPanel lang={lang} panel={s.panel} />}
             {s.key && (
               <p class="inv-key">
                 <span class="inv-key-k">{it(lang, 'keyIdea')}</span>
@@ -540,10 +542,15 @@ const nameLines = (full: string) => {
         STEPS.map((s, i) => (
           <div class="mbar-step" data-i={i}>
             <p class="mbar-t">{s.title[lang]}</p>
-            <div class="mbar-p">
+            <div class="mbar-p" id={`mbar-p-${i}`}>
               {s.text[lang].split('\n\n').map((p) => <p>{p}</p>)}
+              {s.panel && <StepPanel lang={lang} panel={s.panel} />}
               {s.key && <p class="mbar-key">{s.key[lang]}</p>}
             </div>
+            <button type="button" class="mbar-more" aria-expanded="false" aria-controls={`mbar-p-${i}`} data-mbar-more>
+              <span class="lb-more">{it(lang, 'readStep')} ▾</span>
+              <span class="lb-less">{it(lang, 'readLess')} ▴</span>
+            </button>
           </div>
         ))
       }
@@ -581,6 +588,20 @@ const nameLines = (full: string) => {
 </section>
 
 <script>
+  // Phone bar: "Read the full step" expands the text; it folds back when the step changes.
+  document.querySelectorAll<HTMLElement>('[data-mbar]').forEach((bar) => {
+    const setOpen = (open: boolean) => {
+      bar.classList.toggle('is-open', open);
+      bar.querySelectorAll('[data-mbar-more]').forEach((b) => b.setAttribute('aria-expanded', String(open)));
+      if (!open) bar.querySelectorAll<HTMLElement>('.mbar-p').forEach((p) => (p.scrollTop = 0));
+    };
+    bar.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t.closest('[data-mbar-more]')) setOpen(!bar.classList.contains('is-open'));
+      else if (t.closest('[data-prev], [data-next]')) setOpen(false);
+    });
+  });
+
   type OrgData = { steps: string[][]; edges: [string, string][]; labels: { step: string }; names: Record<string, string> };
 
   document.querySelectorAll<HTMLElement>('[data-org]').forEach((org) => {
@@ -1546,13 +1567,38 @@ const nameLines = (full: string) => {
     margin: 0 0 4px;
     font: 700 0.95rem/1.3 var(--sans);
   }
+  /* collapsed: the first lines of the step; "Read the full step" opens it up to most of the screen */
   .mbar-p {
     margin: 0;
     font: 0.9rem/1.45 var(--sans);
     color: var(--muted);
-    max-height: 9.5em;
+    max-height: 4.4em;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(#000 55%, transparent);
+    mask-image: linear-gradient(#000 55%, transparent);
+  }
+  .mbar.is-open .mbar-p {
+    max-height: min(58svh, 520px);
     overflow-y: auto;
     overscroll-behavior: contain;
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+  .mbar-more {
+    margin: 6px 0 0;
+    padding: 6px 0;
+    border: 0;
+    background: none;
+    color: var(--inv-appoint);
+    font: 700 0.85rem/1.2 var(--sans);
+    cursor: pointer;
+  }
+  .lb-less,
+  .mbar.is-open .lb-more {
+    display: none;
+  }
+  .mbar.is-open .lb-less {
+    display: inline;
   }
   .mbar-p p {
     margin: 0 0 0.6em;

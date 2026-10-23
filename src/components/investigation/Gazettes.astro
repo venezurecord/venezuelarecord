@@ -24,11 +24,11 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
     {it(lang, 'gzIntro').split('\n\n').map((p) => <p class="inv-intro">{p}</p>)}
   </header>
 
-  <p class="swipe-hint" aria-hidden="true">{it(lang, 'gzSwipe')} <span>→</span></p>
-  <ul class="gz-grid" aria-label={it(lang, 'gzTitle')} tabindex="0">
+  <p class="tile-hint" aria-hidden="true">{it(lang, 'tileHint')}</p>
+  <ul class="gz-grid" data-tiles aria-label={it(lang, 'gzTitle')}>
     {
       GAZETTES.map((g) => (
-        <li class="gz-card" data-reveal>
+        <li class="gz-card" id={g.id} data-reveal data-tile>
           <div class="gz-mast" aria-hidden="true">
             <span class="gz-title">{g.id.startsWith('tsj') ? 'Tribunal Supremo de Justicia' : 'Gaceta Oficial'}</span>
             <span class="gz-sub">{g.id.startsWith('tsj') ? 'Sala Constitucional' : 'de la República Bolivariana de Venezuela'}</span>
@@ -38,6 +38,11 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
             <span>{g.number[lang]}</span>
           </p>
           <h3>{g.heading[lang]}</h3>
+          <button type="button" class="tile-btn" aria-expanded="false" aria-controls={g.id}>
+            <span class="lb-open">＋ {it(lang, 'tileOpen')}</span>
+            <span class="lb-close">− {it(lang, 'tileClose')}</span>
+            <span class="visually-hidden">: {g.heading[lang]}</span>
+          </button>
           <p class="gz-act">{g.act[lang]}</p>
           <blockquote class="gz-text" lang="es">
             <p set:html={marked(g.article.es)} />
@@ -65,6 +70,8 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
 </section>
 
 <script>
+  import { initTiles } from '../../scripts/tiles';
+  initTiles('.gz [data-tiles]');
   // Highlighter sweep on the key text when each card enters the viewport.
   if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     const cards = document.querySelectorAll<HTMLElement>('.gz [data-reveal]');
@@ -97,30 +104,86 @@ const marked = (s: string) => esc(s).replace(/\[\[(.+?)\]\]/g, '<mark>$1</mark>'
     gap: 22px;
     grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
   }
-  .swipe-hint {
+  @media (max-width: 899.98px) {
+    :global(.tiles-on).gz-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+    :global(.tiles-on) .gz-card {
+      position: relative;
+      padding: 12px 12px 12px;
+      scroll-margin-top: calc(var(--inv-top) + var(--inv-toc-h) + 12px);
+    }
+    :global(.tiles-on) .gz-card:not(.is-open) :is(.gz-act, .gz-text, .gz-tr, .gz-ref, .gz-verdict, .gz-src) {
+      display: none;
+    }
+    :global(.tiles-on) .gz-card:not(.is-open) .gz-title {
+      font-size: 0.95rem;
+      transform: none;
+    }
+    :global(.tiles-on) .gz-card:not(.is-open) .gz-sub {
+      display: none;
+    }
+    :global(.tiles-on) .gz-card:not(.is-open) .gz-meta {
+      flex-direction: column;
+      gap: 2px;
+      font-size: 0.74rem;
+    }
+    :global(.tiles-on) .gz-card:not(.is-open) h3 {
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+    :global(.tiles-on) .gz-card.is-open {
+      grid-column: 1 / -1;
+      padding: 18px 16px 14px;
+    }
+  }
+
+  /* ---------- phones: boxes that expand on tap (JS on) ---------- */
+  .tile-btn,
+  .tile-hint {
     display: none;
   }
   @media (max-width: 899.98px) {
-    .swipe-hint {
+    :global(.tiles-on) .tile-hint {
       display: block;
       margin: 0 0 10px;
       padding-inline: var(--gutter);
       font: 600 0.85rem/1.4 var(--sans);
       color: var(--muted);
     }
-    .gz-grid {
-      display: flex;
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      overscroll-behavior-x: contain;
-      scroll-padding-inline: var(--gutter);
-      padding-bottom: 16px;
-      scrollbar-width: thin;
+    :global(.tiles-on) .tile-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 32px;
+      margin-top: auto;
+      padding: 4px 12px;
+      border: 1px solid currentColor;
+      border-radius: 999px;
+      background: transparent;
+      color: inherit;
+      font: 700 0.78rem/1 var(--sans);
+      cursor: pointer;
     }
-    .gz-grid > li {
-      position: relative;
-      flex: 0 0 86%;
-      scroll-snap-align: start;
+    /* collapsed: the whole box is the button */
+    :global(.tiles-on) [data-tile]:not(.is-open) .tile-btn::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+    }
+    /* open: the close button goes to the top right of the card */
+    :global(.tiles-on) [data-tile].is-open .tile-btn {
+      order: -1;
+      align-self: flex-end;
+      margin: 0 0 4px;
+    }
+    .lb-close,
+    :global(.tiles-on) [data-tile].is-open .lb-open {
+      display: none;
+    }
+    :global(.tiles-on) [data-tile].is-open .lb-close {
+      display: inline;
     }
   }
   .gz-card {
