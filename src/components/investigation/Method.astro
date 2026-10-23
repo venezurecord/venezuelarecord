@@ -17,16 +17,24 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
   <div class="mt-inner">
     <p class="inv-kicker">{it(lang, 'methodKicker')}</p>
     <h2 id="mt-title">{it(lang, 'methodTitle')}</h2>
-    {
-      METHOD.map((b) => (
-        <>
-          {b.h && <h3 class="mt-h">{b.h[lang]}</h3>}
-          {b.p.map((p) => (
-            <p class="mt-body">{p[lang]}</p>
-          ))}
-        </>
-      ))
-    }
+    {METHOD[0].h && <h3 class="mt-h">{METHOD[0].h[lang]}</h3>}
+    <p class="mt-body">{METHOD[0].p[0][lang]}</p>
+    <details class="mt-details mt-more">
+      <summary>
+        <h3 class="mt-more-t">{it(lang, 'methodMore')}</h3>
+      </summary>
+      {METHOD[0].p.slice(1).map((p) => <p class="mt-body">{p[lang]}</p>)}
+      {
+        METHOD.slice(1).map((b) => (
+          <>
+            {b.h && <h3 class="mt-h">{b.h[lang]}</h3>}
+            {b.p.map((p) => (
+              <p class="mt-body">{p[lang]}</p>
+            ))}
+          </>
+        ))
+      }
+    </details>
 
     <h3>{it(lang, 'methodUnverified')}</h3>
     <ul class="mt-unv">
@@ -37,7 +45,7 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
     <p class="mt-small">{it(lang, 'methodChecked', { date: longDate(lang, META.updated) })}</p>
     <p class="mt-small" set:html={it(lang, 'methodCorrections', { link: corrections })} />
 
-    <details class="mt-details" data-sources={A.src} open>
+    <details class="mt-details" data-sources={A.src}>
       <summary>
         <h3 id={A.src}>{it(lang, 'sources')} <span class="mt-count">({SOURCES.length})</span></h3>
       </summary>
@@ -90,11 +98,11 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
 </section>
 
 <script>
-  // Phones: the source list starts collapsed; any link to a source (or to the list) opens it first.
+  // The source list starts collapsed; any link to a source (or to the list) opens it first.
   document.querySelectorAll<HTMLDetailsElement>('details[data-sources]').forEach((d) => {
     const prefix = `#${d.dataset.sources}`;
     const wants = (hash: string) => hash === prefix || hash.startsWith(`${prefix}-`);
-    if (window.matchMedia('(max-width: 899.98px)').matches && !wants(location.hash)) d.open = false;
+    if (wants(location.hash)) d.open = true;
     document.addEventListener(
       'click',
       (ev) => {
@@ -185,6 +193,17 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
   }
   .mt-details[open] > summary h3::after {
     transform: rotate(-135deg) translateY(-1px);
+  }
+  .mt-more {
+    margin: 4px 0 8px;
+  }
+  .mt-more > summary .mt-more-t {
+    margin: 0;
+    font: 700 1rem/1.3 var(--sans);
+    color: var(--inv-appoint);
+  }
+  .mt-more[open] > summary {
+    margin-bottom: 8px;
   }
   .mt-count {
     font: 500 0.95rem var(--sans);

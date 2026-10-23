@@ -104,6 +104,7 @@ const en = {
   methodKicker: 'Method',
   methodTitle: 'How we did it',
   keyIdea: 'Key idea',
+  methodMore: 'Read the full method',
   methodUnverified: 'What we could not verify',
   methodUnverifiedItems: [
     'Whether Alexis Rodríguez Cabello still heads SEBIN: the last public confirmation we found is from March 2026.',
@@ -226,6 +227,7 @@ const es: Dict = {
   methodKicker: 'Método',
   methodTitle: 'Cómo se hizo',
   keyIdea: 'Idea clave',
+  methodMore: 'Leer el método completo',
   methodUnverified: 'Lo que no pudimos verificar',
   methodUnverifiedItems: [
     'Si Alexis Rodríguez Cabello sigue al frente del SEBIN: la última confirmación pública que encontramos es de marzo de 2026.',

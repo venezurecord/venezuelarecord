@@ -38,7 +38,7 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
     <p class="mt-small">{it(lang, 'methodChecked', { date: longDate(lang, META.updated) })}</p>
     <p class="mt-small" set:html={it(lang, 'methodCorrections', { link: corrections })} />
 
-    <details class="mt-details" data-sources={A.src} open>
+    <details class="mt-details" data-sources={A.src}>
       <summary>
         <h3 id={A.src}>{it(lang, 'sources')} <span class="mt-count">({SOURCES.length})</span></h3>
       </summary>
@@ -91,11 +91,11 @@ const corrections = `<a href="${localePath(lang, PAGES.corrections.path)}">${it(
 </section>
 
 <script>
-  // Phones: the source list starts collapsed; any link to a source (or to the list) opens it first.
+  // The source list starts collapsed; any link to a source (or to the list) opens it first.
   document.querySelectorAll<HTMLDetailsElement>('details[data-sources]').forEach((d) => {
     const prefix = `#${d.dataset.sources}`;
     const wants = (hash: string) => hash === prefix || hash.startsWith(`${prefix}-`);
-    if (window.matchMedia('(max-width: 899.98px)').matches && !wants(location.hash)) d.open = false;
+    if (wants(location.hash)) d.open = true;
     document.addEventListener(
       'click',
       (ev) => {
