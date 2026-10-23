@@ -1,7 +1,8 @@
 ---
 // "Who appoints whom". Desktop: a sticky SVG diagram with guided steps (scroll or Previous/Next) and a
 // free mode; tapping a node lights up its links and opens its profile in a side sheet.
-// Phones: a list by levels with the same profiles in a bottom sheet (no tiny diagram).
+// Phones: guided mode shows one small map per step plus its numbered relations (StepMaps); free mode shows the
+// list by levels. Same profiles in a bottom sheet.
 // Without JS: the diagram is static and every profile is open in the list.
 import { getImage, Image } from 'astro:assets';
 import type { Lang } from '../../i18n/ui';
@@ -17,6 +18,7 @@ import {
 import { ANCHORS, it } from '../../data/investigations/ui';
 import Cite from './Cite.astro';
 import StepPanel from './StepPanel.astro';
+import StepMaps from './StepMaps.astro';
 
 interface Props {
   lang: Lang;
@@ -170,6 +172,7 @@ const nameLines = (full: string) => {
       <button type="button" data-mode-btn="guided" aria-pressed="true">{it(lang, 'modeGuided')}</button>
       <button type="button" data-mode-btn="free" aria-pressed="false">{it(lang, 'modeFree')}</button>
     </div>
+    <button type="button" class="legend-btn" aria-expanded="false" data-legend>{it(lang, 'legendBtn')} <span aria-hidden="true">▾</span></button>
     <fieldset class="filters">
       <legend>{it(lang, 'filters')}</legend>
       {
@@ -408,6 +411,7 @@ const nameLines = (full: string) => {
 
   <!-- Phones and no-JS: the same structure as a list by levels, every profile complete. -->
   <div class="org-list">
+    <StepMaps lang={lang} />
     {
       levels.map((l, i) => (
         <section class="lvl" aria-labelledby={`lvl-${i}`}>
@@ -538,22 +542,6 @@ const nameLines = (full: string) => {
     }
 
     <div class="mbar" data-mbar>
-      {
-        STEPS.map((s, i) => (
-          <div class="mbar-step" data-i={i}>
-            <p class="mbar-t">{s.title[lang]}</p>
-            <div class="mbar-p" id={`mbar-p-${i}`}>
-              {s.text[lang].split('\n\n').map((p) => <p>{p}</p>)}
-              {s.panel && <StepPanel lang={lang} panel={s.panel} />}
-              {s.key && <p class="mbar-key">{s.key[lang]}</p>}
-            </div>
-            <button type="button" class="mbar-more" aria-expanded="false" aria-controls={`mbar-p-${i}`} data-mbar-more>
-              <span class="lb-more">{it(lang, 'readStep')} ▾</span>
-              <span class="lb-less">{it(lang, 'readLess')} ▴</span>
-            </button>
-          </div>
-        ))
-      }
       <div class="mbar-step" data-i="free">
         <p class="mbar-p">{it(lang, 'freeHint')}</p>
       </div>
@@ -588,20 +576,6 @@ const nameLines = (full: string) => {
 </section>
 
 <script>
-  // Phone bar: "Read the full step" expands the text; it folds back when the step changes.
-  document.querySelectorAll<HTMLElement>('[data-mbar]').forEach((bar) => {
-    const setOpen = (open: boolean) => {
-      bar.classList.toggle('is-open', open);
-      bar.querySelectorAll('[data-mbar-more]').forEach((b) => b.setAttribute('aria-expanded', String(open)));
-      if (!open) bar.querySelectorAll<HTMLElement>('.mbar-p').forEach((p) => (p.scrollTop = 0));
-    };
-    bar.addEventListener('click', (e) => {
-      const t = e.target as HTMLElement;
-      if (t.closest('[data-mbar-more]')) setOpen(!bar.classList.contains('is-open'));
-      else if (t.closest('[data-prev], [data-next]')) setOpen(false);
-    });
-  });
-
   type OrgData = { steps: string[][]; edges: [string, string][]; labels: { step: string }; names: Record<string, string> };
 
   document.querySelectorAll<HTMLElement>('[data-org]').forEach((org) => {
@@ -675,8 +649,7 @@ const nameLines = (full: string) => {
       if (scroll && desktop.matches) {
         stepEls[step]?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
       } else if (scroll) {
-        const first = items.find((n) => !n.classList.contains('is-dim'));
-        first?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' });
+        org.querySelector('.ms-wrap')?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
       }
     }
 
@@ -717,6 +690,10 @@ const nameLines = (full: string) => {
     org.querySelectorAll<HTMLButtonElement>('[data-mode-btn]').forEach((b) =>
       b.addEventListener('click', () => setMode(b.dataset.modeBtn as 'guided' | 'free')),
     );
+    org.querySelector<HTMLButtonElement>('[data-legend]')?.addEventListener('click', (ev) => {
+      const open = org.classList.toggle('legend-open');
+      (ev.currentTarget as HTMLElement).setAttribute('aria-expanded', String(open));
+    });
     org.querySelectorAll<HTMLInputElement>('[data-filter]').forEach((c) =>
       c.addEventListener('change', () => org.classList.toggle(`hide-${c.dataset.filter}`, !c.checked)),
     );
@@ -1556,56 +1533,44 @@ const nameLines = (full: string) => {
   .mbar-step {
     display: none;
   }
-  .org[data-step='0'] .mbar-step[data-i='0'],
-  .org[data-step='1'] .mbar-step[data-i='1'],
-  .org[data-step='2'] .mbar-step[data-i='2'],
-  .org[data-step='3'] .mbar-step[data-i='3'],
   .org[data-step='free'] .mbar-step[data-i='free'] {
     display: block;
   }
-  .mbar-t {
-    margin: 0 0 4px;
-    font: 700 0.95rem/1.3 var(--sans);
-  }
-  /* collapsed: the first lines of the step; "Read the full step" opens it up to most of the screen */
   .mbar-p {
     margin: 0;
     font: 0.9rem/1.45 var(--sans);
     color: var(--muted);
-    max-height: 4.4em;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(#000 55%, transparent);
-    mask-image: linear-gradient(#000 55%, transparent);
   }
-  .mbar.is-open .mbar-p {
-    max-height: min(58svh, 520px);
-    overflow-y: auto;
-    overscroll-behavior: contain;
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
-  .mbar-more {
-    margin: 6px 0 0;
-    padding: 6px 0;
-    border: 0;
-    background: none;
-    color: var(--inv-appoint);
-    font: 700 0.85rem/1.2 var(--sans);
-    cursor: pointer;
-  }
-  .lb-less,
-  .mbar.is-open .lb-more {
+  /* phones, guided mode: the step maps replace the list by levels */
+  .legend-btn {
     display: none;
   }
-  .mbar.is-open .lb-less {
-    display: inline;
-  }
-  .mbar-p p {
-    margin: 0 0 0.6em;
-  }
-  .mbar-p .mbar-key {
-    font-weight: 700;
-    color: var(--ink);
+  @media (max-width: 899.98px) {
+    :global(html.js) .org[data-mode='guided'] .lvl {
+      display: none;
+    }
+    :global(html.js) .legend-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--surface);
+      color: var(--text);
+      font: 600 0.88rem var(--sans);
+      cursor: pointer;
+    }
+    :global(html.js) .org:not(.legend-open) .filters {
+      display: none;
+    }
+    :global(html.js) .mbar {
+      padding-top: 8px !important;
+    }
+    :global(html.js) .mbar-nav {
+      margin-top: 0 !important;
+    }
   }
   .mbar-nav {
     display: flex;

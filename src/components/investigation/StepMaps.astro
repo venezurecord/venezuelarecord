@@ -1,0 +1,507 @@
+---
+// Phones, guided mode: each step is a small map with only its people and institutions (rows by level, like the
+// desktop diagram) plus the numbered list of its relations with their sources. Tapping a node opens its profile
+// (same [data-open] sheet as the list). Free mode keeps the full list by levels.
+import { Image } from 'astro:assets';
+import type { Lang } from '../../i18n/ui';
+import { EDGES, EDGE_TYPES, NODES, STEPS, type EdgeType, type OrgNode } from '../../data/investigations/who-commands-venezuela-2026';
+import { ANCHORS, it } from '../../data/investigations/ui';
+import Cite from './Cite.astro';
+import StepPanel from './StepPanel.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const A = ANCHORS[lang];
+const byId = new Map(NODES.map((n) => [n.id, n]));
+const typeLabel = (t: EdgeType) => EDGE_TYPES.find((x) => x.type === t)!.label[lang];
+const f = (v: number) => Math.round(v * 10) / 10;
+
+const W = 340;
+const ROW = 150;
+const AV = 24; // avatar radius
+// Line icons for nodes with no photo, emblem or picture (same as the desktop diagram).
+const ICONS: Record<string, string> = {
+  venapp: 'M8 2h8a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm3 17h2M12 7v4m0 2.5v.5',
+  polest: 'M12 2l7 3v6c0 5-3 8.5-7 11-4-2.5-7-6-7-11V5zM9 12l2 2 4-4',
+  inst: 'M3 21h18M4 10h16M5 10v8m4.67-8v8m4.66-8v8M19 10v8M12 3l8 5H4z',
+  group: 'M8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM2 20c0-3 2.7-5 6-5s6 2 6 5',
+  outcome: 'M12 3l9 16H3zM12 10v4m0 3v.5',
+};
+
+/** Short name for the map: first name as an initial when there are three words. */
+const mapName = (n: OrgNode) => {
+  if (n.kind !== 'person') return n.short[lang];
+  const p = n.name[lang].split(' ');
+  return p.length >= 3 ? [`${p[0][0]}.`, ...p.slice(1)].join(' ') : n.name[lang];
+};
+
+/** Avatar centre → bottom of the name (and role) lines under it. */
+const labelBottom = (n: OrgNode) => {
+  const lines = mapName(n).length > 12 ? 2 : 1;
+  return AV + 7 + lines * 13 + (n.kind === 'person' ? 13 : 0) + 4;
+};
+
+const maps = STEPS.map((s) => {
+  const nodes = s.nodes.map((id) => byId.get(id)!);
+  const levels = [...new Set(nodes.map((n) => n.level))].sort((a, b) => a - b);
+  const pos = new Map<string, { x: number; y: number }>();
+  levels.forEach((lv, r) => {
+    const row = nodes.filter((n) => n.level === lv).sort((a, b) => a.x - b.x);
+    row.forEach((n, k) => pos.set(n.id, { x: (W * (k + 0.5)) / row.length, y: 34 + r * ROW }));
+  });
+  const H = 34 + (levels.length - 1) * ROW + 78;
+  const list = EDGES.filter((e) => s.nodes.includes(e.from) && s.nodes.includes(e.to));
+  // Lines leaving or reaching the same side of a node are spread a little so their numbers do not overlap.
+  const ends = new Map<string, number[]>();
+  const slot = (key: string, i: number) => {
+    const arr = ends.get(key) ?? [];
+    if (!arr.includes(i)) arr.push(i);
+    ends.set(key, arr);
+  };
+  list.forEach((e, i) => {
+    const a = pos.get(e.from)!;
+    const b = pos.get(e.to)!;
+    if (a.y === b.y) return;
+    const down = b.y > a.y;
+    slot(`${e.from}:${down ? 'b' : 't'}`, i);
+    slot(`${e.to}:${down ? 't' : 'b'}`, i);
+  });
+  // Lines are ordered by where their other end lies, so they do not cross at the node.
+  const spread = (key: string, i: number) => {
+    const arr = (ends.get(key) ?? []).slice();
+    if (arr.length < 2) return 0;
+    const other = (j: number) => {
+      const e = list[j];
+      return pos.get(key.startsWith(`${e.from}:`) ? e.to : e.from)!.x;
+    };
+    arr.sort((p, q) => other(p) - other(q));
+    return (arr.indexOf(i) - (arr.length - 1) / 2) * 12;
+  };
+  const edges = list.map((e, i) => {
+    const a = pos.get(e.from)!;
+    const b = pos.get(e.to)!;
+    const na = byId.get(e.from)!;
+    const nb = byId.get(e.to)!;
+    let p1, p2, c1, c2;
+    if (a.y === b.y) {
+      // same row: straight across, from the side of one avatar to the side of the other
+      const dir = Math.sign(b.x - a.x);
+      p1 = { x: a.x + dir * (AV + 6), y: a.y };
+      p2 = { x: b.x - dir * (AV + 8), y: b.y };
+      c1 = { x: (p1.x + p2.x) / 2, y: p1.y };
+      c2 = c1;
+    } else {
+      const down = b.y > a.y;
+      const sa = spread(`${e.from}:${down ? 'b' : 't'}`, i);
+      const sb = spread(`${e.to}:${down ? 't' : 'b'}`, i);
+      p1 = { x: a.x + sa, y: down ? a.y + labelBottom(na) : a.y - AV - 5 };
+      p2 = { x: b.x + sb, y: down ? b.y - AV - 7 : b.y + labelBottom(nb) + 2 };
+      const dy = p2.y - p1.y;
+      if (Math.abs(dy) > ROW * 1.2) {
+        // skips a row: stay near the start column and turn late, so the line clears the nodes in between
+        c1 = { x: p1.x, y: p1.y + dy * 0.75 };
+        c2 = { x: p2.x + (p1.x - p2.x) * 0.6, y: p2.y - dy * 0.15 };
+      } else {
+        c1 = { x: p1.x, y: p1.y + dy * 0.5 };
+        c2 = { x: p2.x, y: p2.y - dy * 0.5 };
+      }
+    }
+    const mid = { x: (p1.x + 3 * c1.x + 3 * c2.x + p2.x) / 8, y: (p1.y + 3 * c1.y + 3 * c2.y + p2.y) / 8 };
+    return {
+      ...e,
+      n: i + 1,
+      d: `M${f(p1.x)} ${f(p1.y)} C${f(c1.x)} ${f(c1.y)} ${f(c2.x)} ${f(c2.y)} ${f(p2.x)} ${f(p2.y)}`,
+      mid,
+      arrow: e.type === 'appoint' || e.type === 'legal' || e.type === 'result',
+    };
+  });
+  return { s, nodes, pos, H, edges };
+});
+---
+
+<div class="ms-wrap">
+  {
+    maps.map(({ s, nodes, pos, H, edges }, i) => (
+      <article class="ms" data-i={i} aria-labelledby={`ms-t-${i}`}>
+        <p class="ms-n">{it(lang, 'step', { n: i + 1, total: STEPS.length })}</p>
+        <h3 id={`ms-t-${i}`}>{s.title[lang].replace(/^\d+ · /, '')}</h3>
+        <div class="ms-text" id={`ms-text-${i}`}>
+          {s.text[lang].split('\n\n').map((p) => (
+            <p>{p}</p>
+          ))}
+          {s.panel && <StepPanel lang={lang} panel={s.panel} />}
+        </div>
+        <button type="button" class="ms-more" aria-expanded="false" aria-controls={`ms-text-${i}`} data-ms-more>
+          <span class="lb-more">{it(lang, 'readStep')} ▾</span>
+          <span class="lb-less">{it(lang, 'readLess')} ▴</span>
+        </button>
+
+        <div class="ms-map" style={`aspect-ratio:${W}/${H}`}>
+          <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
+            <defs>
+              {(['appoint', 'legal', 'result'] as const).map((t) => (
+                <marker id={`ms-ar-${t}-${i}`} viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                  <path d="M0 0 L10 5 L0 10 z" class={`mh-${t}`} />
+                </marker>
+              ))}
+            </defs>
+            {edges.map((e) => (
+              <path class={`me t-${e.type}`} d={e.d} marker-end={e.arrow ? `url(#ms-ar-${e.type}-${i})` : undefined} />
+            ))}
+            {edges.map((e) => (
+              <g class={`mb t-${e.type}`} transform={`translate(${f(e.mid.x)} ${f(e.mid.y)})`}>
+                <circle r="9" />
+                <text y="3.6" text-anchor="middle">
+                  {e.n}
+                </text>
+              </g>
+            ))}
+          </svg>
+          {nodes.map((n) => {
+            const p = pos.get(n.id)!;
+            return (
+              <a
+                class={`mn k-${n.kind}`}
+                href={`#ficha-${n.id}`}
+                data-open={n.id}
+                aria-haspopup="dialog"
+                style={`left:${f((p.x / W) * 100)}%;top:${f(((p.y - AV) / H) * 100)}%`}
+              >
+                <span class="mn-av" aria-hidden="true">
+                  {n.photo ? (
+                    <Image src={n.photo} alt="" width={96} height={96} loading="lazy" decoding="async" />
+                  ) : n.image ? (
+                    <Image class="mn-photo" src={n.image} alt="" width={96} loading="lazy" decoding="async" />
+                  ) : n.logo ? (
+                    <Image class="mn-logo" src={n.logo} alt="" width={80} loading="lazy" decoding="async" />
+                  ) : n.initials ? (
+                    <span class="mn-ini">{n.initials}</span>
+                  ) : (
+                    <svg class="mn-ico" viewBox="0 0 24 24" width="24" height="24">
+                      <path d={ICONS[n.id] ?? ICONS[n.kind]} />
+                    </svg>
+                  )}
+                </span>
+                <span class="mn-t">{mapName(n)}</span>
+                {n.kind === 'person' && <span class="mn-r">{n.short[lang]}</span>}
+              </a>
+            );
+          })}
+        </div>
+
+        <ol class="ms-rels">
+          {edges.map((e) => (
+            <li class={`t-${e.type}`}>
+              <span class={`mr-n t-${e.type}`} aria-hidden="true">
+                {e.n}
+              </span>
+              <span class="mr-b">
+                <strong>
+                  {byId.get(e.from)!.name[lang]} {e.type === 'family' ? '—' : '→'} {byId.get(e.to)!.name[lang]}
+                </strong>
+                <span class="mr-l">
+                  <em>{typeLabel(e.type)}</em> · {e.label[lang]}
+                  <Cite lang={lang} ids={e.src} anchor={A.src} />
+                </span>
+              </span>
+            </li>
+          ))}
+        </ol>
+
+        {s.key && (
+          <p class="inv-key">
+            <span class="inv-key-k">{it(lang, 'keyIdea')}</span>
+            {s.key[lang]}
+          </p>
+        )}
+      </article>
+    ))
+  }
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.ms').forEach((ms) => {
+    const btn = ms.querySelector<HTMLButtonElement>('[data-ms-more]')!;
+    btn.addEventListener('click', () => {
+      const open = !ms.classList.contains('is-open');
+      ms.classList.toggle('is-open', open);
+      btn.setAttribute('aria-expanded', String(open));
+      if (!open) ms.scrollIntoView({ block: 'start' });
+    });
+  });
+</script>
+
+<style>
+  .ms-wrap {
+    display: none;
+  }
+  @media (max-width: 899.98px) {
+    :global(html.js) :global(.org[data-mode='guided']) .ms-wrap {
+      display: block;
+      scroll-margin-top: calc(var(--inv-top) + var(--inv-toc-h) + 8px);
+    }
+  }
+  .ms {
+    display: none;
+    padding: 4px 0 12px;
+  }
+  :global(.org[data-step='0']) .ms[data-i='0'],
+  :global(.org[data-step='1']) .ms[data-i='1'],
+  :global(.org[data-step='2']) .ms[data-i='2'],
+  :global(.org[data-step='3']) .ms[data-i='3'] {
+    display: block;
+  }
+  .ms-n {
+    margin: 0;
+    font: 700 0.72rem/1.4 var(--sans);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--inv-appoint);
+  }
+  .ms h3 {
+    margin: 2px 0 8px;
+    font: 700 1.3rem/1.2 var(--serif);
+  }
+  .ms-text {
+    font: 1rem/1.55 var(--serif);
+    color: var(--muted);
+    max-height: 4.65em;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(#000 50%, transparent);
+    mask-image: linear-gradient(#000 50%, transparent);
+  }
+  .ms-text p {
+    margin: 0 0 0.8em;
+  }
+  .ms.is-open .ms-text {
+    max-height: none;
+    -webkit-mask-image: none;
+    mask-image: none;
+    color: var(--text);
+  }
+  .ms-more {
+    margin: 4px 0 6px;
+    padding: 6px 0;
+    border: 0;
+    background: none;
+    color: var(--inv-appoint);
+    font: 700 0.88rem/1.2 var(--sans);
+    cursor: pointer;
+  }
+  .lb-less,
+  .ms.is-open .lb-more {
+    display: none;
+  }
+  .ms.is-open .lb-less {
+    display: inline;
+  }
+
+  /* the map */
+  .ms-map {
+    position: relative;
+    width: 100%;
+    margin: 6px 0 14px;
+  }
+  .ms-map > svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .me {
+    fill: none;
+    stroke-width: 2;
+  }
+  .me.t-appoint {
+    stroke: var(--org-appoint);
+    stroke-width: 3.2;
+  }
+  .me.t-legal {
+    stroke: var(--org-legal);
+  }
+  .me.t-coord {
+    stroke: var(--org-coord);
+    stroke-dasharray: 7 5;
+  }
+  .me.t-un {
+    stroke: var(--org-un);
+    stroke-dasharray: 2 4;
+    stroke-linecap: round;
+    stroke-width: 2.4;
+  }
+  .me.t-family {
+    stroke: var(--inv-sec);
+    stroke-dasharray: 8 4 2 4;
+  }
+  .me.t-result {
+    stroke: var(--org-result);
+    stroke-width: 2.6;
+  }
+  .mh-appoint {
+    fill: var(--org-appoint);
+  }
+  .mh-legal {
+    fill: var(--org-legal);
+  }
+  .mh-result {
+    fill: var(--org-result);
+  }
+  .mb circle {
+    fill: var(--bg);
+    stroke-width: 2;
+  }
+  .mb text {
+    font: 700 10.5px var(--sans);
+  }
+  .mb.t-appoint circle { stroke: var(--org-appoint); }
+  .mb.t-appoint text { fill: var(--org-appoint); }
+  .mb.t-legal circle { stroke: var(--org-legal); }
+  .mb.t-legal text { fill: var(--org-legal); }
+  .mb.t-coord circle { stroke: var(--org-coord); }
+  .mb.t-coord text { fill: var(--org-coord); }
+  .mb.t-un circle { stroke: var(--org-un); }
+  .mb.t-un text { fill: var(--org-un); }
+  .mb.t-family circle { stroke: var(--inv-sec); }
+  .mb.t-family text { fill: var(--inv-sec); }
+  .mb.t-result circle { stroke: var(--org-result); }
+  .mb.t-result text { fill: var(--org-result); }
+
+  .mn {
+    position: absolute;
+    z-index: 1;
+    width: 92px;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--text);
+    text-decoration: none;
+  }
+  .mn-av {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    background: var(--surface);
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 5px var(--org-appoint);
+  }
+  .mn.k-inst .mn-av,
+  .mn.k-group .mn-av,
+  .mn.k-outcome .mn-av {
+    border-radius: 12px;
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 4px var(--line);
+  }
+  .mn.k-outcome .mn-av {
+    box-shadow:
+      0 0 0 3px var(--bg),
+      0 0 0 5px var(--org-result);
+  }
+  .mn-av :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .mn-av :global(.mn-logo) {
+    object-fit: contain;
+    padding: 4px;
+  }
+  .mn-ico {
+    width: 26px;
+    height: 26px;
+    fill: none;
+    stroke: var(--muted);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+  .mn-ini {
+    font: 700 0.85rem var(--sans);
+    color: var(--muted);
+  }
+  .mn-t {
+    margin-top: 5px;
+    padding: 0 3px;
+    border-radius: 4px;
+    background: var(--bg);
+    font: 700 0.72rem/1.15 var(--sans);
+  }
+  .mn-r {
+    padding: 0 3px;
+    background: var(--bg);
+    font: 0.68rem/1.2 var(--sans);
+    color: var(--muted);
+  }
+  .mn:focus-visible .mn-av {
+    outline: 3px solid var(--inv-hl);
+    outline-offset: 4px;
+  }
+
+  /* relations, numbered like the map */
+  .ms-rels {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 10px;
+  }
+  .ms-rels li {
+    display: flex;
+    gap: 10px;
+    padding: 2px 0 2px 10px;
+    border-left: 3px solid var(--org-legal);
+  }
+  .ms-rels li.t-appoint { border-left-color: var(--org-appoint); }
+  .ms-rels li.t-coord { border-left: 3px dashed var(--org-coord); }
+  .ms-rels li.t-un { border-left: 3px dotted var(--org-un); }
+  .ms-rels li.t-family { border-left: 3px dashed var(--inv-sec); }
+  .ms-rels li.t-result { border-left-color: var(--org-result); }
+  .mr-n {
+    flex: 0 0 22px;
+    height: 22px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    font: 700 0.72rem/1 var(--sans);
+    color: var(--org-legal);
+  }
+  .mr-n.t-appoint { color: var(--org-appoint); }
+  .mr-n.t-coord { color: var(--org-coord); }
+  .mr-n.t-un { color: var(--org-un); }
+  .mr-n.t-family { color: var(--inv-sec); }
+  .mr-n.t-result { color: var(--org-result); }
+  .mr-b strong {
+    display: block;
+    font: 700 0.88rem/1.3 var(--sans);
+  }
+  .mr-l {
+    font: 0.84rem/1.45 var(--sans);
+    color: var(--muted);
+  }
+  .mr-l em {
+    font-style: normal;
+    font-weight: 700;
+  }
+  li.t-appoint .mr-l em { color: var(--org-appoint); }
+  li.t-un .mr-l em { color: var(--org-un); }
+  li.t-family .mr-l em { color: var(--inv-sec); }
+  li.t-result .mr-l em { color: var(--org-result); }
+  :global(.org.hide-appoint) :is(.me, .mb, .ms-rels li).t-appoint,
+  :global(.org.hide-legal) :is(.me, .mb, .ms-rels li).t-legal,
+  :global(.org.hide-coord) :is(.me, .mb, .ms-rels li).t-coord,
+  :global(.org.hide-un) :is(.me, .mb, .ms-rels li).t-un,
+  :global(.org.hide-family) :is(.me, .mb, .ms-rels li).t-family,
+  :global(.org.hide-result) :is(.me, .mb, .ms-rels li).t-result {
+    display: none;
+  }
+</style>

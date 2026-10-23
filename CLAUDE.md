@@ -183,7 +183,7 @@ su título en `originalTitle`); traduce también `imageAlt` (el script deja uno 
   metodológica» (`METHOD`); crédito «Idea original y arquitectura metodológica» (`META.ideaRole`, helper `ideaCredit`).
   **Teléfono (2026-10-22, Roger):** la apertura usa una franja horizontal fija arriba (`op-band`) y las tarjetas corren
   debajo sin taparla; firmas y gacetas son cuadros que se amplían al tocarlos (`src/scripts/tiles.ts`, uno abierto a la
-  vez) en vez de carrusel; la barra inferior del organigrama muestra el inicio del paso y «Leer el paso completo».
+  vez) en vez de carrusel; en modo guiado el organigrama muestra un **mapa por paso** (`StepMaps.astro`: solo las piezas del paso, filas por nivel, líneas numeradas) y debajo la lista numerada de relaciones con fuentes; el modo «Libre» conserva la lista por niveles; los tipos de línea se pliegan en «¿Qué es cada línea?».
   Pasos 2 y 3 llevan paneles de los bocetos de Minerva (`StepPanel.astro`: decretos clave; Interior/Defensa). Escritorio
   sin cambios.
   Sección nueva «Bóveda de Cristal» (`CrystalVault.astro`, datos `VAULT`): se presenta como columna con fuentes anónimas
